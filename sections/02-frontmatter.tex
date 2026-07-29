@@ -1,0 +1,10 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% FRONT MATTER %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% text spacing, page numbering, and header settings
+\MainTextSpacing                            % double spacing for the contents
+\pagenumbering{roman}                       % pagination style: Roman numeral
+\setcounter{page}{2}                        % page counter starts at roman ii
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+\fancyhead[R]{}
+\fancyhead[L]{\nouppercase \leftmark}       % prints header for unnumbered chap
