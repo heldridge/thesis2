@@ -1,17 +1,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% TITLE PAGE MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\ThesisTitle}[1]{           % prints thesis title
-    \vspace*{\TitleTopSpacing}
-    {\TitleFont {#1} \par}
+	\vspace*{\TitleTopSpacing}
+	{\TitleFont {#1} \par}
 }
 
 \newcommand{\ThesisAuthor}[1]{          % prints by ... thesis author in two lines
-    by \\ #1 \\
-}      
+	by \\ #1 \\
+}
 
 \newcommand{\ThesisStatement}[2]{       % prints thesis or dissertation statement 
-    A {#1} submitted to The Johns Hopkins University in conformity \\
-    with the requirements for the degree of {#2}
+	A {#1} submitted to The Johns Hopkins University in conformity \\
+	with the requirements for the degree of {#2}
 }
 
 \newcommand{\Location}{Baltimore, Maryland}     % prints location
@@ -19,10 +19,10 @@
 \newcommand{\ThesisDate}[2]{#1 #2}              % prints thesis submission date 
 
 \newcommand{\ThesisCopyright}[2]{               % prints the optional copyright statement
-\begin{textblock*}{\textwidth}(\GlobalMargin +\PrintingOffset,9in)
-    \copyright\ {#1} {#2} \\ All rights reserved
-\end{textblock*}
-\null
+	\begin{textblock*}{\textwidth}(\GlobalMargin +\PrintingOffset,9in)
+		\copyright\ {#1} {#2} \\ All rights reserved
+	\end{textblock*}
+	\null
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%% END TITLE PAGE MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,53 +33,53 @@
 %%%% UNNUMBERED CHAPTERS, SECTION, and SUBSECTION COMMAND for ADDING to TOC
 %% removes the 'Chapter #' title while keeping it listed in the TOC
 \newcommand\chap[1]{%
-    \chapter*{#1}%
-    \markboth{#1}{}
-    \addcontentsline{toc}{chapter}{#1}}
-  
+	\chapter*{#1}%
+	\markboth{#1}{}
+	\addcontentsline{toc}{chapter}{#1}}
+
 %% removes the 'Section #' title while keeping it listed in the TOC
 \newcommand\sect[1]{%
-    \phantomsection
-    \section*{#1}%
-    \addcontentsline{toc}{section}{#1}}
-  
+	\phantomsection
+	\section*{#1}%
+	\addcontentsline{toc}{section}{#1}}
+
 %% removes the 'Subsection #' title while keeping it listed in the TOC
 \newcommand\subsect[1]{%
-    \phantomsection
-    \subsection*{#1}%
-    \addcontentsline{toc}{subsection}{#1}}
+	\phantomsection
+	\subsection*{#1}%
+	\addcontentsline{toc}{subsection}{#1}}
 
 %% removes the 'Subsubsection #' title while keeping it listed in the TOC
 \newcommand\subsubsect[1]{%
-    \phantomsection
-    \subsubsection*{#1}%
-    \addcontentsline{toc}{subsubsection}{#1}}
+	\phantomsection
+	\subsubsection*{#1}%
+	\addcontentsline{toc}{subsubsection}{#1}}
 
 %%%% KEYWORDS for abstract
-\newcommand{\keywords}[1]{	
-    \textbf{Keywords:} {#1}
+\newcommand{\keywords}[1]{
+	\textbf{Keywords:} {#1}
 }
 
 %%%% TOCLOFT: modified macros/ commands for printing ToC, LoF, LoT
 \newcommand{\mytableofcontents}{
-    \clearpage
-    \renewcommand{\contentsname}{Table of Contents}
-    \tableofcontents
-    \clearpage
+	\clearpage
+	\renewcommand{\contentsname}{Table of Contents}
+	\tableofcontents
+	\clearpage
 }
 %
 \newcommand{\mylistoffigures}{
-    \clearpage \phantomsection
-    \addcontentsline{toc}{chapter}{List of Figures}
-    \listoffigures
-    \clearpage
+	\clearpage \phantomsection
+	\addcontentsline{toc}{chapter}{List of Figures}
+	\listoffigures
+	\clearpage
 }
 %
 \newcommand{\mylistoftables}{
-    \clearpage \phantomsection
-    \addcontentsline{toc}{chapter}{List of Tables}
-    \listoftables
-    \clearpage
+	\clearpage \phantomsection
+	\addcontentsline{toc}{chapter}{List of Tables}
+	\listoftables
+	\clearpage
 }
 
 %%%% IN-TEXT MACROS for own notes (you can define more)
@@ -87,3 +87,10 @@
 \newcommand{\ADDCITATION}{\COMMENT{(ADD CITATION)}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% END OTHER MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
+\newcommand{\mdssPrivThr}{\ensuremath{t_{\mathsf{priv}}}}
+\newcommand{\mdssMaxDealers}{d}
+\newcommand{\mdssMaxShares}{M}

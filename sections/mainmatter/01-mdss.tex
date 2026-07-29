@@ -1,3 +1,18 @@
 \chapter{Multi-Dealer Secret Sharing} \label{chap:mdss}
 
-Test citation \cite{DifHel76}. Look that's me!\cite{USENIX:EBGHJ24}
+In a secret sharing scheme \cite{Shamir79}, a dealer divides a secret into shares such that the secret remains hidden from anyone who holds an ``unauthorized'' set of shares, but can be recovered from any ``authorized'' set of shares.
+These properties are referred to as privacy and correctness, respectively.
+
+In this work, we consider a setting where {\em multiple} dealers may simultaneously distribute shares of their respective secrets.
+We put forth a notion of {\em multi-dealer secret sharing} (MDSS) that achieves {\em stronger} security and correctness properties in this setting.
+
+\section{Definition}\label{sec:mdss-definition}
+We study multi-dealer secret sharing for threshold access structures. Such a scheme is parameterized by four variables:
+
+\begin{itemize}
+	\item $\mdssRecThr$, the number of shares required to recover a secret.
+	\item $\mdssPrivThr$, the number of shares one can emit before privacy and unlinkability are broken.
+	\item $\mdssMaxDealers$, the number of sufficient dealers the scheme is able to tolerate.
+	\item  $\mdssMaxShares$, the maximum number of shares that can be input to the reconstruction algorithm.
+\end{itemize}
+
