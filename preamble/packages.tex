@@ -28,16 +28,16 @@
 
 %%%% BIBLIOGRAPHIC PACKAGE (change the style or other options if you need to)
 %% Nature style bibliography
-\usepackage[backend=biber, defernumbers=true, style=nature, maxnames=99,
-	date=year, isbn=false, url=false, doi=true]{biblatex}
+% \usepackage[backend=biber, defernumbers=true, style=nature, maxnames=99,
+% 	date=year, isbn=false, url=false, doi=true]{biblatex}
 
 %% APA style
 % \usepackage[backend=biber, defernumbers=true, style=apa, maxnames=99,
 %     isbn=false, url=false, doi=true]{biblatex}
 
 %% IEEE style
-% \usepackage[backend=biber,style=ieee,defernumbers=true,maxnames=99, 
-%     date=year, isbn=false, url=false, doi=true]{biblatex}
+\usepackage[backend=biber,style=ieee,defernumbers=true,maxnames=99,
+	date=year, isbn=false, url=false, doi=true]{biblatex}
 
 
 
@@ -122,6 +122,7 @@
 
 
 %%%% BIBLATEX: bibliography package settings
+\addbibresource{abbrev0.bib}
 \addbibresource{\BibFileName}           % name of the bib file 
 % \DeclareFieldFormat{titlecase}{\MakeSentenceCase*{#1}}
 \AtBeginBibliography{\urlstyle{rm}}     % roman font family for URL (DOI)
