@@ -1,0 +1,9 @@
+%%%% necessary customization for the appendix and headers
+\appendix
+\makeatletter
+\addtocontents{toc}{\protect\renewcommand\protect\cftchappresnum{\@chapapp\ }}
+\makeatother
+\renewcommand{\thechapter}{\Alph{chapter}}
+
+\chapter{Placeholder Appendix} \label{chap:appendix-placeholder}
+
