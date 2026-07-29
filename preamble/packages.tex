@@ -22,14 +22,14 @@
 
 %%%% package for micro-typography (you can define more settings)
 %% see details here: https://www.khirevich.com/latex/microtype/
-% \usepackage[activate={true,nocompatibility}]{microtype}
+\usepackage[activate={true,nocompatibility}]{microtype}
 
 
 
 %%%% BIBLIOGRAPHIC PACKAGE (change the style or other options if you need to)
 %% Nature style bibliography
 \usepackage[backend=biber, defernumbers=true, style=nature, maxnames=99,
-     date=year, isbn=false, url=false, doi=true]{biblatex}
+	date=year, isbn=false, url=false, doi=true]{biblatex}
 
 %% APA style
 % \usepackage[backend=biber, defernumbers=true, style=apa, maxnames=99,
@@ -88,16 +88,16 @@
 
 
 %%%% GEOMETRY PACKAGE: margin settings required by JH library 
-\geometry{letterpaper, margin=\GlobalMargin, bindingoffset=\PrintingOffset, 
-    nomarginpar, includehead, headheight=\HeaderHeight, 
-    headsep=\HeaderSpace, includefoot, heightrounded}
+\geometry{letterpaper, margin=\GlobalMargin, bindingoffset=\PrintingOffset,
+	nomarginpar, includehead, headheight=\HeaderHeight,
+	headsep=\HeaderSpace, includefoot, heightrounded}
 %% You can add the showframe option to see what the layout looks like
 
 
 %%%% HYPERREF PACKAGE
-\hypersetup{linktocpage, unicode, linktoc=all, colorlinks=true, 
-    citecolor=\HyperlinkColor, filecolor=\HyperlinkColor, 
-    linkcolor=\HyperlinkColor, urlcolor=\HyperlinkColor}
+\hypersetup{linktocpage, unicode, linktoc=all, colorlinks=true,
+	citecolor=\HyperlinkColor, filecolor=\HyperlinkColor,
+	linkcolor=\HyperlinkColor, urlcolor=\HyperlinkColor}
 \urlstyle{rm}           % removes default \texttt style for hyperlinks
 
 
@@ -105,19 +105,19 @@
 \makeatletter
 \let\Hy@org@makefntext\@makefntext
 \renewcommand\@makefntext[1]{%
-  \Hy@org@makefntext{%
-    \Hy@raisedlink{\hyper@anchorstart{Hfootnote.\the\c@Hfootnote}\hyper@anchorend}%
-    #1%
-  }%
+	\Hy@org@makefntext{%
+		\Hy@raisedlink{\hyper@anchorstart{Hfootnote.\the\c@Hfootnote}\hyper@anchorend}%
+		#1%
+	}%
 }
 \makeatother
 
 
 
 %%%% CAPTION PACKAGE
-\captionsetup{belowskip=\FigureToCaption, font=\CaptionFontSize, 
-    labelfont=\CaptionLabelFontType, labelsep=\CaptionSeparator,
-    font={stretch=\CaptionSpacing}, hypcap=true} 
+\captionsetup{belowskip=\FigureToCaption, font=\CaptionFontSize,
+	labelfont=\CaptionLabelFontType, labelsep=\CaptionSeparator,
+	font={stretch=\CaptionSpacing}, hypcap=true}
 
 
 %%%% BIBLATEX: bibliography package settings
@@ -130,25 +130,25 @@
 %% but the journal names are title case 
 \DeclareFieldFormat{sentencecase}{\MakeSentenceCase{#1}}
 \renewbibmacro*{title}{%
-  \ifthenelse{\iffieldundef{title}\AND\iffieldundef{subtitle}}
-    {}
-    {\ifthenelse{\ifentrytype{article}\OR\ifentrytype{inbook}%
-      \OR\ifentrytype{incollection}\OR\ifentrytype{inproceedings}%
-      \OR\ifentrytype{inreference}}
-      {\printtext[title]{%
-        \printfield[sentencecase]{title}%
-        \setunit{\subtitlepunct}%
-        \printfield[sentencecase]{subtitle}}}%
-      {\printtext[title]{%
-        \printfield[titlecase]{title}%
-        \setunit{\subtitlepunct}%
-        \printfield[titlecase]{subtitle}}}%
-     \newunit}%
-  \printfield{titleaddon}}
+	\ifthenelse{\iffieldundef{title}\AND\iffieldundef{subtitle}}
+	{}
+	{\ifthenelse{\ifentrytype{article}\OR\ifentrytype{inbook}%
+			\OR\ifentrytype{incollection}\OR\ifentrytype{inproceedings}%
+			\OR\ifentrytype{inreference}}
+		{\printtext[title]{%
+				\printfield[sentencecase]{title}%
+				\setunit{\subtitlepunct}%
+				\printfield[sentencecase]{subtitle}}}%
+		{\printtext[title]{%
+				\printfield[titlecase]{title}%
+				\setunit{\subtitlepunct}%
+				\printfield[titlecase]{subtitle}}}%
+		\newunit}%
+	\printfield{titleaddon}}
 
 
 %%%% separate category for papers not to be cited in the bibliography
-\DeclareBibliographyCategory{mypapers}             
+\DeclareBibliographyCategory{mypapers}
 \newcommand{\mybibexclude}[1]{\addtocategory{mypapers}{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% END PACKAGE OPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -11,3 +11,6 @@
 *.xml
 *.xdv
 *.xmpi
+*.lof
+*.lot
+*.toc
