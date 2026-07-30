@@ -49,11 +49,31 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 			\end{gathered}
 		}{
 			\adv(\mdssShareSet_1, \dots, \mdssShareSet_{\mdssNumShareSets}) = b
-		}
+		} \leq \frac{1}{2} + \mdssULVar(\secpar)
 	\end{equation*}
 	where $\adv$ is \emph{admissible} if it satitfies:
 	\begin{enumerate}
 		\item $\forall i \in [\mdssNumShareSets], \forall b \in \bin, |\indexSet_{i, b}| \leq \mdssPrivThr$
 		\item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
 	\end{enumerate}
+\end{definition}
+
+\begin{definition}[MD-Correctness]
+	We say that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssCVar$\emph{-correct} if for all $\secpar \in \NN$ and for all $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{[\mdssNumShareSets]}$ where the following hold:
+	\begin{itemize}
+		\item $\forall i \in [\mdssNumShareSets],\: \indexSet_i \subseteq [\mdssNumShares_i]$
+
+		\item $\sum_{i \in [\mdssNumShareSets]} |\indexSet_i| \leq \mdssMaxShares$
+		\item $|\set{\indexSet_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}| \leq \mdssMaxDealers$
+
+		\item $\bigcap_{i, j \in [\mdssNumShareSets],\: i \neq j} \indexSet_i \cap \indexSet_j = \emptyset$
+	\end{itemize}
+	it holds that:
+	\begin{equation*}
+		\probsublong{
+			\mdssShareSet := \bigcup_{i \in [\mdssNumShareSets]} \mdssProj(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)
+		}{
+			\mdssReconstructAlg(\mdssShareSet) \neq \set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}
+		} \leq \mdssCVar(\secpar)
+	\end{equation*}
 \end{definition}
