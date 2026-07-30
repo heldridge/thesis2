@@ -140,5 +140,33 @@ We begin by recalling the standard notion of privacy for secret sharing, which s
 We now show that unlinkability is strictly stronger than privacy.
 
 \begin{lemma}
-	placeholder
+	If a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssULVar$-unlinkable then it is $\mdssULVar$-private.
 \end{lemma}
+\begin{proof}
+	Consider an unlinkability adversary that outputs the following in the first step of the game:
+	$$
+		\set{(\mdssSecret_0, (\mdssNumShares, [\mdssNumShares]), (0, \emptyset)), (\mdssSecret_1, (0, \emptyset), (\mdssNumShares, [\mdssNumShares]))}
+	$$
+	Such an adversary must distinguish between $\mdssNumShares$ shares of $\mdssSecret_0$ and $\mdssNumShares$ of $\mdssSecret_1$, which corresponds exactly to the privacy game.
+	\hme{Change to full contrapositive proof}
+\end{proof}
+
+\begin{lemma}
+	Define the functions $\mdssULVar^{0}(\secpar) = 0$ and $\mdssULVar^*(\secpar) = \frac{1}{2} - 2^{-\secpar}$.
+	There exists a $\mdssULVar^0$-private secret sharing scheme that is not $\mdssULVar^*$-unlinkable.
+\end{lemma}
+
+\begin{proof}
+	We begin by showing how to transform any secret-sharing scheme into one that is not $\mdssULVar^*$-unlinkable.
+	Consider a secret-sharing scheme with sharing algorithm $\mdssShareAlg$ and share space $\mdssShareSpace$.
+	Next consider a secret-sharing scheme with the modified sharing algorithm $\mdssShareAlg'$ and share space $\mdssShareSpace \times \bin^{\secpar + 1}$.
+	\procedureblock{$\mdssShareAlg'(\secparam, \mdssNumShares, \mdssSecret)$}{
+		\set{\mdssShare{\mdssSecret}_0, \dots, \mdssShare{\mdssSecret}_{\mdssNumShares}} \gets \mdssShareAlg(\secparam, \mdssNumShares, \mdssSecret) \\
+		r \sample \bin^{\secpar + 1} \\
+		\pcreturn \set{(\mdssShare{\mdssSecret}_0, r), \dots, (\mdssShare{\mdssSecret}_{\mdssNumShares}, r)}
+	}
+
+	% Next, consider the following unlinkability adversary against the modified scheme:
+	% \procedureblock(\adv
+
+\end{proof}
