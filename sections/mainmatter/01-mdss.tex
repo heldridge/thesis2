@@ -38,3 +38,22 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 	\pcreturn \set{\mdssShare_i}_{i \in \indexSet}
 }
 
+\begin{definition}[Unlinkability]
+	We say that an MDSS scheme is $\mdssULVar$\emph{-unlinkable} if for all admissible NUPPT adversaries $\adv$ and all $\secpar \in \NN$:
+	\begin{equation*}
+		\probsublong{
+			\begin{gathered}
+				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]} \gets \adv(\secparam) \\
+				b \sample \bin \\
+				\forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})
+			\end{gathered}
+		}{
+			\adv(\mdssShareSet_1, \dots, \mdssShareSet_{\mdssNumShareSets}) = b
+		}
+	\end{equation*}
+	where $\adv$ is \emph{admissible} if it satitfies:
+	\begin{enumerate}
+		\item $\forall i \in [\mdssNumShareSets], \forall b \in \bin, |\indexSet_{i, b}| \leq \mdssPrivThr$
+		\item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
+	\end{enumerate}
+\end{definition}
