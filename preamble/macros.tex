@@ -90,11 +90,18 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% LOCAL MACROS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Variables should in general follow this guide:
+% - Single value            -> lowercase letter
+% - Specific set of values  -> uppercase letter
+% - Domain of values        -> uppercase mathcal letter
+% - "Closeness" function    -> lowercase Greek letter
+% - Algorithm               -> mathsf word
+
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
 \newcommand{\mdssPrivThr}{\ensuremath{t_{\mathsf{priv}}}}
 \newcommand{\mdssMaxDealers}{\ensuremath{d}}
-\newcommand{\mdssMaxShares}{\ensuremath{M}}
+\newcommand{\mdssMaxShares}{\ensuremath{m}}
 \newcommand{\mdssSecretSpace}{\ensuremath{\mathcal{S}}}
 \newcommand{\mdssShareSpace}{\ensuremath{\mathcal{H}}}
 \newcommand{\mdssShareAlg}{\ensuremath{\mathsf{Share}}}
@@ -107,8 +114,8 @@
 \newcommand{\mdssProj}{\ensuremath{\mathsf{Proj}}}
 \newcommand{\mdssULVar}{\ensuremath{\epsilon}}
 \newcommand{\mdssCVar}{\ensuremath{\delta}}
-\newcommand{\mdssShareSet}{\ensuremath{\mathbf{sh}}}
-\newcommand{\mdssNumShareSets}{\ensuremath{L}}
+\newcommand{\mdssShareSet}{\ensuremath{S}}
+\newcommand{\mdssNumShareSets}{\ensuremath{h}}
 
 
 
