@@ -97,6 +97,9 @@
 % - "Closeness" function    -> lowercase Greek letter
 % - Algorithm               -> mathsf word
 
+% Comments
+\newcommand{\hme}[1]{\textcolor{red}{HME: #1}}
+
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
 \newcommand{\mdssPrivThr}{\ensuremath{t_{\mathsf{priv}}}}
@@ -107,7 +110,7 @@
 \newcommand{\mdssShareAlg}{\ensuremath{\mathsf{Share}}}
 \newcommand{\mdssSecret}{\ensuremath{s}}
 \newcommand{\mdssNumShares}{\ensuremath{n}}
-\newcommand{\mdssShare}{\ensuremath{\langle \mdssSecret \rangle}}
+\newcommand{\mdssShare}[1]{\ensuremath{\langle #1 \rangle}}
 \newcommand{\mdssReconstructAlg}{\ensuremath{\mathsf{Reconstruct}}}
 \newcommand{\mdssWindowSize}{\ensuremath{w}}
 \newcommand{\indexSet}{\ensuremath{I}}
@@ -123,3 +126,6 @@
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+
+\theoremstyle{plain}
+\newtheorem{lemma}{Lemma}[section]
