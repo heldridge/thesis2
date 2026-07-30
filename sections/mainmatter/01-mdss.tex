@@ -22,4 +22,11 @@ We now formally define multi-dealer secret sharing.
 \begin{definition}[Multi-Dealer Secret Sharing]
 	A $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-multi-dealer secre sharing scheme (MDSS) with security parameter $\secpar$ is parameterized by $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$, each of which is an integer polynomial in $\secpar$, and is defined over a secret space $\mdssSecretSpace$ and a share space $\mdssShareSpace$.
 
+	An MDSS scheme consists of the following algorithms, which are expected to run in time polynomial in $\secpar$.
+
+	\begin{itemize}
+		\item $\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares) \rightarrow \set{\mdssShare_i}_{i \in [\mdssNumShares]}$, takes as input a secret $\mdssSecret \in \mdssSecretSpace$ and an integer $\mdssNumShares$ and outputs a set of shares $\set{\mdssShare_i}$ where each $\mdssShare_i \in \mdssShareSpace$.
+		\item $\mdssReconstructAlg(\mdssShare_1, \dots, \mdssShare_{\mdssWindowSize}) =: \set{\mdssShare_i}$, takes as input shares $\mdssShare_1$, \dots, $\mdssShare_{\mdssWindowSize}$ where $\mdssWindowSize \leq \mdssMaxShares$ and outputs a (potentially empty) set of secrets.
+	\end{itemize}
+
 \end{definition}
