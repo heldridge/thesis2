@@ -58,6 +58,25 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 	\end{enumerate}
 \end{definition}
 
+While the above unlinkability definition is powerful, it is also somewhat cumbersome.
+We therefore define a simpler definition for which it will be easier to prove that a scheme satisfies, and then show that the two definitions are in fact equivalent.
+
+\begin{definition}[One-More Unlinkability]
+	We say that an MDSS scheme is $\mdssULVar$\emph{-one-more-unlinkable} if for all admissible NUPPT adversaries $\adv$ and for all $\secpar \in \NN$:
+	\begin{equation*}
+		\probsublong{
+			\begin{gathered}
+				(\mdssSecret_0, \mdssSecret_1, \mdssNumShares_0, \mdssNumShares_1, \indexSet, i) \gets \adv(\secparam) \\
+				\set{\mdssShare_1, \dots, \mdssShare_{\mdssNumShares_0}} \gets \mdssProj(\mdssSecret_0, \mdssNumShares_0, \indexSet)\\
+				\set{\mdssShare^*} \gets \mdssProj(\mdssSecret_1, \mdssNumShares_1, i) \\
+				\text{If } b = 1, \mdssShare_{\mdssNumShares_0} := \mdssShare^*
+			\end{gathered}
+		}{
+			\adv(\mdssShare_1, \dots, \mdssShare_{\mdssNumShares_0}) = b
+		} \leq \frac{1}{2} + \mdssULVar(\secpar)
+	\end{equation*}
+\end{definition}
+
 \begin{definition}[MD-Correctness]
 	We say that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssCVar$\emph{-correct} if for all $\secpar \in \NN$ and for all $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{[\mdssNumShareSets]}$ where the following hold:
 	\begin{itemize}
