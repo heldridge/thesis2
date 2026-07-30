@@ -28,5 +28,13 @@ We now formally define multi-dealer secret sharing.
 		\item $\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares) \rightarrow \set{\mdssShare_i}_{i \in [\mdssNumShares]}$, takes as input a secret $\mdssSecret \in \mdssSecretSpace$ and an integer $\mdssNumShares$ and outputs a set of shares $\set{\mdssShare_i}$ where each $\mdssShare_i \in \mdssShareSpace$.
 		\item $\mdssReconstructAlg(\mdssShare_1, \dots, \mdssShare_{\mdssWindowSize}) =: \set{\mdssShare_i}$, takes as input shares $\mdssShare_1$, \dots, $\mdssShare_{\mdssWindowSize}$ where $\mdssWindowSize \leq \mdssMaxShares$ and outputs a (potentially empty) set of secrets.
 	\end{itemize}
-
 \end{definition}
+
+We now define some notational shorthand.
+For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique indices $\indexSet \subseteq [\mdssNumShares]$, define the algorithm $\mdssProj(\mdssSecret, \mdssNumShares, \indexSet)$ as follows:
+
+\procedureblock{$\mdssProj(\mdssSecret, \mdssNumShares, \indexSet)$}{
+	\set{\mdssShare_1, \dots, \mdssShare_{\mdssNumShares}} \gets \mdssShareAlg(\mdssSecret, \mdssNumShares) \\
+	\pcreturn \set{\mdssShare_i}_{i \in \indexSet}
+}
+
