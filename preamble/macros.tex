@@ -101,7 +101,9 @@
 \newcommand{\hme}[1]{\textcolor{red}{HME: #1}}
 
 % General
-% \newcommand{\st}{\ensuremath{\mathsf{st}}}
+\newcommand{\hyb}{\mathcal{H}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\game}{\mathsf{Game}}
 
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
@@ -123,6 +125,10 @@
 \newcommand{\mdssShareSet}{\ensuremath{S}}
 \newcommand{\mdssNumShareSets}{\ensuremath{h}}
 \newcommand{\mdssBlindShare}{\ensuremath{\mathbf{sh}}}
+\newcommand{\mdssRelBatch}{x} % Relevant Batch
+\newcommand{\mdssLIBRB}{y} % Last Index Before Relevant Batch
+\newcommand{\mdssIWRB}{z} % Index Within Relevant Batch
+\newcommand{\mdssSampleShare}{\ensuremath{\mathsf{SampleShare}}}
 
 
 
@@ -133,3 +139,5 @@
 
 \theoremstyle{plain}
 \newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{claim}{Claim}[section]
