@@ -74,8 +74,7 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 		\item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
 	\end{enumerate}
 \end{definition}
-We refer to the above probability as the \emph{advantage} of $\adv$, and denote it by $\advantage{U}{\adv, \mathsf{MDSS}}$.
-\hme{TODO: have a variable that denotes an MDSS scheme itself.}
+We refer $\mdssULVar(\secpar)$ as the \emph{advantage} of $\adv$, and denote it by $\mdssUAdv$.
 
 While the above unlinkability definition is powerful, it is also somewhat cumbersome.
 We therefore define a simpler definition for which it will be easier to prove that a scheme satisfies, and then show that the two definitions are in fact equivalent.
@@ -98,7 +97,7 @@ We therefore define a simpler definition for which it will be easier to prove th
 	\end{equation*}
 \end{definition}
 where $\adv$ is \emph{admissible} if it is the case that $|\indexSet| \leq \mdssPrivThr$.
-We refer to the above probability as the \emph{advantage} of $\adv$, and denote it by $\advantage{OMU}{\adv, \mathsf{MDSS}}$.
+We refer to $\mdssULVar(\secpar)$ as the \emph{advantage} of $\adv$, and denote it by $\mdssOMUAdv$.
 
 \begin{definition}[MD-Correctness]
 	We say that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssCVar$\emph{-correct} if for all $\secpar \in \NN$ and for all $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{[\mdssNumShareSets]}$ where the following hold:
@@ -237,8 +236,7 @@ Therefore, we only prove the relationship in the other direction.
 				\forall k \in [\mdssIWRB + 1, \mdssNumShares_{\mdssRelBatch, b}]: \mdssBlindShare_k \gets \mdssSampleShare(\secparam) \\
 				\mdssShareSet_j := \set{\mdssBlindShare_k}_{k \in [\mdssNumShares_{\mdssRelBatch, b}]} \\
 				b' \gets \adv_2(\st, \set{\mdssShareSet_i}_{i \in [\mdssNumShareSets]}) \\
-				\pcif b' = b \pcthen \pcreturn 0 \\
-				\pcelse \pcreturn 1
+				\pcreturn b'
 			}
 		\end{pcvstack}
 		$\bdv^j$ invokes $\adv$, flips its own bit $b$, and then simulates all shares that do not correspond to the relevant batch $\mdssRelBatch$.
@@ -247,8 +245,8 @@ Therefore, we only prove the relationship in the other direction.
 
 		We can now analyze $\bdv^j$'s advantage.
 		\begin{align*}
-			\advantage{omu}{\bdv, \mathsf{MDSS}} & = \prob{b' = b} \\
-			                                     & =
+			\mdssOMUAdv & = \prob{b' = b} \\
+			            & =
 		\end{align*}
 
 
