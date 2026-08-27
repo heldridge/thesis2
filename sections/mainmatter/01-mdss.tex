@@ -19,7 +19,9 @@ We will show that the two definitions are equivalent, and therefore that one can
 
 
 \subsection{MD-Correctness}
-\hme{Complete}
+Our correctness definition differs from standard secret sharing in that we must reconstruct secrets given a set of shares from \emph{multiple} dealers. This set may include shares from both sufficient dealers (i.e. those outputting at least $\mdssRecThr$ shares) and \emph{insufficient} dealers (i.e. those outputting fewer than $\mdssRecThr$ shares).
+We require that $\mdssReconstructAlg$ outputs exactly the set of secrets shared by the sufficient dealers, except with some failure probability $\mdssCVar$.
+Similar to standard secret sharing, we only consider correctness for honestly generated (i.e. via the $\mdssShareAlg$ algorithm) sets of shares.
 
 \section{Definition}\label{sec:mdss-definition}
 We study multi-dealer secret sharing for threshold access structures. Such a scheme is parameterized by four variables:
@@ -165,7 +167,6 @@ We now show that unlinkability is strictly stronger than privacy.
 
 \begin{lemma}
 	Define the function $\mdssULVar^*(\secpar) = \frac{1}{2} - 2^{-\secpar}$.
-	% There exists a $\mdssULVar^0$-private secret sharing scheme that is not $\mdssULVar^*$-unlinkable.
 	For any $\mdssULVar$-private secret sharing scheme there exists a scheme that is $\mdssULVar$-private and \emph{not} $\mdssULVar^*$-unlinkable.
 \end{lemma}
 
