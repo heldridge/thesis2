@@ -1,0 +1,214 @@
+We prove here that unlinkability is a strictly stronger requirement than traditional secret-sharing privacy, as well as that unlinkability and one-more unlinkability are equivalent.
+
+\subsection{Unlinkability vs. Privacy}
+We begin by recalling the standard notion of privacy for secret sharing, which states that any unauthorized set of shares hides the secret.
+
+\begin{definition}[Privacy]
+	We way that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme with secret space $\mdssSecretSpace$ is $\mdssULVar$\emph{-private} if for any $s_0, s_1 \in \mdssSecretSpace$ and any $\mdssNumShares \in \ZZ$ where $\mdssNumShares \leq \mdssPrivThr$ it holds that:
+	\begin{equation*}
+		\probsublong{
+			\begin{gathered}
+				\mdssShareSet_0 \gets \mdssShareAlg(\secparam, \mdssNumShares, \mdssSecret_0) \\
+				\mdssShareSet_1 \gets \mdssShareAlg(\secparam, \mdssNumShares, \mdssSecret_1)
+			\end{gathered}
+		} {
+			\adv(S_b) = b
+		} \leq \frac{1}{2} + \mdssULVar(\secpar)
+	\end{equation*}
+\end{definition}
+
+We now show that unlinkability is strictly stronger than privacy.
+
+\begin{lemma}
+	If a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssULVar$-unlinkable then it is $\mdssULVar$-private.
+\end{lemma}
+\begin{proof}
+	Consider an unlinkability adversary that outputs the following in the first step of the game:
+	$$
+		\set{(\mdssSecret_0, (\mdssNumShares, [\mdssNumShares]), (0, \emptyset)), (\mdssSecret_1, (0, \emptyset), (\mdssNumShares, [\mdssNumShares]))}
+	$$
+	Such an adversary must distinguish between $\mdssNumShares$ shares of $\mdssSecret_0$ and $\mdssNumShares$ of $\mdssSecret_1$, which corresponds exactly to the privacy game.
+	\hme{Change to full contrapositive proof}
+\end{proof}
+
+\begin{lemma}
+	Define the function $\mdssULVar^*(\secpar) = \frac{1}{2} - 2^{-\secpar}$.
+	For any $\mdssULVar$-private secret sharing scheme there exists a scheme that is $\mdssULVar$-private and \emph{not} $\mdssULVar^*$-unlinkable.
+\end{lemma}
+
+\begin{proof}
+	Consider a secret-sharing scheme with sharing algorithm $\mdssShareAlg$ and share space $\mdssShareSpace$.
+	Next consider a secret-sharing scheme with the modified sharing algorithm $\mdssShareAlg'$ and share space $\mdssShareSpace \times \bin^{\secpar}$.
+	\procedureblock{$\mdssShareAlg'(\secparam, \mdssNumShares, \mdssSecret)$}{
+		\set{\mdssShare{\mdssSecret}_0, \dots, \mdssShare{\mdssSecret}_{\mdssNumShares}} \gets \mdssShareAlg(\secparam, \mdssNumShares, \mdssSecret) \\
+		r \sample \bin^{\secpar} \\
+		\pcreturn \set{(\mdssShare{\mdssSecret}_0, r), \dots, (\mdssShare{\mdssSecret}_{\mdssNumShares}, r)}
+	}
+
+	Clearly the scheme remains $\mdssULVar^*$-private as the $r$ values contain no information about $s$.
+
+	Next, consider the following one-more unlinkability adversary $\adv = (\adv_1, \adv_2)$
+	\begin{pchstack}[center, space=1em]
+		\procedure{$\adv_1(\secparam)$}{
+			\pcreturn (s_0, s_1, 2, 1, \set{1}, \set{1}), \bot
+		}
+
+		\procedure{$\adv_2(\st, (\mdssBlindShare_0, r_0), (\mdssBlindShare_1, r_1))$}{
+			\pcif r_0 = r_1 \pcthen \pcreturn 0 \\
+			\pcelse \pcreturn 1
+		}
+	\end{pchstack}
+	Clearly, $\adv$ only loses the one-more unlinkability game when $b = 1$ and $r_0 = r_1$.
+	This happens with probability $2^{-(\secpar + 1)}$, and so the scheme is not $\frac{1}{2} - 2^{-\secpar}$ unlinkable.
+\end{proof}
+
+\subsection{Unlinkability vs. One-More Unlinkability}
+
+We show here that unlinkability and one-more unlinkability are equivalent definitions.
+
+We begin by showing that unlinkability implies one-more unlinkability.
+\begin{theorem}
+	If a MDSS scheme satisfies $\mdssULVar$-unlinkability then it satisfies $\mdssULVar$-one-more unlinkability.
+\end{theorem}
+
+\begin{proof}
+	Let $\adv$ be a one-more unlinkability adversary.
+	Consider the following unlinkability adversary $\bdv$:
+	\begin{pcvstack}[center, space=1em]
+		\procedure{$\bdv_1(\secparam)$}{
+			(\mdssSecret_0, \mdssSecret_1, \mdssNumShares_0, \mdssNumShares_1, \indexSet, i), \st \gets \adv_1 \\
+			\pcreturn \set{
+				(\mdssSecret_0, (\mdssNumShares_0, \indexSet), (\mdssNumShares_0, \indexSet[:-1])),
+				(\mdssSecret_1, (0, \emptyset), (\mdssNumShares_1, \set{i}))
+			}, \st
+		}
+
+		\procedure{$\bdv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares_0} )$}{
+			\pcreturn \adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares_0})
+		}
+	\end{pcvstack}
+
+	$\bdv$ is admissible as:
+	\begin{enumerate}
+		\item By the admissibility of $\adv$, $|\indexSet| \leq \mdssPrivThr$.
+		\item $|\indexSet| + |\emptyset| = \left|\indexSet\right| = (|\indexSet| - 1) + |\set{i}|$.
+	\end{enumerate}
+
+	We can now analyze $\bdv$'s advantage.
+	Note that when $b = 0$, $\adv$'s view is exactly equivalent to its view when $b = 0$ in the one-more unlinkability game: $\indexSet$ shares of $\mdssSecret_0$.
+	Similarly, when $b = 1$, $\adv$'s view is exactly equivalent to its view when $b = 1$ in the unlinkability game: $\indexSet[-1]$ shares of $\mdssSecret_1$ followed by share $i$ of $\mdssSecret_1$.
+
+	We therefore have that $\mdssOMUAdv = \mdssUBdv \leq \mdssULVar(\secpar)$, which completes the proof.
+\end{proof}
+
+
+We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkability.
+\begin{theorem}
+	If a MDSS scheme satisfies $\mdssULVar$-one-more unlinkability, where $\mdssULVar$ is a negligible function, then it satisfies $\mdssULVar'$-unlinkability, where $\mdssULVar'$ is a negligible function.
+\end{theorem}
+
+\begin{proof}
+
+	Recall that the adversary $\adv$ queries on $\set{(\mdssSecret_i, (\mdssNumShares_{i, 0},\indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}$.
+	Let $q(\secpar) = \sum_i |\indexSet_{i, 0}| = \sum_i |\indexSet_{i, 1}|$.
+	Additionally, for an index set $\indexSet$ let $\indexSet[\mdssIWRB]$ denote the $\indexSet' \subseteq \indexSet$, where $\indexSet'$ contains the first $\mdssIWRB$ elements of $\indexSet$.
+
+
+	We now consider a sequence of hybrids.
+	Let $\hyb_j$ denote a game equivalent to $\mdssULGame{0}{\adv}$, except the shares at indices $\set{q(\secpar) - j + 1, q(\secpar) - j + 2, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(s, 1)$, where $s$ is sampled uniformly from $\mdssShareSpace$.
+	Note that $\hyb_0$ is exactly the same as $\mdssULGame{0}{\adv}$, as the interval $\set{q(\secpar) + 1, \dots, q(\secpar)}$ is empty.
+	Let $\mdssULGame{\hyb_j}{\adv}$ denote the output of $\mdssULGame{}{}$ with changes from $\hyb_j$ against $\adv$.
+
+	\begin{claim}
+		For all $j \in \set{0, 1, \dots, q(\secpar) - 1}$, for all admissible adversaries $\adv$, $\exists$ a negligible function $\negl[]$ such that $\left| \prob{\mdssULGame{\hyb_j}{\adv} = 1} - \prob{\mdssULGame{\hyb_{j + 1}}{\adv} = 1} \right| \leq \negl$.
+	\end{claim}
+
+	\begin{proof}
+		For $\hyb_j$ we define the following notation.
+		\begin{itemize}
+			\item Let $\mdssRelBatch$ be the smallest integer such that $\sum_{i \in [\mdssRelBatch]} |\indexSet_i| \geq j$. In other words, $\mdssProj(\mdssSecret, \mdssNumShares_{\mdssRelBatch, b}, \indexSet_{\mdssRelBatch, b})$ is the ``batch'' in which the share $\mdssBlindShare_j$ appears.
+			\item Let $\mdssLIBRB = \sum_{i \in [\mdssRelBatch - 1]} |\indexSet_i|$, i.e.\ the last index before the relevant batch.
+			\item Let $\mdssIWRB = j - \mdssLIBRB$, i.e.\ the index within the relevant batch at which $\mdssBlindShare_j$ appears.
+			\item Define the function $\mdssSampleShare(\secparam)$ as one that samples $\mdssSecret \sample \mdssSecretSpace$ and returns $\mdssShareAlg(\secparam, \mdssSecret, 1)$.
+			      Similarly, define $\mdssSampleShare^w(\secparam)$ to be the function that computes $\mdssBlindShare_i \gets \mdssSampleShare(\secparam)$ for $i \in [w]$ and outputs $\set{\mdssBlindShare_i}_{i \in [w]}$.
+		\end{itemize}
+
+		Now consider the following one-more unlinkability adversary $\bdv^j$
+		\begin{pcvstack}[center, space=1em]
+			\procedure{$\bdv^j_1(\secparam)$}{
+				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0},\indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
+				% b \sample \bin \\
+				\forall i \in [\mdssRelBatch - 1]: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, 0}, \indexSet_{i, 0}) \\
+				\forall i \in [\mdssRelBatch + 1, \mdssNumShareSets]: \mdssShareSet_i \gets \mdssSampleShare^{\mdssNumShares_{i, 0}}(\secparam) \\
+				\mdssSecret' \sample \mdssSecretSpace \\
+				\pcreturn (\mdssSecret_j, \mdssSecret', \mdssNumShares_{\mdssRelBatch, 0}, 1, \indexSet_{\mdssRelBatch, 0}[\mdssIWRB], 1), (\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch+1, \mdssNumShareSets]})
+			}
+
+			\procedure{$\bdv_2^j((\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch+1, \mdssNumShareSets]}), \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssIWRB})$}{
+				\forall k \in [\mdssIWRB + 1, \mdssNumShares_{\mdssRelBatch, 0}]: \mdssBlindShare_k \gets \mdssSampleShare(\secparam) \\
+				\mdssShareSet_\mdssRelBatch := \set{\mdssBlindShare_k}_{k \in [\mdssNumShares_{\mdssRelBatch, 0}]} \\
+				b' \gets \adv_2(\st, \mdssFlatten(\mdssShareSet_1,\dots, \mdssShareSet_\mdssNumShareSets)) \\
+				\pcreturn b'
+			}
+		\end{pcvstack}
+		$\bdv^j$ invokes $\adv$ and simulates on its own all shares that do not correspond to the relevant batch $\mdssRelBatch$.
+		$\bdv^j$ then receives $\mdssIWRB$ shares of the relevant batch (the last one of which may have been replaced with a random share), and simulates the remaining shares.
+		$\bdv^j$ then invokes $\adv$ on the flattened share sets and outputs what $\adv$ outputs.
+
+		We can now analyze $\bdv^j$'s advantage. We have that:
+		\begin{align*}
+			\left| \prob{\mdssOMULGame{0}{\bdv} = 1} - \prob{\mdssOMULGame{1}{\bdv} = 1} \right| & =
+			\left| \prob{\mdssULGame{\hyb_i}{\adv} =1} - \prob{\mdssULGame{\hyb_{i + 1}}{\adv} = 1} \right|
+		\end{align*}
+		by construction.
+
+		Finally, as the scheme satisfies $\negl[]$-one-more unlinkability, we have that there exists a negligible function $\negl[]$ such that
+		$\left| \prob{\mdssULGame{\hyb_i}{\adv} =1} - \prob{\mdssULGame{\hyb_{i + 1}}{\adv} = 1} \right| \leq \negl$.
+	\end{proof}
+
+	We now consider another sequence of hybrids.
+	Let hybrid $\hyb_j^*$ denote a game identical $\mdssULGame{1}{\adv}$ except the shares at indices $\set{j, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(\mdssSecret, 1)$, where $\mdssSecret$ is sampled uniformly from $\mdssSecretSpace$.
+	Note that $\hyb_1^*$ is exactly the same as $\hyb_{q(\secpar)}$, and $\hyb_{q(\secpar) + 1}^*$ is exactly the same as $\mdssULGame{1}{\adv}$.
+
+	\begin{claim}
+		For all $j \in \set{1, 2, \dots, q(\secpar)}$, for all admissible adversaries $\adv$, $\exists$ a negligible function $\negl[]$ such that $\left| \prob{\mdssULGame{\hyb^*_j}{\adv} = 1} - \prob{\mdssULGame{\hyb_{j+1}^*}{\adv} = 1} \right| \leq \negl$.
+	\end{claim}
+
+	\begin{proof}
+
+		Consider the following one-more unlinkability adversary $\bdv^{j*}$
+		\begin{pcvstack}[center, space=1em]
+			\procedure{$\bdv^{j*}_1(\secparam)$}{
+				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0},\indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
+				% b \sample \bin \\
+				\forall i \in [\mdssRelBatch - 1]: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, 1}, \indexSet_{i, 1}) \\
+				\forall i \in [\mdssRelBatch + 1, \mdssNumShareSets]: \mdssShareSet_i \gets \mdssSampleShare^{\mdssNumShares_{i, 1}}(\secparam) \\
+				\mdssSecret' \sample \mdssSecretSpace \\
+				\pcreturn (\mdssSecret_j, \mdssSecret', \mdssNumShares_{\mdssRelBatch, 1}, 1, \indexSet_{\mdssRelBatch, 1}[\mdssIWRB], 1), (\st, \mdssNumShares_{\mdssRelBatch, 1}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [x+1, \mdssNumShareSets]})
+			}
+
+			\procedure{$\bdv_2^{j*}((\st, \mdssNumShares_{\mdssRelBatch, 1}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [x+1, \mdssNumShareSets]}), \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssIWRB})$}{
+				\forall k \in [\mdssIWRB + 1, \mdssNumShares_{\mdssRelBatch, 1}]: \mdssBlindShare_k \gets \mdssSampleShare(\secparam) \\
+				\mdssShareSet_x := \set{\mdssBlindShare_k}_{k \in [\mdssNumShares_{\mdssRelBatch, 1}]} \\
+				b' \gets \adv_2(\st, \set{\mdssShareSet_i}_{i \in [\mdssNumShareSets]}) \\
+				\pcreturn b'
+			}
+		\end{pcvstack}
+		$\bdv^{j*}$ is identical to $\bdv^j$ with the exception that it simulates shares according to $b = 1$.
+
+		We can now analyze $\bdv^{j*}$'s advantage.
+		We have that:
+		\begin{align*}
+			\left| \prob{\mdssOMULGame{0}{\bdv^{j*} = 1}} - \prob{\mdssOMULGame{1}{\bdv^{j*}} = 1} \right| & =
+			\left| \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i}}{\adv} = 1} \right|                                                                                                    \\
+			                                                                                               & = \left| \prob{\mdssULGame{\hyb^*_{i}}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} = 1} \right| \\
+		\end{align*}
+		Finally, as the scheme satisfies $\negl[]$-one-more unlinkability, we have that there exists a negligible function $\negl[]$ such that
+		$\left| \prob{\mdssULGame{\hyb^*_i}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} = 1} \right| \leq \negl$.
+
+	\end{proof}
+
+	We can then conclude the proof by noting that $q(\secpar) \in \poly$ by assumption, and thus the sequence of hybrids is polynomial in length.
+\end{proof}
+
+

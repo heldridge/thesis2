@@ -1,0 +1,21 @@
+In a secret sharing scheme \cite{Shamir79}, a dealer divides a secret into shares such that the secret remains hidden from anyone who holds an ``unauthorized'' set of shares, but can be recovered from any ``authorized'' set of shares.
+These properties are referred to as privacy and correctness, respectively.
+
+In this work, we consider a setting where {\em multiple} dealers may simultaneously distribute shares of their respective secrets.
+We put forth a notion of {\em multi-dealer secret sharing} (MDSS) that achieves {\em stronger} security and correctness properties in this setting.
+
+We name our security and correctness properties \emph{unlinkability} and \emph{multi-dealer} (MD) \emph{correctness} respectively, and give intuitive descriptions of them here.
+We formally define an MDSS scheme and these properties in the following section.
+
+\subsection{Unlinkability}
+We propose a new security property for secret sharing that is stronger than the standard notion of privacy.
+Intuitively, this property requires that given a set of shares from multiple dealers, an adversary cannot associate (i.e., link) any unauthorized subset of shares to a common dealer.
+
+We present two definitions: unlinkability and one-more unlinkability. The first intuitively matches the  guarantee we would like to achieve, while the second is simpler and easier to use.
+We will show that the two definitions are equivalent, and therefore that one can use the second without loss of generality.
+
+
+\subsection{MD-Correctness}
+Our correctness definition differs from standard secret sharing in that we must reconstruct secrets given a set of shares from \emph{multiple} dealers. This set may include shares from both sufficient dealers (i.e. those that output enough shares that their secret should be recovered) and \emph{insufficient} dealers (i.e. those that do not).
+We require that the reconstruction algorithm outputs exactly the set of secrets shared by the sufficient dealers, except with some failure probability $\mdssCVar$.
+Similar to standard secret sharing, we only consider correctness for honestly generated (i.e. via the sharing algorithm) sets of shares.
