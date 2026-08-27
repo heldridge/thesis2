@@ -371,4 +371,35 @@ As long as an RS decoder exists which can recover from a fraction of $1 - \frac{
 
 This, however, is not an easy condition to satisfy for a large numbers of dealers; as one example, for any non-trivial scheme with $\mdssMaxDealers > 1$, we cannot use a unique decoding algorithm.
 Nevertheless, our problem setting can be mapped onto that of list-decoding, which can tolerate higher error (in the ramp setting) and support recovery of multiple polynomials (with enough evaluations).
-A well-known list-decoding algorithm for Reed-Solomon codes is the one devised by Guruswami and Sudan (GS) ~\cite{FOCS:GurSud98}, and indeed we can use their algorithm as the principal component of $\mdssReconstructAlg$ to produce a provably correct scheme.
+A well-known list-decoding algorithm for Reed-Solomon codes is the one devised by Guruswami and Sudan (GS) ~\cite{FOCS:GurSud98}, and indeed we can use their algorithm as the principal component of $\mdssReconstructAlg$ to produce a scheme that we describe below.
+First, however, we must state what is guaranteed by the GS decoder.
+
+\begin{theorem}[Due to \cite{FOCS:GurSud98}]
+	Let $\FF$ be a finite field.
+	Let $\mdssPrivThr$, $\mdssRecThr$, $\mdssWindowSize$ be positive integers such that $\mdssRecThr > \sqrt{\mdssPrivThr\mdssWindowSize}$.
+	Then there exists an algorithm $\gsDecode(\mdssPrivThr, \mdssRecThr, \set{(x_i, y_i)}_{i\in[\mdssWindowSize]})$ where for all $i$: $x_i, y_i \in \FF$, that outputs all univariate polynomials $p$ of degree at most $\mdssPrivThr$ such that $y_i = p(x_i)$ for at least $\mdssRecThr$ values of $i \in [\mdssWindowSize]$.
+\end{theorem}
+
+We can now formally describe our GS-based construction.
+\begin{pcvstack}[boxed, center, space=1em]
+	\procedure[linenumbering]{$\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares)$}{
+		\text{Sample a polynomial } p \text{ of degree } \mdssPrivThr \text{ where } \mdssSecret = p(0) \\
+		\text{Sample } \mdssNumShares \text{ field elements } x_1, \dots, x_\mdssNumShares \sample \FF \\
+		\pcreturn \set{(x_i, p(x_i))}_{i \in [\mdssNumShares]}
+	}
+
+	\procedure[linenumbering]{$\mdssReconstructAlg(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})$}{
+		p_1,\dots,p_{\mdssNumShareSets} \gets \gsDecode(\mdssPrivThr, \mdssRecThr, \set{\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize}}) \\
+		\pcreturn \set{p_1(0), \dots, p_{\mdssNumShareSets}(0)}
+	}
+\end{pcvstack}
+
+\subsection{Proofs}
+
+\begin{theorem}
+	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| \approx \secpar^{\omega(1)}$, \hme{ref construction} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
+\end{theorem}
+
+\begin{proof}
+	asdf
+\end{proof}
