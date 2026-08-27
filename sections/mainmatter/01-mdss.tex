@@ -19,9 +19,9 @@ We will show that the two definitions are equivalent, and therefore that one can
 
 
 \subsection{MD-Correctness}
-Our correctness definition differs from standard secret sharing in that we must reconstruct secrets given a set of shares from \emph{multiple} dealers. This set may include shares from both sufficient dealers (i.e. those outputting at least $\mdssRecThr$ shares) and \emph{insufficient} dealers (i.e. those outputting fewer than $\mdssRecThr$ shares).
-We require that $\mdssReconstructAlg$ outputs exactly the set of secrets shared by the sufficient dealers, except with some failure probability $\mdssCVar$.
-Similar to standard secret sharing, we only consider correctness for honestly generated (i.e. via the $\mdssShareAlg$ algorithm) sets of shares.
+Our correctness definition differs from standard secret sharing in that we must reconstruct secrets given a set of shares from \emph{multiple} dealers. This set may include shares from both sufficient dealers (i.e. those that output enough shares that their secret should be recovered) and \emph{insufficient} dealers (i.e. those that do not).
+We require that the reconstruction algorithm outputs exactly the set of secrets shared by the sufficient dealers, except with some failure probability $\mdssCVar$.
+Similar to standard secret sharing, we only consider correctness for honestly generated (i.e. via the sharing algorithm) sets of shares.
 
 \section{Definition}\label{sec:mdss-definition}
 We study multi-dealer secret sharing for threshold access structures. Such a scheme is parameterized by four variables:
@@ -50,11 +50,13 @@ We now formally define multi-dealer secret sharing.
 
 We now define some notational shorthand.
 For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique indices $\indexSet \subseteq [\mdssNumShares]$, define the algorithm $\mdssProj(\mdssSecret, \mdssNumShares, \indexSet)$ as follows:
-
 \procedureblock{$\mdssProj(\mdssSecret, \mdssNumShares, \indexSet)$}{
 	\set{\mdssShare{\mdssSecret}_1, \dots, \mdssShare{\mdssSecret}_{\mdssNumShares}} \gets \mdssShareAlg(\mdssSecret, \mdssNumShares) \\
 	\pcreturn \set{\mdssShare{\mdssSecret}_i}_{i \in \indexSet}
 }
+
+Next, for sets of shares $\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets$, define the algorithm $\mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)$ as the function that returns a combined list of the secrets in each share set.
+For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, \set{\mdssBlindShare^2_1}\right) = \mdssBlindShare^1_1, \mdssBlindShare^1_2, \mdssBlindShare^2_1$.
 
 
 \begin{definition}[Unlinkability]
@@ -65,16 +67,18 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 			\begin{gathered}
 				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
 				b \sample \bin \\
-				\forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})
+				\forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})\\
+				\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares} := \mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)
 			\end{gathered}
 		}{
-			\adv_2(\st, \mdssShareSet_1, \dots, \mdssShareSet_{\mdssNumShareSets}) = b
+			\adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_\mdssNumShares) = b
 		} \leq \frac{1}{2} + \mdssULVar(\secpar)
 	\end{equation*}
 	where $\adv$ is \emph{admissible} if it satitfies:
 	\begin{enumerate}
 		\item $\forall i \in [\mdssNumShareSets], \forall b \in \bin, |\indexSet_{i, b}| \leq \mdssPrivThr$
-		\item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
+		\item $\sum_{i \in [\mdssNumShareSets]} |\indexSet_{i, 0}| = \sum_{i \in [\mdssNumShareSets]} |\indexSet_{i, 1}|$
+		      % \item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
 	\end{enumerate}
 \end{definition}
 We refer $\mdssULVar(\secpar)$ as the \emph{advantage} of $\adv$, and denote it by $\mdssUAdv$.
@@ -199,9 +203,44 @@ We now show that unlinkability is strictly stronger than privacy.
 \subsection{Unlinkability vs. One-More Unlinkability}
 
 We show here that unlinkability and one-more unlinkability are equivalent definitions.
-First, it should be clear to see that any scheme satisfying unlinkability also satisfies one-more unlinkability.
-Therefore, we only prove the relationship in the other direction.
 
+We begin by showing that unlinkability implies one-more unlinkability.
+\begin{theorem}
+	If a MDSS scheme satisfies $\mdssULVar$-unlinkability then it satisfies $\mdssULVar$-one-more unlinkability.
+\end{theorem}
+
+\begin{proof}
+	Let $\adv$ be a one-more unlinkability adversary.
+	Consider the following unlinkability adversary $\bdv$:
+	\begin{pcvstack}[center, space=1em]
+		\procedure{$\bdv_1(\secparam)$}{
+			(\mdssSecret_0, \mdssSecret_1, \mdssNumShares_0, \mdssNumShares_1, \indexSet, i), \st \gets \adv_1 \\
+			\pcreturn \set{
+				(\mdssSecret_0, (\mdssNumShares_0, \indexSet), (\mdssNumShares_0, \indexSet[:-1])),
+				(\mdssSecret_1, (0, \emptyset), (\mdssNumShares_1, \set{i}))
+			}, \st
+		}
+
+		\procedure{$\bdv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares_0} )$}{
+			\pcreturn \adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares_0})
+		}
+	\end{pcvstack}
+
+	$\bdv$ is admissible as:
+	\begin{enumerate}
+		\item By the admissibility of $\adv$, $|\indexSet| \leq \mdssPrivThr$.
+		\item $|\indexSet| + |\emptyset| = \left|\indexSet\right| = (|\indexSet| - 1) + |\set{i}|$.
+	\end{enumerate}
+
+	We can now analyze $\bdv$'s advantage.
+	Note that when $b = 0$, $\adv$'s view is exactly equivalent to its view when $b = 0$ in the one-more unlinkability game: $\indexSet$ shares of $\mdssSecret_0$.
+	Similarly, when $b = 1$, $\adv$'s view is exactly equivalent to its view when $b = 1$ in the unlinkability game: $\indexSet[-1]$ shares of $\mdssSecret_1$ followed by share $i$ of $\mdssSecret_1$.
+
+	We therefore have that $\mdssOMUAdv = \mdssUBdv \leq \mdssULVar(\secpar)$, which completes the proof.
+\end{proof}
+
+
+We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkability.
 \begin{theorem}
 	If a MDSS scheme satisfies $\mdssULVar$-one-more unlinkability, where $\mdssULVar$ is a negligible function, then it satisfies $\mdssULVar'$-unlinkability, where $\mdssULVar'$ is a negligible function.
 \end{theorem}
@@ -240,19 +279,19 @@ Therefore, we only prove the relationship in the other direction.
 				\forall i \in [\mdssRelBatch - 1]: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, 0}, \indexSet_{i, 0}) \\
 				\forall i \in [\mdssRelBatch + 1, \mdssNumShareSets]: \mdssShareSet_i \gets \mdssSampleShare^{\mdssNumShares_{i, 0}}(\secparam) \\
 				\mdssSecret' \sample \mdssSecretSpace \\
-				\pcreturn (\mdssSecret_j, \mdssSecret', \mdssNumShares_{\mdssRelBatch, 0}, 1, \indexSet_{\mdssRelBatch, 0}[\mdssIWRB], 1), (\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [x+1, \mdssNumShareSets]})
+				\pcreturn (\mdssSecret_j, \mdssSecret', \mdssNumShares_{\mdssRelBatch, 0}, 1, \indexSet_{\mdssRelBatch, 0}[\mdssIWRB], 1), (\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch+1, \mdssNumShareSets]})
 			}
 
-			\procedure{$\bdv_2^j((\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [x+1, \mdssNumShareSets]}), \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssIWRB})$}{
+			\procedure{$\bdv_2^j((\st, \mdssNumShares_{\mdssRelBatch, 0}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch - 1]}, \set{\mdssShareSet_i}_{i \in [\mdssRelBatch+1, \mdssNumShareSets]}), \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssIWRB})$}{
 				\forall k \in [\mdssIWRB + 1, \mdssNumShares_{\mdssRelBatch, 0}]: \mdssBlindShare_k \gets \mdssSampleShare(\secparam) \\
-				\mdssShareSet_x := \set{\mdssBlindShare_k}_{k \in [\mdssNumShares_{\mdssRelBatch, 0}]} \\
-				b' \gets \adv_2(\st, \set{\mdssShareSet_i}_{i \in [\mdssNumShareSets]}) \\
+				\mdssShareSet_\mdssRelBatch := \set{\mdssBlindShare_k}_{k \in [\mdssNumShares_{\mdssRelBatch, 0}]} \\
+				b' \gets \adv_2(\st, \mdssFlatten(\mdssShareSet_1,\dots, \mdssShareSet_\mdssNumShareSets)) \\
 				\pcreturn b'
 			}
 		\end{pcvstack}
 		$\bdv^j$ invokes $\adv$ and simulates on its own all shares that do not correspond to the relevant batch $\mdssRelBatch$.
 		$\bdv^j$ then receives $\mdssIWRB$ shares of the relevant batch (the last one of which may have been replaced with a random share), and simulates the remaining shares.
-		$\bdv^j$ then invokes $\adv$ on the aggregated share sets and outputs what $\adv$ outputs.
+		$\bdv^j$ then invokes $\adv$ on the flattened share sets and outputs what $\adv$ outputs.
 
 		We can now analyze $\bdv^j$'s advantage. We have that:
 		\begin{align*}
