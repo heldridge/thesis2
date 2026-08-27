@@ -20,32 +20,55 @@ Nevertheless, our problem setting can be mapped onto that of list-decoding, whic
 A well-known list-decoding algorithm for Reed-Solomon codes is the one devised by Guruswami and Sudan (GS) ~\cite{FOCS:GurSud98}, and indeed we can use their algorithm as the principal component of $\mdssReconstructAlg$ to produce a scheme that we describe below.
 First, however, we must state what is guaranteed by the GS decoder.
 
-\begin{theorem}[Due to \cite{FOCS:GurSud98}]
+\begin{theorem}[From \cite{FOCS:GurSud98}]
 	Let $\FF$ be a finite field.
 	Let $\mdssPrivThr$, $\mdssRecThr$, $\mdssWindowSize$ be positive integers such that $\mdssRecThr > \sqrt{\mdssPrivThr\mdssWindowSize}$.
 	Then there exists an algorithm $\gsDecode(\mdssPrivThr, \mdssRecThr, \set{(x_i, y_i)}_{i\in[\mdssWindowSize]})$ where for all $i$: $x_i, y_i \in \FF$, that outputs all univariate polynomials $p$ of degree at most $\mdssPrivThr$ such that $y_i = p(x_i)$ for at least $\mdssRecThr$ values of $i \in [\mdssWindowSize]$.
 \end{theorem}
 
 We can now formally describe our GS-based construction.
-\begin{pcvstack}[boxed, center, space=1em]
-	\procedure[linenumbering]{$\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares)$}{
-		\text{Sample a polynomial } p \text{ of degree } \mdssPrivThr \text{ where } \mdssSecret = p(0) \\
-		\text{Sample } \mdssNumShares \text{ field elements } x_1, \dots, x_\mdssNumShares \sample \FF \\
-		\pcreturn \set{(x_i, p(x_i))}_{i \in [\mdssNumShares]}
-	}
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares)$}{
+			\text{Sample a polynomial } p \text{ of degree } \mdssPrivThr \text{ where } \mdssSecret = p(0) \\
+			\text{Sample } \mdssNumShares \text{ field elements } x_1, \dots, x_\mdssNumShares \sample \FF \\
+			\pcreturn \set{(x_i, p(x_i))}_{i \in [\mdssNumShares]}
+		}
 
-	\procedure[linenumbering]{$\mdssReconstructAlg(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})$}{
-		p_1,\dots,p_{\mdssNumShareSets} \gets \gsDecode(\mdssPrivThr, \mdssRecThr, \set{\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize}}) \\
-		\pcreturn \set{p_1(0), \dots, p_{\mdssNumShareSets}(0)}
-	}
-\end{pcvstack}
+		\procedure[linenumbering]{$\mdssReconstructAlg(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})$}{
+			p_1,\dots,p_{\mdssNumShareSets} \gets \gsDecode(\mdssPrivThr, \mdssRecThr, \set{\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize}}) \\
+			\pcreturn \set{p_1(0), \dots, p_{\mdssNumShareSets}(0)}
+		}
+	\end{pcvstack}
+	\caption{An MDSS construction}
+	\label{fig:gs-mdss}
+\end{figure}
 
 \subsection{Proofs}
 
+We begin by defining some notational shorthand.
+For a finite field $\FF$, integers $\mdssPrivThr$, and $\mdssSecret \in \FF$, define $\mdssValidPolys{\FF}{\mdssPrivThr}{\mdssSecret}$ as the set of all polynomials $p \in \FF[x]$ of degree $\mdssPrivThr$ where $p(0) = \mdssSecret$.
+
+Next define the function $\mdssGenerate$ as follows:
+\procedureblock{$\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]}$}{
+	\forall i \in [\mdssNumShareSets] \pcdo \\
+	% \t \set{
+}
+
 \begin{theorem}
-	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| \approx \secpar^{\omega(1)}$, \hme{ref construction} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
+	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| \approx \secpar^{\omega(1)}$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
 \end{theorem}
 
 \begin{proof}
-	asdf
+	While $\gsDecode$ will output all polynomials of degree at most $\mdssPrivThr$ that agree on at least $\mdssRecThr$ points, that is not actually what we want.
+	To achieve correctness, we need $\mdssReconstructAlg$ to output only those secrets \emph{shared by the sufficient dealers}.
+	In other words, it should \emph{not} be the case that there are $\mdssRecThr$ points that lie on some new, separate polynomial.
+	Therefore, to begin our proof, we must bound away this possibility.
+
+	\begin{claim}
+		For all sets $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in \mdssNumShareSets]}$, define $\mdssShareSet$ as follows:
+
+
+		% $\mdssShareSet = \mdssFlatten(\mdssProj(\mdssSecret_1, \mdssNumShares_1, \indexSet_1),\dots,\mdssProj(\mdssSecret_\mdssNumShareSets, \mdssNumShares_\mdssNumShareSets, \indexSet_\mdssNumShareSets))$
+	\end{claim}
 \end{proof}

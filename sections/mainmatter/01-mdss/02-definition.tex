@@ -29,7 +29,7 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 	\pcreturn \set{\mdssShare{\mdssSecret}_i}_{i \in \indexSet}
 }
 
-Next, for sets of shares $\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets$, define the algorithm $\mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)$ as the function that returns a combined list of the secrets in each share set.
+Next, for sets of shares $\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets$, define the algorithm $\mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)$ as the function that returns a combined list of the shares in each share set.
 For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, \set{\mdssBlindShare^2_1}\right) = \mdssBlindShare^1_1, \mdssBlindShare^1_2, \mdssBlindShare^2_1$.
 
 
