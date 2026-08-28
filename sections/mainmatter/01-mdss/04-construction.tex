@@ -49,11 +49,19 @@ We can now formally describe our GS-based construction.
 We begin by defining some notational shorthand.
 For a finite field $\FF$, integers $\mdssPrivThr$, and $\mdssSecret \in \FF$, define $\mdssValidPolys{\FF}{\mdssPrivThr}{\mdssSecret}$ as the set of all polynomials $p \in \FF[x]$ of degree $\mdssPrivThr$ where $p(0) = \mdssSecret$.
 
-Next define the function $\mdssGenerate$ as follows:
-\procedureblock{$\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]}$}{
+Next, for a field $\FF$ define the following distribution on $\FF[x]^* \times (\FF \times \FF)^*$.
+\procedureblock{$\mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}$}{
 	\forall i \in [\mdssNumShareSets] \pcdo \\
-	% \t \set{
+	\t p_i \sample \mdssValidPolys{\FF}{\mdssPrivThr}{\mdssSecret_i} \\
+	\mdssPolySet := \set{p_i}_{i \in [\mdssNumShareSets]} \\
+	\forall i \in [\mdssNumShareSets], \forall j \in [\mdssNumShares_i] \pcdo \\
+	\t x_{i, j} \sample \FF \\
+	\t y_{i, j} := p_i(x_{i, j}) \\
+	\pcreturn (\mdssPolySet, \set{(x_{i, j}, y_{i, j})}_{i \in [\mdssNumShareSets], j \in [\mdssNumShares_i]})
 }
+
+
+\newcommand{\mdssFieldBound}{\ensuremath{\left( \frac{1}{|\FF|} \right)^{\mdssRecThr - (\mdssPrivThr + 1)}}}
 
 \begin{theorem}
 	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| \approx \secpar^{\omega(1)}$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
@@ -65,10 +73,59 @@ Next define the function $\mdssGenerate$ as follows:
 	In other words, it should \emph{not} be the case that there are $\mdssRecThr$ points that lie on some new, separate polynomial.
 	Therefore, to begin our proof, we must bound away this possibility.
 
+	For a set of polynomials $\mdssPolySet$, a set of points $\mdssPointSet = \set{(x_i, y_i)}$, and integers $\mdssPrivThr$, $\mdssRecThr$, define the event $\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}$ as occurring when there exists a polynomial $p^* \notin \mdssPolySet$ such that $\mathsf{deg}(p^*) \leq \mdssPrivThr$ and $\exists T \subseteq \mdssPointSet$ such that $|T| \geq \mdssRecThr$ and $\forall (x, y) \in T$, $p^*(x) = y$.
+	We may ocasionally drop subscripts from $\bad$ when their values are clear from context.
+
+	\begin{lemma}
+		\label{lem:mdss-bad-with-polys}
+		Let $\FF$ be a finite field, $\mdssPrivThr$ and $\mdssRecThr$ be positive integers such that $\mdssPrivThr < \mdssRecThr$, and P be a set of polynomials over $\FF$. Then,
+		\begin{align*}
+			     & \probsublong{\forall i \in [\mdssRecThr], (x_i, y_i) \sample \FF^2}{\bad_{P, \set{(x_i, y_i)}_{i \in [\mdssRecThr]}, \mdssPrivThr, \mdssRecThr}} \\
+			\leq & \probsublong{\forall i \in [\mdssRecThr], (x_i, y_i) \sample \FF^2}{\bad_{P, \emptyset, \mdssPrivThr, \mdssRecThr}}
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		For any set of points, if $\bad_{\mdssPolySet}$ occurs then $\bad_{\emptyset}$ must clearly also occur.
+	\end{proof}
+
 	\begin{claim}
-		For all sets $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in \mdssNumShareSets]}$, define $\mdssShareSet$ as follows:
-
-
-		% $\mdssShareSet = \mdssFlatten(\mdssProj(\mdssSecret_1, \mdssNumShares_1, \indexSet_1),\dots,\mdssProj(\mdssSecret_\mdssNumShareSets, \mdssNumShares_\mdssNumShareSets, \indexSet_\mdssNumShareSets))$
+		\label{cla:mdss-bad-basic-comb}
+		Let $\FF$ be a finite field, and $\mdssPrivThr$, $\mdssRecThr$ be positive integers such that $\mdssPrivThr < \mdssRecThr$. Then,
+		$$
+			\probsublong{\forall i \in [\mdssRecThr], (x_i, y_i) \sample \FF^2}{\bad_{\emptyset, \set{(x_i, y_i)}_{i \in [\mdssRecThr]}, \mdssPrivThr, \mdssRecThr}}
+			\leq \mdssFieldBound
+		$$
 	\end{claim}
+	\begin{proof}
+		For a set of $\mdssRecThr$ points the first $\mdssPrivThr + 1$ will uniquely determine a degree-$\mdssPrivThr$ polynomial.
+		Then, the remaining $\mdssRecThr - (\mdssPrivThr + 1)$ points must all agree with that fixed polynomial, and each agrees with probability $\frac{1}{|\FF|}$.
+	\end{proof}
+
+	\begin{claim}
+		\label{cla:mdss-bad-from-dist}
+		Let $\FF$ be a finite field, $\mdssPrivThr$ and $\mdssRecThr$ be positive integers such that $\mdssPrivThr < \mdssRecThr$, and let  $S = \set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}$ where $\mdssMaxShares = \sum_{i \in [\mdssNumShareSets]} \mdssNumShares_i$.
+		Then, for all $\indexSet \subseteq [\mdssMaxShares]$ where $|\indexSet| = \mdssRecThr$,
+		$$
+			\probsublong{(\mdssPolySet, \mdssPointSet) \sample \mdssHonestDist{\FF}{\mdssPrivThr}{S}}{\bad_{\mdssPolySet, \mdssPointSet_{\indexSet}, \mdssPrivThr, \mdssRecThr}} \leq \mdssFieldBound
+		$$
+		Where $\mdssPointSet_\indexSet$ indicates the set of elements of $\mdssPointSet$ as selected by the indices in $\indexSet$.
+	\end{claim}
+	\begin{proof}
+		For a set of $\mdssRecThr$ points $\mdssPointSet_\indexSet$ there are two cases: either $\mdssPointSet_\indexSet$ contains $\mdssPrivThr + 1$ points on one of the polynomials $p \in \mdssPolySet$ or it does not.
+		In the first case, clearly $\prob{\bad} = 0$.
+		In the second, all the points in $\mdssPointSet_\indexSet$ are uninformly distributed over $\FF^2$, and so $\prob{\bad} \leq \mdssFieldBound$ by \cref{cla:mdss-bad-basic-comb} and \cref{lem:mdss-bad-with-polys}.
+	\end{proof}
+
+	\begin{claim}
+		Let $\FF$ be a finite field, $\mdssPrivThr$ and $\mdssRecThr$ be positive integers such that $\mdssPrivThr < \mdssRecThr$, and let  $S = \set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}$.
+		Then,
+		$$
+			\probsublong{(\mdssPolySet, \mdssPointSet) \sample \mdssHonestDist{\FF}{\mdssPrivThr}{S}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}} \leq \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound
+		$$
+	\end{claim}
+	\begin{proof}
+		Note that for $\bad$ to hold there must be a size-$\mdssRecThr$ subset of $\mdssPointSet$ that agrees with a polynomial $p^* \notin \mdssPolySet$.
+		By \cref{cla:mdss-bad-from-dist} we have that the probability that $\bad$ is satisfied for any size-$\mdssRecThr$ subset of $\mdssPointSet$ is at most $\mdssFieldBound$.
+		The claim then follows from the union bound.
+	\end{proof}
 \end{proof}

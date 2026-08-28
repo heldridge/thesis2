@@ -104,6 +104,7 @@
 \newcommand{\hyb}{\mathcal{H}}
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\game}{\mathsf{Game}}
+\newcommand{\sizedSubsets}[2]{\binom{#1}{#2}}
 
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
@@ -139,6 +140,9 @@
 \newcommand{\gsDecode}{\ensuremath{\mathsf{GSDecode}}}
 \newcommand{\mdssGenerate}{\ensuremath{\mathsf{Generate}}}
 \newcommand{\mdssValidPolys}[3]{\ensuremath{\Gamma(#1, #2, #3)}}
+\newcommand{\mdssHonestDist}[3]{\ensuremath{D_{#1, #2}^{#3}}}
+\newcommand{\mdssPolySet}{\ensuremath{P}}
+\newcommand{\mdssPointSet}{\ensuremath{X}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -150,3 +154,7 @@
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{claim}{Claim}[section]
+
+% Make them work with cleverref
+\crefname{claim}{claim}{claims}
+\Crefname{claim}{Claim}{Claims}
