@@ -32,6 +32,8 @@ For a secret $\mdssSecret$, an integer $\mdssNumShares$, and a list of unique in
 Next, for sets of shares $\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets$, define the algorithm $\mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)$ as the function that returns a combined list of the shares in each share set.
 For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, \set{\mdssBlindShare^2_1}\right) = \mdssBlindShare^1_1, \mdssBlindShare^1_2, \mdssBlindShare^2_1$.
 
+Finally, define $\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]})$ as the algorithm that runs $\mdssProj$ on each configuration in its input, then returns the flattened set of shares.
+
 
 \begin{definition}[Unlinkability]
 	\label{def:unlinkability}
@@ -41,11 +43,12 @@ For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, 
 			\begin{gathered}
 				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
 				b \sample \bin \\
-				\forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})\\
-				\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares} := \mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)
+				\mdssBlindShare_1,\dots,\mdssBlindShare_{\mdssWindowSize} \gets \mdssGenerate(\set{(\mdssSecret_{i,b}, \mdssNumShares_{i, b}, \indexSet_{i, b})}_{i \in [\mdssNumShareSets]})
+				% \forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})\\
+				% \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares} := \mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)
 			\end{gathered}
 		}{
-			\adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_\mdssNumShares) = b
+			\adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_\mdssWindowSize) = b
 		} \leq \frac{1}{2} + \mdssULVar(\secpar)
 	\end{equation*}
 	where $\adv$ is \emph{admissible} if it satitfies:
@@ -100,9 +103,9 @@ As with Unlinkability we can use the standard transformation to produce a two-wo
 	it holds that:
 	\begin{equation*}
 		\probsublong{
-			\mdssShareSet := \bigcup_{i \in [\mdssNumShareSets]} \mdssProj(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)
+			\mdssShareList \gets  \mdssGenerate\left(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]}\right)
 		}{
-			\mdssReconstructAlg(\mdssShareSet) \neq \set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}
+			\mdssReconstructAlg(\mdssShareList) \neq \set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}
 		} \leq \mdssCVar(\secpar)
 	\end{equation*}
 \end{definition}
