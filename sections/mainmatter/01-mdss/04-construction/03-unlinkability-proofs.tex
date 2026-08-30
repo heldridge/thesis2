@@ -1,0 +1,15 @@
+We prove here that the construction shown in \cref{fig:gs-mdss} satisfies one-more unlinkability, from which it follows that it satisfies unlinkability from \cref{thm:omul-implies-ul}
+
+Recall that under our construction a share is a point $(x, y)$.
+For a one-more unlinkability adversary $\adv$ let $\bad$ denote the event that the share $\mdssShare{\mdssSecret_b}^*$ shares an $x$-coordinate with one of the other shares $\mdssShare{\mdssSecret_i}$.
+
+\begin{claim}
+	$\condprob{\mdssOMULGame{0}{\adv} = 1}{!\bad} = \condprob{\mdssOMULGame{1}{\adv} = 1}{!\bad}$
+\end{claim}
+
+\begin{proof}
+	As the distribution of $\mdssShare{\mdssSecret_0}_1,\dots,\mdssShare{\mdssSecret_0}_{\mdssNumShares_0 - 1}$ is identical in both games, we focus our analysis only on $\mdssShare{\mdssSecret_b}^*$.
+	When $\mdssShare{\mdssSecret_b}^*$ has a unique $x$-coordinate and $b = 0$, $\adv$ sees the $\mdssNumShares_0$'th point from a degree-$\mdssPrivThr$ polynomial, which is equivalent to a uniformly random value of $\FF$ as $\mdssNumShares_0 \leq \mdssPrivThr$ by the admissibility condition.
+	When $b = 1$, $\adv$ always sees a uniformly random value of $\FF$.
+	Therefore, since the distribution passed to $\adv$ is identical in both cases, its behavior in the games must be identical.
+\end{proof}
