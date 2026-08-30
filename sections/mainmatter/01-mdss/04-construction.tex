@@ -21,6 +21,7 @@ A well-known list-decoding algorithm for Reed-Solomon codes is the one devised b
 First, however, we must state what is guaranteed by the GS decoder.
 
 \begin{theorem}[From \cite{FOCS:GurSud98}]
+	\label{thm:GS}
 	Let $\FF$ be a finite field.
 	Let $\mdssPrivThr$, $\mdssRecThr$, $\mdssWindowSize$ be positive integers such that $\mdssRecThr > \sqrt{\mdssPrivThr\mdssWindowSize}$.
 	Then there exists an algorithm $\gsDecode(\mdssPrivThr, \mdssRecThr, \set{(x_i, y_i)}_{i\in[\mdssWindowSize]})$ where for all $i$: $x_i, y_i \in \FF$, that outputs all univariate polynomials $p$ of degree at most $\mdssPrivThr$ such that $y_i = p(x_i)$ for at least $\mdssRecThr$ values of $i \in [\mdssWindowSize]$.
@@ -65,7 +66,6 @@ Next, for a field $\FF$ define the following distribution on $\FF[x]^* \times (\
 
 \newcommand{\mdssFieldBound}{\ensuremath{\left( \frac{1}{|\FF|} \right)^{\mdssRecThr - (\mdssPrivThr + 1)}}}
 
-We now prove some small claims that will help with the main proof.
 
 While $\gsDecode$ will output all polynomials of degree at most $\mdssPrivThr$ that agree on at least $\mdssRecThr$ points, that is not actually what we want.
 To achieve correctness, we need $\mdssReconstructAlg$ to output only those secrets \emph{shared by the sufficient dealers}.
@@ -115,22 +115,51 @@ We may ocasionally drop subscripts from $\bad$ when their values are clear from 
 	In the second, all the points in $\mdssPointSet_\indexSet$ are uninformly distributed over $\FF^2$, and so $\prob{\bad} \leq \mdssFieldBound$ by \cref{cla:mdss-bad-basic-comb} and \cref{lem:mdss-bad-with-polys}.
 \end{proof}
 
-\begin{claim}
+\begin{lemma}
+	\label{lem:mdss-corr-bound}
 	Let $\FF$ be a finite field, $\mdssPrivThr$ and $\mdssRecThr$ be positive integers such that $\mdssPrivThr < \mdssRecThr$, and let  $S = \set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}$.
 	Then,
 	$$
 		\probsublong{(\mdssPolySet, \mdssPointSet) \sample \mdssHonestDist{\FF}{\mdssPrivThr}{S}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}} \leq \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound
 	$$
-\end{claim}
+\end{lemma}
 \begin{proof}
 	Note that for $\bad$ to hold there must be a size-$\mdssRecThr$ subset of $\mdssPointSet$ that agrees with a polynomial $p^* \notin \mdssPolySet$.
 	By \cref{cla:mdss-bad-from-dist} we have that the probability that $\bad$ is satisfied for any size-$\mdssRecThr$ subset of $\mdssPointSet$ is at most $\mdssFieldBound$.
 	The claim then follows from the union bound.
 \end{proof}
 
+Our final step before proving our main theorem is show that the failure bound from the previous proof is indeed negligible.
+
+\begin{lemma}
+	\label{lem:mdss-asym-bound}
+	Let $\epsilon \in (0, 1]$ be a constant, and $x, y, z, w$ be positive integer-valued polynomials in $\secpar$, where $z + 1\leq (1 - \epsilon)y$ for all values of $\secpar$.
+	Then for all $w = \secpar^{\omega(1)}$ there exists a negligible function $\negl[]$ such that,
+	$$
+		\binom{x}{y} \cdot \left(\frac{1}{w}\right)^{y - (z + 1)} \leq \negl
+	$$
+\end{lemma}
+
+\begin{proof}
+	Fix a constant $c$.
+	Let $\alpha$ be the constant such that $x(\secpar) \leq \secpar^\alpha$ for all sufficiently large $\secpar$.
+	Note that $\frac{\alpha + c}{\epsilon}$ is also a constant.
+	Let $\secpar_0$ be such that for all $\secpar \geq \secpar_0$ it holds that $x(\secpar) \leq \secpar^\alpha$ and $w(\secpar) \geq \secpar^{\frac{\alpha + c}{\epsilon}}$.
+	Then, we have that
+	\begin{align*}
+		\binom{x}{y} \cdot \left(\frac{1}{w}\right)^{y - (z + 1)}
+		 & \leq  x^y\cdot \left(\frac{1}{w}\right)^{y - (z + 1)}                                           \\
+		 & \leq  \secpar^{\alpha y}\cdot \left(\frac{1}{w}\right)^{y - (z + 1)}                            \\
+		 & \leq  \secpar^{\alpha y} \cdot \left(\frac{1}{w}\right)^{y - ((1 - \epsilon)y -1 + 1)}          \\
+		 & =  \secpar^{\alpha y} \cdot \left(\frac{1}{w}\right)^{\epsilon y}                               \\
+		 & \leq  \secpar^{\alpha y} \cdot \left(\secpar^{-\frac{\alpha + c}{\epsilon}}\right)^{\epsilon y} \\
+		 & =  \secpar^{-yc} \leq \secpar^{-c} = \negl
+	\end{align*}
+\end{proof}
+
 We can now state and prove our main theorem.
 \begin{theorem}
-	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$ and $\mdssPrivThr \leq (1 - \epsilon)\mdssRecThr$ for some constant $\epsilon$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
+	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$ and $\mdssPrivThr + 1\leq (1 - \epsilon)\mdssRecThr$ for some constant $\epsilon$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
 \end{theorem}
 
 \newcommand{\mdssCorrectSet}{\set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}}
@@ -140,23 +169,26 @@ We can now state and prove our main theorem.
 \begin{proof}
 	In order to keep notation compact let $C = \mdssCorrectSet$ and $\mdssShortRecon = \mdssReconstructAlg$.
 	\begin{align}
-		     & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\mdssShortRecon(\mdssShareList) \neq \mdssCS }                                                                 \\
+		     & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\mdssShortRecon(\mdssShareList) \neq \mdssCS }                                                                                           \\
 		=    & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
 			       \begin{gathered}
 				       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS \\
 				       \vee \\
 				       \exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)
-			       \end{gathered}}                                                                                                \\
+			       \end{gathered}}                                                                                                                          \\
 		\leq &
 		\probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
-			\exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \notag \\
-		     & + \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}        \\
+			\exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \notag                           \\
+		     & + \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}        \label{eq:gs-corr-union}  \\
 		=    & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
-			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \\
+			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \label{eq:gs-corr-GS}     \\
 		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{
-			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssPointSet) \wedge \mdssSecret^* \notin \mdssCS}                                                                 \\
-		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}}   \\
-		\leq & \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound                                                                                                                                                                 \\
-		\leq & \binom{\mdssMaxShares}{\mdssRecThr} \cdot \mdssFieldBound
+			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssPointSet) \wedge \mdssSecret^* \notin \mdssCS}                                                                 \label{eq:gs-corr-const}                                  \\
+		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}}                             \\
+		\leq & \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound                                                                                                                                                                  \label{eq:gs-corr-claim} \\
+		\leq & \binom{\mdssMaxShares}{\mdssRecThr} \cdot \mdssFieldBound                                                                                                                                                                                            \\
+		\leq & \negl\label{eq:gs-corr-asym}
 	\end{align}
+
+	Where \ref{eq:gs-corr-union} follows from the union bound, \ref{eq:gs-corr-GS} from \cref{thm:GS}, \ref{eq:gs-corr-const} from construction, \ref{eq:gs-corr-claim} from \cref{lem:mdss-corr-bound}, and \ref{eq:gs-corr-asym} from \cref{lem:mdss-asym-bound}.
 \end{proof}
