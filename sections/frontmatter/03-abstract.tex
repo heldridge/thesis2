@@ -1,8 +1,18 @@
 \chap{Abstract}
 
-
 %%%% your abstract goes here (word limit: 350)
-Placeholder
+When envisioning the ideal privacy guarantee of a system people often intuitively arrive at the concept of a \emph{threshold}.
+We would like our monetary transactions to remain private, unless they exceed a certain amount.
+Our searches should be hidden from an aggregator, unless they hit a certain level of popularity.
+While there is a large body of cryptographic work on threshold computations, many of the tools built remain unsuitable, often due to lack of efficiency, for use in the sorts of real-world protocols that need them.
+
+In this work we propose cryptographic tools and protocols meant to solve real-world thresholding problems.
+We begin by describing a scheme for allowing limited visibility into the transactions made using private cryptocurrencies, giving a regulator the ability to detect potential money-laundering while keeping the system perfectly private for honest users.
+Next, we describe a new cryptographic primitive, \emph{multi-dealer secret sharing} (MDSS), that enables private thresholding over groups of users.
+Finally, we show how MDSS can be applied by using it to build a protocol for private $t$-heavy-hitters that has stronger privacy guarantees than the state-of-the-art.
+For both protocols we propose we also give implementations and benchmarks, showing that they are efficient enough to be deployed today.
+
+
 
 %%%%  committee members (add it right after the abstract w/o page break)
 \section*{Thesis Readers}
