@@ -1,0 +1,53 @@
+As shown in  \cref{thm:gs-mdss-correctness} and \cref{thm:gs-mdss-ul}, a suitable choice of field is required to achieve unlinkability and MD-correctness.
+Indeed, if a dealer randomly samples the same evaluation point twice and produces two identical shares, then unlinkability is compromised.
+While this will occur with negligible probability if fields are large enough, in practice small fields are often best to minimize bandwidth and decoding complexity.
+We therefore propose a stateful variant of our construction in which dealers keep track of previously sampled evaluation points and emit {\em noise shares} (comprising random elements in place of the polynomial evaluation) whenever an $x$-coordinate is repeated.
+This preserves unlinkability at the cost of decreasing the number of ``useful'' shares passed to the reconstruction algorithm.
+This in turn results in a non-negligible probability of failure, which may be an acceptable tradeoff for protocols in which guaranteed recovery is not necessary.
+A formal description of this scheme can be seen in \cref{fig:gs-mdss-small-field}.
+
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares)$}{
+			\text{Sample a polynomial } p \text{ of degree } \mdssPrivThr \text{ where } \mdssSecret = p(0) \\
+			\text{Sample } \mdssNumShares \text{ field elements } x_1, \dots, x_\mdssNumShares \sample \FF \\
+			\pcfor i \in [\mdssNumShares] \pcdo \\
+			\t \pcif x_i \notin \set{x_1,\dots,x_{i - 1}} \pcthen \\
+			\t \t \mdssBlindShare_i := (x_i, p(x_i)) \\
+			\t \pcelse \\
+			\t \t y_i \sample \FF \\
+			\t \t \mdssBlindShare_i := (x_i, y_i) \\
+			\pcreturn \set{\mdssBlindShare_i}_{i \in [\mdssNumShares]}
+		}
+
+		\procedure[linenumbering]{$\mdssReconstructAlg(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})$}{
+			p_1,\dots,p_{\mdssNumShareSets} \gets \gsDecode(\mdssPrivThr, \mdssRecThr, \set{\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize}}) \\
+			\pcreturn \set{p_1(0), \dots, p_{\mdssNumShareSets}(0)}
+		}
+	\end{pcvstack}
+	\caption{An MDSS construction for small fields $\sfmdss$}
+	\label{fig:gs-mdss-small-field}
+\end{figure}
+
+\newcommand{\challengeShare}{\ensuremath{\mdssShare{\mdssSecret_b}^*}}
+
+\begin{theorem}
+	For all finite fields $\FF$, the construction shown in \cref{fig:gs-mdss-small-field} satisfies $\mdssULVar$-unlinkability for $\mdssULVar(\secpar) = 0$.
+\end{theorem}
+\begin{proof}
+	We begin by showing that $\sfmdss$ satisfies one-more unlinkability.
+	Consider the distribution of $\challengeShare$ in the one-more unlinkability game.
+	Note that whether $b = 0$ or $b = 1$ the $x$-coordinate of $\challengeShare$ is a uniformly random element of $\FF$.
+	We therefore limit our analysis to its $y$-coordinate.
+	If $b = 0$ and the $x$-coordinate of $\challengeShare$ collides with a previous share, then its $y$-coordinate is a uniformly random element of $\FF$.
+	If $b = 0$ and the $x$-coordinate of $\challengeShare$ does \emph{not} collide, then it is at most the $\mdssPrivThr$'th point on a degree $\mdssPrivThr +1$ polynomial, and so its $y$-coordinate is also a uniformly random element of $\FF$.
+	Finally, when $b = 1$, we again have that the $y$-coordinate is a uniformly random element of $\FF$.
+	Therefore, the distribution in both games is identical, and the one-more unlinkability advantage of all adversaries must be $0$.
+
+	The theorem then follows directly from \cref{thm:omul-implies-ul}.
+\end{proof}
+
+\begin{theorem}
+	For all sets of parameters satisfying ..., and finite fields $\FF$ such that $\mdssMaxShares \in O(\secpar^d)$ and $|\FF| \in O(\secpar^{d'})$ for constants $d$, $d'$, the construction show in \cref{fig:gs-mdss-small-field} satisfies $\mdssCVar$-correctness for $\mdssCVar(\secpar) = \dots$.
+\end{theorem}
+
