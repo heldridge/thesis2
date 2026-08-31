@@ -1,9 +1,10 @@
-We prove here that the construction shown in \cref{fig:gs-mdss} satisfies one-more unlinkability, from which it follows that it satisfies unlinkability from \cref{thm:omul-implies-ul}
+We prove here that the construction shown in \cref{fig:gs-mdss} satisfies unlinkability.
 
 Recall that under our construction a share is a point $(x, y)$.
 For a one-more unlinkability adversary $\adv$ let $\bad$ denote the event that the share $\mdssShare{\mdssSecret_b}^*$ shares an $x$-coordinate with one of the other shares $\mdssShare{\mdssSecret_i}$.
 
 \begin{claim}
+	\label{cla:mdss-eq-when-uniq}
 	$\condprob{\mdssOMULGame{0}{\adv} = 1}{!\bad} = \condprob{\mdssOMULGame{1}{\adv} = 1}{!\bad}$
 \end{claim}
 
@@ -12,4 +13,40 @@ For a one-more unlinkability adversary $\adv$ let $\bad$ denote the event that t
 	When $\mdssShare{\mdssSecret_b}^*$ has a unique $x$-coordinate and $b = 0$, $\adv$ sees the $\mdssNumShares_0$'th point from a degree-$\mdssPrivThr$ polynomial, which is equivalent to a uniformly random value of $\FF$ as $\mdssNumShares_0 \leq \mdssPrivThr$ by the admissibility condition.
 	When $b = 1$, $\adv$ always sees a uniformly random value of $\FF$.
 	Therefore, since the distribution passed to $\adv$ is identical in both cases, its behavior in the games must be identical.
+\end{proof}
+
+\begin{claim}
+	\label{cla:mdss-ul-bad-bound}
+	$\prob{\bad} \leq \frac{\mdssPrivThr}{|\FF|}$
+\end{claim}
+\begin{proof}
+	$\prob{\bad}$ is equivalent to the probability that the $x$-coordinate of $\mdssShare{\mdssSecret_b}^*$ collides with the $x$-coordinate of a previously received share.
+	As by the admissibility condition there are at most $\mdssPrivThr$ previously received shares, and the $x$-coordinate of $\mdssShare{\mdssSecret_b}^*$ is sampled uniformly, we have $\prob{\bad} \leq \frac{\mdssPrivThr}{|\FF|}$.
+\end{proof}
+
+\begin{theorem}
+	\label{thm:gs-mdss-ul}
+	For all finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssULVar$-one-more unlinkability for a negligibly small $\mdssULVar(\secpar)$.
+\end{theorem}
+\begin{proof}
+	For notational convenience let $G_0$ denote the event that $\mdssOMULGame{0}{\adv} = 1$ and $G_1$ the event that $\mdssOMULGame{1}{\adv} = 1$.
+	\begin{align*}
+		 & \abs{\prob{G_0} - \prob{G_1}}                                                                               \\
+		 & = \abs{
+			     \begin{gathered}
+				     \condprob{G_0}{\bad}\prob{\bad} + \condprob{G_0}{!\bad}\prob{!\bad}  \\
+				     - \condprob{G_1}{\bad}\prob{\bad} - \condprob{G_1}{!\bad}\prob{!\bad}
+			     \end{gathered}
+		     }                                    \\
+		 & = \abs{
+			     \condprob{G_0}{\bad}\prob{\bad}
+			     - \condprob{G_1}{\bad}\prob{\bad}
+		     }                  \tag{\cref{cla:mdss-eq-when-uniq}}                                                     \\
+		 & \leq  \condprob{G_0}{\bad}\prob{\bad} + \condprob{G_1}{\bad}\prob{\bad}                                     \\
+		 & \leq  2\prob{\bad}                                                                                          \\
+		 & \leq 2\frac{\mdssPrivThr}{|\FF|}                                         \tag{\cref{cla:mdss-ul-bad-bound}} \\
+		 & = \negl \tag{$|\FF| = \secpar^{\omega(1)}$}
+	\end{align*}
+
+	The theorem then follows directly from \cref{thm:omul-implies-ul}.
 \end{proof}
