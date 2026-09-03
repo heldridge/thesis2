@@ -81,17 +81,20 @@ We may ocasionally drop subscripts from $\bad$ when their values are clear from 
 Next, we must bound the probability that $\mdssShareAlg$ outputs a duplicate point, which could prevent the Guruswami-Sudan decoder from correctly recovering the secret.
 For $(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}$, let $\bad'$ denote the event that there exists a polynomial $p_i \in \mdssPolySet$ such that $\mdssNumShares_i \geq \mdssRecThr$ and there do \emph{not} exist at least $\mdssRecThr$ distinct points $(x_j, y_j)$ in $\mdssPointSet$ such that $p_i(x_j) = y_j$.
 Additionally, let $\mdssMaxShares = \sum_i \mdssNumShares_i$.
-\begin{theorem}
+\begin{lemma}
+	\label{lem:mdss-bad-prime-bound}
 	$$
 		\prob{\bad'} \leq \left\lceil\frac{\mdssMaxShares}{\mdssRecThr}\right\rceil \cdot \frac{\mdssRecThr^2}{2|\FF|}
 	$$
-\end{theorem}
+\end{lemma}
 \begin{proof}
 	Note that $\bad'$ can only occur if for a given $i$ where $\mdssNumShares_i \geq \mdssRecThr$, there is at least one $j$ such that $x_{i, j} \in \set{x_{i, 1},\dots,x_{i, j-1}}$.
+	Then, for any $i$, we have that the probability of that ocurring is $\leq \frac{\mdssRecThr^2}{2|\FF|}$ by the birthday bound.
+	Then, as there are at most $\mdssMaxShares$ shares, there can be at most $\left\lceil\frac{\mdssMaxShares}{\mdssRecThr}\right\rceil$ possible indices at which such an event could occur, and so the theorem follows from the union bound.
 \end{proof}
 
 
-Our final step before proving our main theorem is show that the failure bound from the previous proof is indeed negligible.
+Our final step before proving our main theorem is show that our failure bound is indeed negligible.
 
 \begin{lemma}
 	\label{lem:mdss-asym-bound}
@@ -119,40 +122,4 @@ Our final step before proving our main theorem is show that the failure bound fr
 	\end{align*}
 \end{proof}
 
-
-We can now state and prove our main theorem.
-\begin{theorem}
-	\label{thm:gs-mdss-correctness}
-	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$ and $\mdssPrivThr + 1\leq (1 - \epsilon)\mdssRecThr$ for some constant $\epsilon$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
-\end{theorem}
-
-\newcommand{\mdssCorrectSet}{\set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}}
-\newcommand{\mdssShortRecon}{\mathsf{R}}
-\newcommand{\mdssCS}{C}
-
-\begin{proof}
-	In order to keep notation compact let $C = \mdssCorrectSet$ and $\mdssShortRecon = \mdssReconstructAlg$.
-	\begin{align}
-		     & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\mdssShortRecon(\mdssShareList) \neq \mdssCS }                                                                                           \\
-		=    & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
-			       \begin{gathered}
-				       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS \\
-				       \vee \\
-				       \exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)
-			       \end{gathered}}                                                                                                                          \\
-		\leq &
-		\probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
-			\exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \notag                           \\
-		     & + \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}        \label{eq:gs-corr-union}  \\
-		=    & \probsublong{\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}}_{i\in[\mdssNumShareSets]}\right)}{
-			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \wedge \mdssSecret^* \notin \mdssCS}                                                                                                \label{eq:gs-corr-GS}     \\
-		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{
-			       \exists \mdssSecret^* \text{ s.t. } \mdssSecret^* \in \mdssShortRecon(\mdssPointSet) \wedge \mdssSecret^* \notin \mdssCS}                                                                 \label{eq:gs-corr-const}                                  \\
-		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}}                             \\
-		\leq & \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound                                                                                                                                                                  \label{eq:gs-corr-claim} \\
-		\leq & \binom{\mdssMaxShares}{\mdssRecThr} \cdot \mdssFieldBound                                                                                                                                                                                            \\
-		\leq & \negl\label{eq:gs-corr-asym}
-	\end{align}
-
-	Where \ref{eq:gs-corr-union} follows from the union bound, \ref{eq:gs-corr-GS} from \cref{thm:GS}, \ref{eq:gs-corr-const} from construction, \ref{eq:gs-corr-claim} from \cref{lem:mdss-corr-bound}, and \ref{eq:gs-corr-asym} from \cref{lem:mdss-asym-bound}.
-\end{proof}
+\input{sections/mainmatter/01-mdss/04-construction/02-02-final-proof.tex}

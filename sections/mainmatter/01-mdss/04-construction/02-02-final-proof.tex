@@ -1,0 +1,70 @@
+
+We can now state and prove our main theorem.
+\begin{theorem}
+	\label{thm:gs-mdss-correctness}
+	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$ and $\mdssPrivThr + 1\leq (1 - \epsilon)\mdssRecThr$ for some constant $\epsilon$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
+\end{theorem}
+
+\newcommand{\mdssCorrectSet}{\set{\mdssSecret_i \text{ s.t. } |\indexSet_i| \geq \mdssRecThr}}
+\newcommand{\mdssShortRecon}{\mathsf{R}}
+\newcommand{\mdssCS}{C}
+\newcommand{\mdssG}{\mathsf{G}}
+\newcommand{\mdssBPB}{\left\lceil\frac{\mdssMaxShares}{\mdssRecThr}\right\rceil \cdot \frac{\mdssRecThr^2}{2|\FF|}}
+
+\begin{proof}
+	In order to keep notation compact let $C = \mdssCorrectSet$, $\mdssShortRecon = \mdssReconstructAlg$, and $\mdssShareList \gets \mdssG$ denote $\mdssShareList \gets \mdssGenerate\left(\set{\mdssConfig{i}_{i \in [\mdssNumShareSets]}} \right)$.
+	\begin{align}
+		     & \probsub{\mdssShareList \gets \mdssG}{\mdssShortRecon(\mdssShareList) \neq \mdssCS }                                                                                                                                                                 \\
+		% ------------------------------- %
+		=    & \probsub{\mdssShareList \gets \mdssG}{
+			       \begin{gathered}
+				       \left(\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS\right)
+				       \vee
+				       \left(\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)\right)
+			       \end{gathered}}                                                                                                                                   \\
+		% ------------------------------- %
+		\leq &
+		\probsub{\mdssShareList \gets \mdssG}{
+			\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS}
+		+ \probsub{\mdssShareList \gets \mdssG}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}        \label{eq:gs-corr-union}                                                                               \\
+		% ------------------------------- %
+		\leq &
+		\probsub{\mdssShareList \gets \mdssG}{
+			\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS}
+		\notag                                                                                                                                                                                                                                                      \\
+		     & + \condprobsub{\mdssShareList \gets \mdssG}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}{\bad'} \prob{\bad'}                                                                                            \notag \\ 
+		     & + \condprobsub{\mdssShareList \gets \mdssG}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}{!\bad'} \prob{!\bad'}                                                                                             
+             \\
+		% ------------------------------- %
+		= &
+		\probsub{\mdssShareList \gets \mdssG}{
+			\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS}
+		\notag                                                                                                                                                                                                                                                      \\
+		     & + \condprobsub{\mdssShareList \gets \mdssG}{\exists \mdssSecret^* \in \mdssCS \text{ s.t. } \mdssSecret^* \notin \mdssShortRecon(\mdssShareList)}{\bad'} \prob{\bad'}                                                                                            
+             \label{eq:gs-corr-GS} \\
+		% ------------------------------- %
+		\leq &
+		\probsub{\mdssShareList \gets \mdssG}{
+			\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS} + \mdssBPB
+             \label{eq:gs-bad-prime-bound} \\
+		% ------------------------------- %
+		\leq &
+		\probsub{\mdssShareList \gets \mdssG}{
+			\exists \mdssSecret^* \in \mdssShortRecon(\mdssShareList) \text{ s.t. } \mdssSecret^* \notin \mdssCS} + \negl
+             \label{eq:gs-bad-prime-negl} \\
+		% ------------------------------- %
+		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{
+			       \exists \mdssSecret^* \in \mdssShortRecon(\mdssPointSet) \text{ s.t. } \mdssSecret^* \notin \mdssCS} + \negl                                                                 \label{eq:gs-corr-const}                                                       \\ 
+		% ------------------------------- %
+		=    & \probsublong{(\mdssPolySet, \mdssPointSet) \gets \mdssHonestDist{\FF}{\mdssPrivThr}{\set{(\mdssSecret_i, \mdssNumShares_i)}_{i \in [\mdssNumShareSets]}}}{\bad_{\mdssPolySet, \mdssPointSet, \mdssPrivThr, \mdssRecThr}} + \negl                             \\
+		% ------------------------------- %
+		\leq & \binom{|\mdssPointSet|}{\mdssRecThr} \cdot \mdssFieldBound + \negl                                                                                                                                                                  \label{eq:gs-corr-claim} \\
+		% ------------------------------- %
+		\leq & \binom{\mdssMaxShares}{\mdssRecThr} \cdot \mdssFieldBound + \negl                                                                                                                                                                                            \\
+		% ------------------------------- %
+		\leq & \negl + \negl \label{eq:gs-corr-asym} \\ 
+        = & \negl
+	\end{align}
+
+	Where \ref{eq:gs-corr-union} follows from the union bound, \ref{eq:gs-corr-GS} from \cref{thm:GS}, \ref{eq:gs-bad-prime-bound} from \cref{lem:mdss-bad-prime-bound}, \ref{eq:gs-bad-prime-negl} from the size of $|\FF|$, \ref{eq:gs-corr-const} from construction, \ref{eq:gs-corr-claim} from \cref{lem:mdss-corr-bound}, and \ref{eq:gs-corr-asym} from \cref{lem:mdss-asym-bound}.
+\end{proof}
