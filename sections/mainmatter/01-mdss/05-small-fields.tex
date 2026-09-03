@@ -28,6 +28,9 @@ A formal description of this scheme can be seen in \cref{fig:gs-mdss-small-field
 	\caption{An MDSS construction for small fields $\sfmdss$}
 	\label{fig:gs-mdss-small-field}
 \end{figure}
+We now prove that our construction satisfies unlinkability and md-correctness.
+
+\subsection{Unlinkability}
 
 \newcommand{\challengeShare}{\ensuremath{\mdssShare{\mdssSecret_b}^*}}
 
@@ -47,7 +50,47 @@ A formal description of this scheme can be seen in \cref{fig:gs-mdss-small-field
 	The theorem then follows directly from \cref{thm:omul-implies-ul}.
 \end{proof}
 
+\subsection{MD-Correctness}
+We begin by proving a small-field analogue to \cref{lem:mdss-asym-bound}.
+\begin{lemma}
+	\label{lem:gs-sf-asym-bound}
+	Let $\epsilon \in (0, 1]$, $\delta > 0$, and $\alpha >= 1$ be constants.
+	Let $x, y, z, w$ be positive integer-valued polynomials in $\secpar$, where $x \in O(\secpar^\alpha)$, $y \in \Omega(1)$, and $z + 1 \leq (1 - \epsilon)y$ for all values of $\secpar$.
+	Then for all $w$ such that $w \in \Omega\left(\secpar^{(\frac{\alpha + \delta}{\epsilon})}\right)$,
+	$$
+		\binom{x}{y} \cdot \left(\frac{1}{w}\right)^{y - (z + 1)} \in \frac{1}{\secpar^{\Omega(1)}}
+	$$
+\end{lemma}
+\begin{proof}
+	\begin{align*}
+		 & \binom{x}{y} \cdot \left(\frac{1}{w}\right)^{y - (z + 1)} \\
+		 & \leq \binom{x}{y} \cdot w^{-\epsilon y}                   \\
+		 & \leq x^y \cdot w^{-\epsilon y}                            \\
+		 & \leq \secpar^{-\delta y}                                  \\
+		 & = \secpar^{-\delta \Omega(1)}  = \secpar^{-\Omega(1)}
+	\end{align*}
+\end{proof}
+
+We can now prove our main theorem.
+
 \begin{theorem}
-	For all sets of parameters satisfying ..., and finite fields $\FF$ such that $\mdssMaxShares \in O(\secpar^d)$ and $|\FF| \in O(\secpar^{d'})$ for constants $d$, $d'$, the construction show in \cref{fig:gs-mdss-small-field} satisfies $\mdssCVar$-correctness for $\mdssCVar(\secpar) = \dots$.
+	For all sets of parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$, and finite fields $\FF$ such that for constants $\epsilon \in (0, 1]$, $\delta > 0$, and $\alpha \geq 1$ it holds that $\mdssMaxShares \in O(\secpar^\alpha)$, $\mdssRecThr \in \Omega(1)$, $\mdssPrivThr + 1 \leq (1 - \epsilon)\mdssRecThr$, and $|\FF| \in \Omega\left(\secpar^{(\frac{2\alpha + \delta}{\epsilon})}\right)$,
+	the construction show in \cref{fig:gs-mdss-small-field} satisfies $\mdssCVar$-correctness for $\mdssCVar(\secpar) =  \secpar^{-\Omega(1)}$.
 \end{theorem}
+\begin{proof}
+	This proof proceeds identially to the proof of \cref{thm:gs-mdss-correctness} up to  \cref{eq:mdss-corr-last-before-negl}, and so we begin with that inequality.
+
+	\begin{align*}
+		\probsub{\mdssShareSet \gets \mdssG}{\mdssShortRecon(\mdssShareSet) \neq \mdssCS} & \leq
+		\binom{\mdssMaxShares}{\mdssRecThr} \cdot \left(\frac{1}{|\FF|}\right)^{\mdssRecThr - (\mdssPrivThr + 1)} + \left\lceil\frac{\mdssMaxShares}{\mdssRecThr}\right\rceil \cdot \frac{\mdssRecThr^2}{2|\FF|} \\
+		                                                                                  & \leq \secpar^{-\Omega(1)} + \mdssBPB \tag{\cref{lem:gs-sf-asym-bound}}                                               \\
+		                                                                                  & < \secpar^{-\Omega(1)} + \left(\frac{\mdssMaxShares}{\mdssRecThr} + 1\right) \cdot \frac{\mdssRecThr^2}{2|\FF|}      \\
+		                                                                                  & = \secpar^{-\Omega(1)} + \frac{\mdssMaxShares \cdot \mdssRecThr + \mdssRecThr^2}{2|\FF|}                             \\
+		                                                                                  & \leq \secpar^{-\Omega(1)} + \frac{\mdssMaxShares^2}{|\FF|}                                                           \\
+		                                                                                  & \leq \secpar^{-\Omega(1)} + \frac{\secpar^{2\alpha}}{\secpar^{\frac{(2\alpha + \delta)}{\epsilon}}}                  \\
+		                                                                                  & \leq \secpar^{-\Omega(1)} + \frac{\secpar^{2\alpha}}{\secpar^{2\alpha + \delta}}                                     \\
+		                                                                                  & = \secpar^{-\Omega(1)} + \secpar^{-\delta} = \secpar^{-\Omega(1)} + \secpar^{-\Omega(1)}  = \secpar^{-\Omega(1)}
+		% & \leq \secpar^{-\Omega(1)} + \left(\frac{\mdssMaxShares}{\mdssRecThr} + 1\right) \cdot \frac{\mdssMaxShares^2}{2|\FF|} \\
+	\end{align*}
+\end{proof}
 
