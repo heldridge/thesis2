@@ -1,0 +1,80 @@
+\subsection{Overview}
+Implementing the small-field construction show in \cref{fig:gs-mdss-small-field} poses an implementation challenge: the dealer must know if any $x$-coordinate has previously been used so that they can emit a noise share.
+The naive approach to solving this problem requires each dealer to keep a list of past evaluation points.
+Unfortunately, this may force the dealer to retain a substantial amount of state.
+
+Here we propose an alternative approach: rather than recording past evaluation points, each dealer will sample the evaluation point {\em pseudorandomly} using a specialized PRF construction that we refer to as a {\em collision-aware PRF} (CA-PRF).
+The novel feature of this PRF construction is that it signals the presence of a collision.
+More concretely, when presented with an input $i$ and some compact state computed from past queries, this function produces both a pseudorandom element in $\FF$ as well as a separate {\em collision-detection signal}: this signal will equal $1$ iff there exists some input $j < i$ such that $F(i) = F(j)$.
+In practice, a caller can evaluate this function sequentially on inputs $\set{0, 1, 2, \dots}$ to produce a sequence of evaluation points, and can respond to collision signals as required by the secret sharing protocol.
+
+We will require that a CA-PRF possess two properties: \emph{collision-correctness} and \emph{pseudorandomness}.
+
+\subsection{Definition}
+
+\begin{definition}[CA-PRF]
+	Let $\domain, \range$ be two sets, where $\domain$ is an ordered set of size polynomial in the key length.
+	A collision-aware PRF (CA-PRF) family is a function $F: \keyspace \times \domain \times \ZZ^{+} \rightarrow \range \times \bin$
+\end{definition}
+
+We will consider the case where $\domain = \range$, and notationally we will assume that elements in $\domain$ can be represented by an integer position in the set.
+We will use the notation $F_K(i, M_i) \rightarrow (x, b)$ to represent a query specifying the $i^{th}$ element of $\domain$ and a non-negative integer {\em count} $M_i$.
+This query produces an element $x \in \domain$ as well as a bit $b \in \bin$ that indicates whether there is a collision with some ``earlier'' input to the function.
+
+We define a {\em well-formed} query as one that takes as input a pair $(i, M_i)$ where $M_i$ represents the number of {\em unique} $x$ values produced by queries on earlier elements of the domain.
+More precisely, we define $M_0$ = 0, and for $0 < i < |\domain|$, we inductively define $M_i$ to be the total number of (unique) elements in the set $\{x_j\}_{j \in [0,i-1]}$ where $(x_j, b_j) \leftarrow F_K(j, M_j)$.
+
+\begin{definition}[Collision-correctness]
+	This property holds that for all keys $K$ and input tuples where $(i, M_i)$ are well-formed, the query $(x_i, b_i) \leftarrow F_K(i, M_i)$ will output $b_i=1$ iff there exist an integer $0 \le j < i$ such that well-formed $(x_j, b_j) \leftarrow F_K(j, M_j)$ has $x_i = x_j$.
+\end{definition}
+
+\begin{definition}[Non-adaptive pseudorandomness]
+	This is identical to the standard pseudorandomness notion for PRFs, with two caveats: $(1)$ we consider only adversaries who evaluate the oracle non-adaptively on a fixed polynomial set of {\em well-formed} queries $0, \dots, q-1$, and $(2)$ pseudorandomness applies only to the output string $x$, and not to the collision bit $b$.
+\end{definition}
+
+\subsection{Construction}
+
+\newcommand{\bprf}{\bar{F}}
+\newcommand{\caprfSR}{\mathsf{SampleProb}}
+
+We propose here a concrete CA-PRF with domain and range $\set{0, \dots, p - 1}$ where $p$ is prime, and $p$ is polynomial in the key length.
+Our construction is built from a standard PRF $\bprf$ and some small domain PRP $P$.
+We note that such permutations can be constructed from a standard PRF via the techniques of \cite{RSA:BlaRog02, SAC:BRRS09}.
+Let $\keyspace_P$ be the keyspace of $P$, and $\keyspace_F$ be the keyspace of $\bprf$.
+The keyspace of our construction is $\keyspace_P \times \keyspace_{F}$.
+
+
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$F_{(k_P, k_F)}(i, M_i)$}{
+			(j', b) \gets \caprfSR(k_F, i, M_i, p) \\
+			\pcif b = 0 \pcthen \pcreturn (P_{k_P}(M_i), 0) \\
+			\pcelse \pcreturn (P_{k_P}(j'), 1)
+		}
+		\procedure[linenumbering]{$\caprfSR(k, i, M_i, p)$}{
+			\pcif i = 0 \pcthen \pcreturn (0, 0)\\
+			\text{ Compute } r \gets \left(\bprf_{k_F}(i||M_i||p||0) || \dots || \bprf_{k_F}(i||M_i||p||\ell)\right) \pcskipln\\
+			\text{ for } \ell \text{ such that } |r| \text{ is sufficient to perform the remaining steps} \\
+			\text{ Use } r \text{ to sample a bit } b \text{ such that } b = 1 \text{ with probability } \frac{M_i}{p} \\
+			\pcif b = 0 \pcthen j' := 0 \\
+			\pcelse \text{use remaining coins from } r \text{ to sample } j' \sample [0,M_i - 1] \\
+			\pcreturn (j', b)
+		}
+	\end{pcvstack}
+	\caption{Our CA-PRF construction}
+	\label{fig:caprf}
+\end{figure}
+
+\subsection{Proofs}
+
+\subsubsection{Collision-Correctness}
+
+\begin{theorem}
+	The construction shown in \cref{fig:caprf} satisfies collision-correctness
+\end{theorem}
+\begin{proof}
+	We observe that collision-correctness holds trivially for query $i=0$.
+	Let $i, 0 < i < p$ be the smallest query where the conditions of collision-correctness {\em do not} hold.
+	Written explicitly, this implies one of two possibilities: either $(1)$ $b_i = 0$ and yet $x_i = x_j$ where $x_j$ is the output of some previous query $0 \le j < i$, or $(2)$ $b_i = 1$ and yet $x_i \ne x_j$ for all $0 \le j < i$.
+	Since $i$ is the smallest value to violate collision-correctness, we can assume that collision-correctness holds for every query $0 \le i' < i$. We consider these two cases separately and show that either case implies a contradiction.
+\end{proof}
