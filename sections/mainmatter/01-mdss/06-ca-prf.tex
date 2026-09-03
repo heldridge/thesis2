@@ -36,7 +36,9 @@ More precisely, we define $M_0$ = 0, and for $0 < i < |\domain|$, we inductively
 
 \newcommand{\bprf}{\bar{F}}
 \newcommand{\caprfSR}{\mathsf{SampleProb}}
+\newcommand{\sampleprob}{\caprfSR}
 \newcommand{\smallprp}{P}
+\newcommand{\realprf}{F}
 
 We propose here a concrete CA-PRF with domain and range $\set{0, \dots, p - 1}$ where $p$ is prime, and $p$ is polynomial in the key length.
 Our construction is built from a standard PRF $\bprf$ and some small domain PRP $P$.
@@ -100,4 +102,50 @@ The keyspace of our construction is $\keyspace_P \times \keyspace_{F}$.
 \end{theorem}
 
 \begin{proof}
+	We now sketch a brief analysis to consider the pseudorandomness of the above construction.
+	Recall that we consider only an adversary who issues well-formed queries.
+	Moreover, $p$ is polynomial in $|K|$ and hence {\em w.l.o.g.} we can restrict our consideration to adversaries that query $F_K$ on all input values $\{0, \dots, p-1\}$ in sequence.
+	Our analysis begins with the real protocol described above, and then proceeds via a series of hybrids.
+
+	$\hyb_1$: In a first hybrid, we re-implement the construction above while replacing the functions $\realprf_{k_{\realprf}}$ and $\smallprp_{k_{\smallprp}}$ with a random function (RF) and a random permutation (RP) respectively, each with the appropriate input/output behavior.
+	Clearly an adversary who distinguishes this hybrid from the real protocol with non-negligible advantage implies a distinguisher for one of these two pseudorandom objects.
+
+	$\hyb_2$: In a second hybrid, we replace the coins $r$ sampled within the $\sampleprob$ procedure with a sequence of uniformly-random coins of the same length.
+	Since the input sequence $(i \| M_i \| p \| 0), \dots, (i \| M_i \| p \| \ell)$ does not repeat and $RF$ is a random function, it is easy to see that the resulting coins are distributed identically in this hybrid, and hence the adversary's advantage is identical to the previous hybrid.
+
+	$\hyb_3$: Here we change the description of the random permutation $RP$ oracle to an equivalent one.
+	Consider the permutation $RP$ to be implemented by a lazy oracle that operates as follows: when queried on each input $M_i$ (in sequence) the oracle first samples $x_i \in [0,p-1]$ uniformly and then checks a table to see if past queries (on inputs $M_{i'} < M_i$) have returned $x_i$.
+	If not, the $RP$ returns $x_i$.
+	Otherwise it samples a new $x_i$ and repeats the test above until it finds an $x_i$ that is not in the table.
+	This re-sampling process will occur $S'_i$ times to find $x_i$.
+	Clearly this oracle has the same distribution as a standard random permutation and so the adversary's advantage is identical to the previous hybrid.
+
+	$\hyb_4$: We now combine the construction of $F$ and $RP$ as follows.
+	When $F$ is queried on input $i$ (recalling that duplicate queries are not permitted) it samples $x_i \in [0,p-1]$ uniformly and examines the table of previous responses from $RP$ to see if $x_i$ represents the response to a previous query $RP(M_{i'})$ where $M_{i'} < M_i$.
+	If so it sets $b_i=1$ and otherwise sets $b_i=0$.
+	If $b_i=0$ then it now simulates $RP$ as follows: it writes $x_i$ into the table for the RP at position $M_i$.
+	If $b_i=1$ it does not modify the table for $RP$.
+	In all cases it returns $(x_i,b_i)$ as the response from $F$.
+
+	This hybrid requires more analysis.
+	Let $(x_i, b_i) = F_K(i)$ be the $i^{th}$ query response.
+	Observe that on query $i=0$ this hybrid samples a uniform $x_i \in [0,p-1]$ and sets $b=0$, which is identical behavior to the previous hybrid.
+	As $i$ increases monotonically we must consider two cases.
+
+	\begin{enumerate}
+		\item When $b_i=1$: For $i>0$ any query $F(i)$ will return $b=1$ with probability $M_i/p$, exactly as in the previous hybrid.
+		      This occurs because $M_i$ is the number of unique elements in the table $RP$ (equivalent to the number of previous unique responses from $F$) and a uniform $x_i \in [0,p-1]$ will collide with at least one element with exactly that probability.
+		      Moreover, let us consider $j'$ to be the index of that collision (if there are multiple $j'$, we can select one at random from the options): then $j'$ in this hybrid will be uniform in $[0,M_i-1]$ exactly as in the previous hybrid, and the identity $x_i = RP(j')$ will be preserved.
+
+		\item When $b_i=0$: For $i>0$ any query $F(i)$ will return $b=0$ with probability $1-(M_i/p)$ as in the previous hybrid.
+		      Let $i' < i$ be the most recent query in which $b_{i'} = 0$, and define $S_i = i-i'$ as the number of times a value $x \in [0,p-1]$ has been sampled since the $i'^{th}$ query, including sampling of the current $x_i$.
+		      Observe that $S_i$ is determined by a process of sampling values in $[0,p-1]$ and comparing them to the existing table $RP$ which has size $M_{i}$, which is precisely the process that determines $S'_i$ in the previous hybrid.
+		      Hence statistically these terms will be identical, and thus the process of sampling $x_i$ will be as well.
+	\end{enumerate}
+
+	Hence it holds that the statistical distribution of this hybrid is identical to that of the previous hybrid.
+	Critically, this final hybrid returns uniformly random values $x_i \in [0,p-1]$ from $F$ for each query.
+	It is easy to see that this function has behavior identical to a random function.
+	Hence by summation across all hybrids we show that all adversaries must distinguish the real protocol from a random function with probability at most negligible.
+	This ends the sketch.
 \end{proof}
