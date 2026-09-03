@@ -36,6 +36,7 @@ More precisely, we define $M_0$ = 0, and for $0 < i < |\domain|$, we inductively
 
 \newcommand{\bprf}{\bar{F}}
 \newcommand{\caprfSR}{\mathsf{SampleProb}}
+\newcommand{\smallprp}{P}
 
 We propose here a concrete CA-PRF with domain and range $\set{0, \dots, p - 1}$ where $p$ is prime, and $p$ is polynomial in the key length.
 Our construction is built from a standard PRF $\bprf$ and some small domain PRP $P$.
@@ -77,4 +78,26 @@ The keyspace of our construction is $\keyspace_P \times \keyspace_{F}$.
 	Let $i, 0 < i < p$ be the smallest query where the conditions of collision-correctness {\em do not} hold.
 	Written explicitly, this implies one of two possibilities: either $(1)$ $b_i = 0$ and yet $x_i = x_j$ where $x_j$ is the output of some previous query $0 \le j < i$, or $(2)$ $b_i = 1$ and yet $x_i \ne x_j$ for all $0 \le j < i$.
 	Since $i$ is the smallest value to violate collision-correctness, we can assume that collision-correctness holds for every query $0 \le i' < i$. We consider these two cases separately and show that either case implies a contradiction.
+
+	In case $(1)$ then there must exist some query $j < i$ such that $x_i = x_j$ and $b_j =0$
+	(if there exists such a $j$ where $b_j=1$ then, under our stipulation  that all queries $j <i$ satisfy the conditions of collision-correctness, there must be an even earlier query $j$ satisfying $x_i = x_j$ where $b=0$ and hence we need only consider the earlier query).
+	And yet recall that if $b_j=0$ and query $j$ satisfies the conditions of collision-correctness, then
+	$x_j = P{k_{P}}(M_j)$ and the count $M_i > M_j$ since the response $x_j$ will necessarily have increased the number of unique values by at least one.
+	Given that $P_{k_{P}}$ is a permutation and $M_i \ne M_j$ it cannot be the case that $x_i = x_j$ because that would imply $P_{k_{P}}(M_i) = P_{k_{P}}(M_j)$.
+	This contradicts the assumption.
+
+	In case $(2)$ we have that $b_i = 1$ and yet $x_i \ne x_j$ for any $0 \le j < i$.
+	Here the construction returns $x_i = \smallprp_{k_{\smallprp}}(j')$ where $j' \in [0,M_i - 1]$.
+	For the condition $x_i \ne x_j$ to be true, it would have to be the case that some value in the range $[0,M_i - 1]$ has not been queried to the permutation and returned by some previous query.
+	And yet recall that all previous queries $0 \le i' < i$ satisfy the conditions of collision-correctness: this means that the count must have increased by at most one following any query where $b_{i'} = 0$, and did not increase at all for queries where $b_{i'} = 1$.
+	Since for each query where $b_{i'} = 0$ the response $x_{i'} = \smallprp_{k_{\smallprp}}(M_{i'})$ and such queries will encompass each $M_{i'} \in [0, M_{i} - 1]$ then there must exist at least one past query $j < i$ such that $x_j = \smallprp_{k_{\smallprp}}(j')$ for $j' \in [0, M_i -1]$, contradicting the assumption.
+\end{proof}
+
+\subsubsection{Non-Adaptive Pseudorandomness}
+
+\begin{theorem}
+	The construction shown in \cref{fig:caprf} satisfies non-adaptive pseudorandomness
+\end{theorem}
+
+\begin{proof}
 \end{proof}
