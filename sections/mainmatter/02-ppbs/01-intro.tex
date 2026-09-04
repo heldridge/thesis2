@@ -1,0 +1,87 @@
+Cryptocurrencies, protocols and exchanges have recently faced stringent regulatory pressure due to their potential misuse by terrorist organizations and for money laundering purposes in the US~\cite{regulation1}, EU~\cite{regulation4}, UAE~\cite{regulation2} and Japan~\cite{regulation3}.
+This problem has become more serious due to the recent deployment of asset-backed \emph{stablecoins},
+which use decentralized networks to conduct transactions denominated in regulated financial assets.
+A common solution to this problem employs {blockchain tracing}~\cite{meiklejohn2013fistful}, which depends on the fact that many cryptocurrency systems use \emph{non-private} transactions, where all details are visible to the public.
+Unfortunately, this results in a level of transaction privacy dramatically below that of the traditional financial system.
+Several technologies have sought to improve privacy by deploying techniques  that make transaction details confidential to non-participants~\cite{SP:BCGGMT14, EPRINT:Noether15, pertsev2019tornado,  SP:KMSWP16}.
+The lack of visibility in these systems has led to a series of conflicts with regulatory authorities, culminating in the U.S. Treasury applying sanctions to the Tornado Cash smart contracts~\cite{Treasury2022TornadoCash}.
+
+Over the past several years, several proposals have sought to achieve privacy while also satisfying the requirements of government regulators.
+One family of solutions aims to preserve the confidentiality of transactions from {the general public} while also providing some degree of visibility to a designated \emph{compliance authority} ({\em e.g.,} a stablecoin  issuer).
+The most straightforward approach to this problem makes \emph{all} transaction data visible to the authority, for example by encrypting transaction details under the authority's public key.
+However, this level of visibility can pose a risk to users in the event that the authority becomes compromised.
+An alternative approach is related to the area of \emph{pre-constrained encryption}~\cite{ITCS:AJJM22}: in these protocols a designated authority learns only appropriate functions of an individual's financial activity, while keeping other aspects fully private. %This approach offers a compromise that can ease the tension between necessary compliance surveillance and innocent individual's privacy rights.
+For example, individuals who remain within an envelope of compliance parameters would experience full transaction privacy, while those who exceed these parameters would have some or all of their transaction data revealed.
+Most critically, this guarantee should hold \emph{even if the authority is fully compromised and behaves maliciously}, which rules out solutions that simply collect all transaction data and then filter what is made available to regulators.
+
+\paragraph{Privacy-preserving blueprints.}
+In service of this goal, Kohlweiss et al.\ \cite{EC:KohLysNgu23} introduced \emph{Privacy-Preserving Blueprints} (PPBs).
+In a PPB scheme, an auditor publishes a function $f(\cdot, \cdot)$, along with some secret and committed input $x$ chosen by the auditor.
+Each time a user authors a transaction, it adds an encrypted \emph{escrow} field that contains the value $f(x, \uval)$, where $\uval$ represents some input from the user's transaction.
+Finally, this escrow field can be decrypted by the auditor.
+This primitive has several applications.
+For example,  $f(x, \cdot)$ can realize a \emph{watchlist} functionality~\cite{EC:KohLysNgu23,EPRINT:GKLS24}: here $x = \{A_1, \dots, A_n\}$ contains a secret list of suspicious accounts, and $\uval = \{A_{\sf sender}, A_{\sf recipient}\}$ are the addresses of the parties involved in the transaction.
+The function $f(x, \uval)$ would reveal $\uval$ to the auditor iff $v \cap x \ne \emptyset$ and would reveal an empty value $\bot$ in all other cases.
+A critical feature of PPBs is that the watchlist $x$ remains confidential from the transaction authors.\footnote{In practice, the auditor's input $x$ can be placed within a public commitment: this ensures that the contents of the watchlist are not entirely arbitrary, \emph{e.g.,} outside parties can be allowed to examine the content of the watchlist and ensure that this watchlist is in use on the network.}
+
+\paragraph{PPBs for threshold comparison.}
+One particularly useful functionality for PPBs is  \emph{threshold comparison}, which allows authorities to place threshold limits on transaction values.
+Here $\uval$ contains the amount of a transaction, and the auditor learns some message $m$ iff $\uval > x$.\footnote{In practice $m$ may be identifying information for the user, or a key that encrypts other values of interest.}
+This functionality is a critical component of implementing traditional Anti-Money Laundering (AML) functionalities.
+For example, the U.S. Bank Secrecy Act both mandates the reporting of cash transactions over \$10,000 \cite{meltzer1991keeping}, and that banks file secret Suspicious Activity Reports (SARs) for any transaction  that may represent ``structuring'' intended to evade the published limits.
+PPBs for threshold comparison (over individual transaction amounts, or cumulative transaction amounts over a period) represents one way to implement SARs on a private chain.
+
+Building threshold-comparison PPBs for use on large-scale distributed ledgers imposes a number of restrictions on  constructions.
+Any constructions must be efficient in both computation time and particularly in bandwidth (\emph{i.e.,} the size of the escrow field), since the escrow must be stored on the ledger.
+Next, PPBs require that escrows be \emph{publicly verifiable}.
+While the auditor checks and decrypts values, the validators maintaining the ledger should be capable of verifying that any given escrow is valid as a condition for accepting transactions on chain.
+Finally, the auditor must be able to decrypt an escrow field non-interactively, {\em i.e.,} it should not require further interaction with the transaction author to obtain the escrow data.
+
+\paragraph{Limitations of previous work.}
+Previous works addressing threshold-comparison PPBs or related problems fall short on one or more of these metrics.
+Kohlweiss \emph{et al.} propose a solution based on fully-homomorphic encryption (FHE)~ \cite{EC:KohLysNgu23}, which can realize general functionalities and is space-efficient.
+However, the scheme requires the transactor to formulate a zero-knowledge proof over the FHE evaluation process, which remains computationally infeasible \cite{viand2023verifiable}.
+Subsequent work~\cite{EPRINT:GKLS24} improves efficiency, but supports only the more limited set membership (``watchlist'') functionality discussed above.
+
+A second line of work by David \emph{et al.} \cite{AC:DEFKPV24} produces a computationally-efficient \emph{updatable} PPB that can be adapted to fit the threshold comparison functionality.
+In their scheme, users submit transactions with values up to some limit $d$, and the auditor becomes able to decrypt an escrow when the sum of the transaction values passes the threshold $\thr$.
+Unfortunately, their solution is notably inefficient when it comes to the escrow size: escrows require a number of group elements that scales \emph{linearly} with $d$.
+As a concrete example, to allow up to $1000$ units of currency per transaction would require each escrow to consume $385$KB using the instantiation from \cite[\S8]{AC:DEFKPV24}.
+
+The PPB offering the most practical solution for threshold-comparison is a second construction in Kohlweiss \emph{et al.}~\cite{EC:KohLysNgu23} which uses non-interactive secure computation (NISC).
+In this construction, escrows consist of the sender message in a NISC protocol (typically instantiated with oblivious-transfer (OT) ciphertexts and a garbled circuit) along with a proof that the NISC was computed honestly.
+While computing a ``proof of garbling'' requires proving over cryptographic primitives, and escrows must contain the full garbled truth tables, this solution remains plausible as a deployable PPB, though to the best of the authors' knowledge no implementations currently exist.
+One contribution of this work is to explore and optimize this approach.
+
+\paragraph{Our contributions.} In this work we investigate the problem of constructing concretely efficient privacy-preserving blueprints for threshold comparison. We investigate two different approaches to this question:
+\begin{enumerate}
+	\item {\bf Realizing and optimizing NISC for PPBs.} As a baseline, we revisit the NISC approach mentioned by Kohlweiss \emph{et al.}~\cite{EC:KohLysNgu23}. While the authors describe this construction as ``theoretical'' for general functionalities, we show that careful engineering allows us to realize the specific comparison functionality practically. The challenge here is careful circuit optimization, as well as the need to realize a ZK-friendly implementation of a garbled circuit, something that requires non-trivial optimization and design choices. We use this construction as a baseline to compare against later contributions.
+
+	\item {\bf Developing a novel PPB based on ambiguous encryption.}
+	      To improve upon this result, we next develop a novel PPB construction that allows the auditor to perform an oblivious variant of the classic string comparison algorithm using ``lossy'' and ambiguous encryption~\cite{CCS:BLMG21}.
+	      Our construction makes use of the fact that, in our intended application, the threshold comparison functionality already leaks information about the user's input amount \emph{in the specific case where the comparison is satisfied.}
+	      The resulting escrows require only $4\log_{\base}(\maxt) + 7$ group elements, where $\maxt$ is the maximum value of the threshold $\thr$ and $\base$ is an arbitrary base chosen at setup time.
+\end{enumerate}
+To verify the efficiency of our techniques we implement both approaches under the assumption of a malicious user, and we present detailed performance and bandwidth numbers for each construction. We provide a comparison of estimated escrow sizes and prover times between this and prior work in \cref{tab:prior_work}.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Scheme}                                    & \textbf{Practical?} & \shortstack{\textbf{Generation} \\ \textbf{time}}                       & \shortstack{\textbf{Estimated Escrow}\\ \textbf{Size (bytes)}} \\
+		\hline
+		Kohlweiss \emph{et al.} \cite{EC:KohLysNgu23} FHE  & No                  & n/a                                            & $2{,}252$                                                      \\
+		David \emph{et al.} \cite{AC:DEFKPV24}             & No                  & n/a                                            &
+		%$1$ second \mdg{NO WAY} &
+		$384d + 1{,}152$                                                                                                                                                                           \\
+		Kohlweiss \emph{et al.} \cite{EC:KohLysNgu23} NISC & Yes                 & \shortstack{$11.95$ seconds \\ (see \S\ref{sec:experiments}.)} & $13{,}472$                                                     \\
+		This work                                          & Yes                 & $4.42$ seconds                                 & $1{,}600$                                                      \\
+		\hline
+	\end{tabular}
+	\caption{A comparison of escrow sizes and proof generation time for threshold comparison of $32$-bit integers. Best-case FHE escrow size was estimated as TFHE \cite{JC:CGGI20} ciphertexts compressed using the TFHE-rs library \cite{Zama2024TFHE‐rsv0.7}. The $d$ in the escrow size for \cite{AC:DEFKPV24} scales linearly with the amount of currency permitted per-transaction, and would be impractically large for implementations at $d=2^{32}$ in this example.} \label{tab:prior_work}
+
+\end{table}
+
+
+In the next section we provide a high-level technical overview of our contributions.
+
