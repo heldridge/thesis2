@@ -1,0 +1,17 @@
+Let $\groupgen(\secparam)$ be a function that on input $\secparam$ outputs the description of a group $\GG$ with prime order $q$ and generator $g$.
+Let the variable $\dl(\groupgen, \adv, \secpar)$ denote the result of the following probabilistic experiment:
+
+\procedureblock{$\dl(\groupgen, \adv, \secpar)$}{
+	(\GG, q, g) \gets \groupgen(\secpar) \\
+	\text{Sample } s \leftarrow \ZZ_q \\
+	s' \leftarrow \adv(\GG, q, g, g^s) \\
+	\pcreturn s' = s
+}
+
+The $\dl(\groupgen, \adv)$ advantage of $\adv$ is defined as
+$$
+	\advantage{\dl}{\groupgen, \adv} = \Pr[\dl(\groupgen, \adv, \secpar) = 1]
+$$
+
+If for all adversaries $\adv$, there exists a negligible function $\negl$ such that $\advantage{\dl}{\groupgen, \adv} \leq \negl$, we say that discrete log is hard relative to $\groupgen$.
+We may ocasionally abuse notation and say that discrete log is hard for $\GG$ instead, where $\GG$ is representative of the family of groups output by $\groupgen$.
