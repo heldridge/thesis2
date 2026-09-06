@@ -57,7 +57,7 @@
 \end{definition}
 
 A lossy PKE must still satisfy correctness for keys generated through $\kgen$, as well as the following two properties.
-Our computational lossiness is a relaxation from the statistical notion originally described in \cite{C:PeiVaiWat08}.
+We define a computational notion of lossiness as opposed to the statistical notion originally described in \cite{C:PeiVaiWat08}.
 
 \begin{definition}[Computational Lossiness]
 	Let $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ be a lossy PKE scheme and let the random variable $\comploss_b(\pke, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
@@ -66,7 +66,7 @@ Our computational lossiness is a relaxation from the statistical notion original
 		r, m_0, m_1, \st \gets \adv_1(\pkepp) \\
 		\pk \gets \kgenlossy(\pkepp; r) \\
 		\ct^* \gets \enc(\pkepp, \pk, m_b) \\
-		b' \gets \adv(\ct^*) \\
+		b' \gets \adv_2(\ct^*) \\
 		\pcreturn b'
 	}
 	The $\comploss(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
@@ -74,4 +74,71 @@ Our computational lossiness is a relaxation from the statistical notion original
 		\advantage{\comploss}{\adv, \pke} = \abs{\prob{\comploss_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\comploss_1(\pke, \adv, \secpar) \Rightarrow 1}}
 	$$
 	We say that a PKE scheme satisfies computationall lossiness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\comploss}{\adv, \pke} \leq \negl$.
+\end{definition}
+
+\begin{definition}[Key Indistinguishability]
+	Let $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ be a lossy PKE scheme and let the random variable $\kindist_b(\pke, \adv, \secpar)$ where $b \in \bin$ and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\kindist_b(\pke, \adv, \secpar)$}{
+		\pkepp \gets \setup(\secparam) \\
+		(\pk_0, \sk_0) \gets \kgen(\pkepp) \\
+		\pk_1 \gets \kgenlossy(\pkepp) \\
+		b' \gets \adv(\pkepp, \pk_b)\\
+		\pcreturn b'
+	}
+
+	The $\kindist(\pke, \adv, \secpar)$ advantage of $\adv$ is described as
+	$$
+		\advantage{\kindist}{\adv, \pke} = \abs{\prob{\kindist_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\kindist_1(\pke, \adv, \secpar) \Rightarrow 1}}
+	$$
+	We say that a PKE scheme satsifies key indistinguishability if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\kindist}{\adv, \pke} \leq \negl$.
+\end{definition}
+
+\subsection{Robust Encryption}
+
+Weak robustness \cite{TCC:AbdBelNev10, AC:Mohassel10} for a PKE scheme requires that a ciphertext does not decrypt to a valid plaintext under two different secret keys that correspond to distinct public keys.
+We repeat a simplified form of the definition below.
+
+\begin{definition}[Weak Robustness]
+	Let $\pke = (\setup, \kgen, \enc, \dec)$ be a PKE scheme and let the random variable $\robust_b(\pke, \adv, \secpar)$ where $b \in \bin$ and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\robust_b(\pke, \adv, \secpar)$}{
+		\pkepp \gets \setup(\secparam) \\
+		\forall i \in [n], \set{\sk_i, \pk_i} \gets \kgen(\pkepp) \\
+		(j, k, m, r) \gets \adv(\secparam, \set{\pk_i}_{i \in [n]})\text{, where } 0 \leq j\text{, }k < n \\
+		\ct := \enc(\pk_j, m; r) \\
+		\pcif j \neq k \wedge \dec(\sk_k, \ct) \neq \bot \pcthen \pcreturn 1 \\
+		\pcelse \pcreturn 0
+	}
+	Where $n$ is polynomial in $\secpar$.
+
+	The $\robust(\pke, \adv, \secpar)$ advantage of $\adv$ is described as
+	$$
+		\advantage{\robust}{\adv, \pke} = \prob{\robust_0(\pke, \adv, \secpar) \Rightarrow 1}
+	$$
+	We say that a PKE scheme satsifies weak robustness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\robust}{\adv, \pke} \leq \negl$.
+\end{definition}
+
+\subsection{Collision Free Encryption}
+Mohassel \cite{AC:Mohassel10} defines a relaxation of robustness called collision-freeness for PKE schemes.
+Intuitively, collision-freeness requires that a ciphertext decrypts to two different plaintexts when decrypted using distinct secret keys.
+We define the corresponding variant with adversarial randomness below.
+
+
+\begin{definition}[Weak Collision-Freeness]
+	Let $\pke = (\setup, \kgen, \enc, \dec)$ be a PKE scheme and let the random variable $\collfree(\pke, \adv, \secpar)$ where $b \in \bin$ and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\collfree(\pke, \adv, \secpar)$}{
+		\pkepp \gets \setup(\secparam) \\
+		\forall i \in [n], \set{\sk_i, \pk_i} \gets \kgen(\pkepp) \\
+		(j, k, m, r) \gets \adv(\secparam, \set{\pk_i}_{i \in [n]})\text{, where } 0 \leq j\text{, }k < n \\
+		\ct := \enc(\pk_j, m; r) \\
+		m' := \dec(\sk_k, \ct) \\
+		\pcif j \neq k \wedge m = m' \pcthen \pcreturn 1 \\
+		\pcelse \pcreturn 0
+	}
+	Where $n$ is polynomial in $\secpar$.
+
+	The $\collfree(\pke, \adv, \secpar)$ advantage of $\adv$ is described as
+	$$
+		\advantage{\collfree}{\adv, \pke} = \prob{\collfree(\pke, \adv, \secpar) \Rightarrow 1}
+	$$
+	We say that a PKE scheme satsifies weak collision-freeness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\collfree}{\adv, \pke} \leq \negl$.
 \end{definition}
