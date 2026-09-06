@@ -60,26 +60,23 @@ While the above unlinkability definition is powerful, it is also somewhat cumber
 We therefore define a simpler definition for which it will be easier to prove that a scheme satisfies, and then show that the two definitions are in fact equivalent.
 
 \begin{definition}[One-More Unlinkability]
-	We say that an MDSS scheme is $\mdssULVar$\emph{-one-more-unlinkable} if for all admissible NUPPT adversaries $\adv = (\adv_1, \adv_2)$ and for all $\secpar \in \NN$:
-	\begin{equation*}
-		\begin{gathered}
-			\probsublong{
-				\begin{gathered}
-					(\mdssSecret_0, \mdssSecret_1, \mdssNumShares_0, \mdssNumShares_1, \indexSet, i), \st \gets \adv_1(\secparam) \\
-					\set{\mdssShare{\mdssSecret_0}_1, \dots, \mdssShare{\mdssSecret_0}_{\mdssNumShares_0 - 1}, \mdssShare{\mdssSecret_0}^*} \gets \mdssProj(\mdssSecret_0, \mdssNumShares_0, \indexSet)\\
-					\set{\mdssShare{\mdssSecret_1}^*} \gets \mdssProj(\mdssSecret_1, \mdssNumShares_1, i) \\
-				\end{gathered}
-			}{
-				\adv_2(\st, \mdssShare{\mdssSecret_0}_1, \dots, \mdssShare{\mdssSecret_0}_{\mdssNumShares_0 - 1}, \mdssShare{\mdssSecret_b}^*) = b
-			} \\
-			\leq \frac{1}{2} + \mdssULVar(\secpar)
-		\end{gathered}
-	\end{equation*}
-\end{definition}
-where $\adv$ is \emph{admissible} if it is the case that $|\indexSet| \leq \mdssPrivThr$.
-We refer to $\mdssULVar(\secpar)$ as the \emph{advantage} of $\adv$, and denote it by $\mdssOMUAdv$.
+	Let $(\mdss = (\mdssShareAlg, \mdssReconstructAlg)$ be an MDSS scheme and let the random vaiable $\omulink_b(\mdss, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\omulink_b(\pke, \adv, \secpar)$}{
+		(\mdssSecret_0, \mdssSecret_1, \mdssNumShares_0, \mdssNumShares_1, \indexSet, i), \st \gets \adv_1(\secparam) \\
+		\set{\mdssShare{\mdssSecret_0}_1, \dots, \mdssShare{\mdssSecret_0}_{\mdssNumShares_0 - 1}, \mdssShare{\mdssSecret_0}^*} \gets \mdssProj(\mdssSecret_0, \mdssNumShares_0, \indexSet)\\
+		\set{\mdssShare{\mdssSecret_1}^*} \gets \mdssProj(\mdssSecret_1, \mdssNumShares_1, i) \\
+		b' \gets \adv_2(\st, \mdssShare{\mdssSecret_0}_1, \dots, \mdssShare{\mdssSecret_0}_{\mdssNumShares_0 - 1}, \mdssShare{\mdssSecret_b}^*)
+	}
+	We say that an adversary $\adv$ is \emph{admissible} if it is the case that $|\indexSet| \leq \mdssPrivThr$.
 
-As with Unlinkability we can use the standard transformation to produce a two-words definition, use the notation $\mdssOMULGame{\hat{b}}{\adv}$, and have that $\mdssOMUAdv = \left| \prob{\mdssOMULGame{0}{\adv} = 1} - \prob{\mdssOMULGame{1}{\adv} = 1}\right|$.
+	The $\omulink(\mdss, \adv, \secpar)$ advantage of $\adv$ is defined as
+	\begin{align*}
+		 & \advantage{\omulink}{\adv, \mdss} =                                                           \\
+		 & \abs{\prob{\omulink_0(\pke, \adv, \secpar) = 1} - \prob{\omulink_1(\pke, \adv, \secpar) = 1}}
+	\end{align*}
+	We say that an MDSS scheme is $\mdssULVar$-one-more-unlinkable if for all admissible NUPPT adversaries $\adv$ we have that $\advantage{\omulink}{\adv, \mdss} \leq \mdssULVar(\secpar)$.
+
+\end{definition}
 
 \begin{definition}[MD-Correctness]
 	We say that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssCVar$\emph{-correct} if for all $\secpar \in \NN$ and for all $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{[\mdssNumShareSets]}$ where the following hold:
