@@ -34,35 +34,26 @@ For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, 
 
 Finally, define $\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]})$ as the algorithm that runs $\mdssProj$ on each configuration in its input, then returns the flattened set of shares.
 
-
 \begin{definition}[Unlinkability]
-	\label{def:unlinkability}
-	We say that an MDSS scheme is $\mdssULVar$\emph{-unlinkable} if for all admissible NUPPT adversaries $\adv = (\adv_1, \adv_2)$ and all $\secpar \in \NN$:
-	\begin{equation*}
-		\probsublong{
-			\begin{gathered}
-				\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
-				b \sample \bin \\
-				\mdssBlindShare_1,\dots,\mdssBlindShare_{\mdssWindowSize} \gets \mdssGenerate(\set{(\mdssSecret_{i,b}, \mdssNumShares_{i, b}, \indexSet_{i, b})}_{i \in [\mdssNumShareSets]})
-				% \forall i \in [\mdssNumShareSets]:\: \mdssShareSet_i \gets \mdssProj(\mdssSecret_i, \mdssNumShares_{i, b}, \indexSet_{i, b})\\
-				% \mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssNumShares} := \mdssFlatten(\mdssShareSet_1, \dots, \mdssShareSet_\mdssNumShareSets)
-			\end{gathered}
-		}{
-			\adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_\mdssWindowSize) = b
-		} \leq \frac{1}{2} + \mdssULVar(\secpar)
-	\end{equation*}
-	where $\adv$ is \emph{admissible} if it satitfies:
+	Let $(\mdss = (\mdssShareAlg, \mdssReconstructAlg)$ be an MDSS scheme and let the random vaiable $\ulink_b(\mdss, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\ulink_b(\pke, \adv, \secpar)$}{
+		\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
+		\mdssBlindShare_1,\dots,\mdssBlindShare_{\mdssWindowSize} \gets \mdssGenerate(\set{(\mdssSecret_{i,b}, \mdssNumShares_{i, b}, \indexSet_{i, b})}_{i \in [\mdssNumShareSets]}) \\
+		b' \gets \adv_2(\st, \mdssBlindShare_1, \dots, \mdssBlindShare_\mdssWindowSize) \\
+		\pcreturn b'
+	}
+	We say that an adversary $\adv$ is \emph{admissible} if it satitfies:
 	\begin{enumerate}
 		\item $\forall i \in [\mdssNumShareSets], \forall b \in \bin, |\indexSet_{i, b}| \leq \mdssPrivThr$
 		\item $\sum_{i \in [\mdssNumShareSets]} |\indexSet_{i, 0}| = \sum_{i \in [\mdssNumShareSets]} |\indexSet_{i, 1}|$
-		      % \item $\indexSet_{0, 0}||\dots||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{0, 1}||\dots||\indexSet_{\mdssNumShareSets, 1}$
 	\end{enumerate}
-\end{definition}
-We refer $\mdssULVar(\secpar)$ as the \emph{advantage} of $\adv$, and denote it by $\mdssUAdv$.
 
-We can use the standard transformation to make the above a ``two-worlds'' type definition rather than a bit-guessing one.
-Notationally, we will use $\mdssULGame{\hat{b}}{\adv}$ to denote the output of $\adv$ in the game where $b = \hat{b}$.
-We then have that $\mdssUAdv = \left| \prob{\mdssULGame{0}{\adv} = 1} - \prob{\mdssULGame{1}{\adv} = 1} \right|$.
+	The $\ulink(\mdss, \adv, \secpar)$ advantage of $\adv$ is defined as
+	$$
+		\advantage{\ulink}{\adv, \mdss} = \abs{\prob{\ulink_0(\pke, \adv, \secpar) = 1} - \prob{\ulink_1(\pke, \adv, \secpar) = 1}}
+	$$
+	We say that an MDSS scheme is $\mdssULVar$-unlinkable if for all admissible NUPPT adversaries $\adv$ we have that $\advantage{\ulink}{\adv, \mdss} \leq \mdssULVar(\secpar)$.
+\end{definition}
 
 
 While the above unlinkability definition is powerful, it is also somewhat cumbersome.

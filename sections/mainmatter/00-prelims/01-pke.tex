@@ -41,7 +41,7 @@
 	}
 	The $\indcpa(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
 	$$
-		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) = 1} - \prob{\indcpa_1(\pke, \adv, \secpar)}}
+		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) = 1} - \prob{\indcpa_1(\pke, \adv, \secpar) = 1}}
 	$$
-	We say that a PKE is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl$ such that $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl$ such that $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
 \end{definition}
