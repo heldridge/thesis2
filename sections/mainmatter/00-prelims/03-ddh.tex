@@ -1,0 +1,24 @@
+Let $\groupgen(\secparam)$ be a function that on input $\secparam$ outputs the description of a group $\GG$ with prime order $q$ and generator $g$.
+Let the variable $\ddh_b(\groupgen, \adv, \secpar)$ denote the result of the following probabilistic experiment:
+
+\procedureblock{$\ddh_b(\groupgen, \adv, \secpar)$}{
+	(\GG, q, g) \gets \groupgen(\secpar) \\
+	\pcif b = 0: \\
+	\t u, v \sample \ZZ_q \\
+	\t b' \gets \adv(\GG, q, g, g^u, g^v, g^{uv}) \\
+	\pcelse \\
+	\t u, v, w \sample \ZZ_q \\
+	\t b' \gets \adv(\GG, q, g, g^u, g^v, g^w) \\
+	\pcreturn b'
+}
+
+The $\ddh(\groupgen, \adv, \secpar)$ advantage of $\adv$ is defined as
+$$
+	\advantage{\ddh}{\groupgen, \adv} = \abs{\prob{\ddh_0(\groupgen, \adv, \secpar) = 1} - \prob{\ddh_1(\groupgen, \adv, \secpar) = 1}}
+$$
+
+If for all adversaries $\adv$, there exists a negligible function $\negl$ such that $\advantage{\ddh}{\groupgen, \adv} \leq \negl$, we say that the decisional Diffie-Hellman (DDH) assumption holds relative to $\groupgen$.
+We may ocasionally abuse notation and say that DDH holds for $\GG$ instead, where $\GG$ is representative of the family of groups output by $\groupgen$.
+
+As discussed in \cite{C:PeiVaiWat08}, DDH can be equivalently phrased as distinguishing between tuples of the form $(g, h, g^y, h^y)$ and $(g, h, g^y, h^z)$ for random generators $g$ and $h$ and random exponents $y$ and $z$.
+We will use this form of the assumption in later proofs.

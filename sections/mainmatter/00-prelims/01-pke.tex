@@ -1,6 +1,7 @@
 \label{sec:prelim-pke}
 
 \begin{definition}[Public-Key Encryption]
+	\label{def:pke}
 	A public-key encryption scheme (PKE) for a message space $\msgspace$ is a tuple of algorithms $\pke = (\setup, \kgen, \enc, \dec)$ defined as:
 
 	\begin{itemize}
@@ -44,4 +45,33 @@
 		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) = 1} - \prob{\indcpa_1(\pke, \adv, \secpar) = 1}}
 	$$
 	We say that a PKE scheme is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl$ such that $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
+\end{definition}
+
+\subsection{Lossy Public-Key Encryption}
+
+\begin{definition}[Lossy Public-Key Encryption]
+	A lossy public-key encryption scheme \cite{C:PeiVaiWat08}, has the same interface as described in \cref{def:pke} with the addition of the following algorithm:
+	\begin{itemize}
+		\item $\kgenlossy(\pkepp) \rightarrow \pk$: generates a \emph{lossy} public-key $\pk$
+	\end{itemize}
+\end{definition}
+
+A lossy PKE must still satisfy correctness for keys generated through $\kgen$, as well as the following two properties.
+Our computational lossiness is a relaxation from the statistical notion originally described in \cite{C:PeiVaiWat08}.
+
+\begin{definition}[Computational Lossiness]
+	Let $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ be a lossy PKE scheme and let the random variable $\comploss_b(\pke, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\comploss_b(\pke, \adv, \secpar)$}{
+		\pkepp \gets \setup(\secparam) \\
+		r, m_0, m_1, \st \gets \adv_1(\pkepp) \\
+		\pk \gets \kgenlossy(\pkepp; r) \\
+		\ct^* \gets \enc(\pkepp, \pk, m_b) \\
+		b' \gets \adv(\ct^*) \\
+		\pcreturn b'
+	}
+	The $\comploss(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
+	$$
+		\advantage{\comploss}{\adv, \pke} = \abs{\prob{\comploss_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\comploss_1(\pke, \adv, \secpar) \Rightarrow 1}}
+	$$
+	We say that a PKE scheme satisfies computationall lossiness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\comploss}{\adv, \pke} \leq \negl$.
 \end{definition}
