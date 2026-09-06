@@ -116,12 +116,14 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 
 
 	We now consider a sequence of hybrids.
-	Let $\hyb_j$ denote a game equivalent to $\mdssULGame{0}{\adv}$, except the shares at indices $\set{q(\secpar) - j + 1, q(\secpar) - j + 2, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(s, 1)$, where $s$ is sampled uniformly from $\mdssShareSpace$.
-	Note that $\hyb_0$ is exactly the same as $\mdssULGame{0}{\adv}$, as the interval $\set{q(\secpar) + 1, \dots, q(\secpar)}$ is empty.
-	Let $\mdssULGame{\hyb_j}{\adv}$ denote the output of $\mdssULGame{}{}$ with changes from $\hyb_j$ against $\adv$.
+	Let $\hyb_j$ denote a game equivalent to \\ $\ulink_0(\mdss, \adv, \secpar)$, except the shares at indices $\set{q(\secpar) - j + 1, q(\secpar) - j + 2, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(s, 1)$, where $s$ is sampled uniformly from $\mdssShareSpace$.
+	Note that $\hyb_0$ is exactly the same as $\ulink_0(\mdss, \adv, \secpar)$, as the interval $\set{q(\secpar) + 1, \dots, q(\secpar)}$ is empty.
 
 	\begin{claim}
-		For all $j \in \set{0, 1, \dots, q(\secpar) - 1}$, for all admissible adversaries $\adv$, $\exists$ a negligible function $\negl[]$ such that $\left| \prob{\mdssULGame{\hyb_j}{\adv} = 1} - \prob{\mdssULGame{\hyb_{j + 1}}{\adv} = 1} \right| \leq \negl$.
+		For all $j \in \set{0, 1, \dots, q(\secpar) - 1}$, for all MDSS schemes $\mdss$, for all admissible adversaries $\adv$, there exists a negligible function $\negl[]$ such that
+		$$
+			\left| \prob{\hyb_j(\mdss, \adv, \secpar) = 1} - \prob{\hyb_{j + 1}(\mdss, {\adv}, \secpar) = 1} \right| \leq \negl
+		$$
 	\end{claim}
 
 	\begin{proof}
@@ -158,21 +160,26 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 
 		We can now analyze $\bdv^j$'s advantage. We have that:
 		\begin{align*}
-			\left| \prob{\mdssOMULGame{0}{\bdv} = 1} - \prob{\mdssOMULGame{1}{\bdv} = 1} \right| & =
-			\left| \prob{\mdssULGame{\hyb_i}{\adv} =1} - \prob{\mdssULGame{\hyb_{i + 1}}{\adv} = 1} \right|
+			 & \left| \prob{\omulink_0(\mdss, \bdv, \secpar) = 1} - \prob{\omulink_1(\mdss, \bdv, \secpar)= 1} \right|     \\
+			 & = \left| \prob{\hyb_i(\mdss, {\adv}, \secpar) =1} - \prob{\hyb_{i + 1}(\mdss, {\adv}, \secpar) = 1} \right|
 		\end{align*}
 		by construction.
 
 		Finally, as the scheme satisfies $\negl[]$-one-more unlinkability, we have that there exists a negligible function $\negl[]$ such that
-		$\left| \prob{\mdssULGame{\hyb_i}{\adv} =1} - \prob{\mdssULGame{\hyb_{i + 1}}{\adv} = 1} \right| \leq \negl$.
+		$$
+			\left| \prob{\hyb_i(\mdss, \adv, \secpar) =1} - \prob{\hyb_{i + 1}(\mdss, {\adv}, \secpar) = 1} \right| \leq \negl
+		$$
 	\end{proof}
 
 	We now consider another sequence of hybrids.
-	Let hybrid $\hyb_j^*$ denote a game identical $\mdssULGame{1}{\adv}$ except the shares at indices $\set{j, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(\mdssSecret, 1)$, where $\mdssSecret$ is sampled uniformly from $\mdssSecretSpace$.
-	Note that $\hyb_1^*$ is exactly the same as $\hyb_{q(\secpar)}$, and $\hyb_{q(\secpar) + 1}^*$ is exactly the same as $\mdssULGame{1}{\adv}$.
+	Let hybrid $\hyb_j^*$ denote a game identical to $\ulink_1(\mdss, \adv, \secpar)$ except the shares at indices $\set{j, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(\mdssSecret, 1)$, where $\mdssSecret$ is sampled uniformly from $\mdssSecretSpace$.
+	Note that $\hyb_1^*$ is exactly the same as $\hyb_{q(\secpar)}$, and $\hyb_{q(\secpar) + 1}^*$ is exactly the same as $\ulink_1(\mdss, \adv, \secpar)$.
 
 	\begin{claim}
-		For all $j \in \set{1, 2, \dots, q(\secpar)}$, for all admissible adversaries $\adv$, $\exists$ a negligible function $\negl[]$ such that $\left| \prob{\mdssULGame{\hyb^*_j}{\adv} = 1} - \prob{\mdssULGame{\hyb_{j+1}^*}{\adv} = 1} \right| \leq \negl$.
+		For all $j \in \set{1, 2, \dots, q(\secpar)}$, for all MDSS schemes $\mdss$, for all admissible adversaries $\adv$, there exists a negligible function $\negl[]$ such that
+		$$
+			\left| \prob{\hyb_j^*(\mdss, \adv, \secpar)= 1} - \prob{\hyb_{j + 1}^*(\mdss, \adv, \secpar)= 1} \right| \leq \negl
+		$$
 	\end{claim}
 
 	\begin{proof}
@@ -200,12 +207,14 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 		We can now analyze $\bdv^{j*}$'s advantage.
 		We have that:
 		\begin{align*}
-			\left| \prob{\mdssOMULGame{0}{\bdv^{j*} = 1}} - \prob{\mdssOMULGame{1}{\bdv^{j*}} = 1} \right| & =
-			\left| \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i}}{\adv} = 1} \right|                                                                                                    \\
-			                                                                                               & = \left| \prob{\mdssULGame{\hyb^*_{i}}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} = 1} \right| \\
+			 & \left| \prob{\omulink_0(\mdss, \bdv^{j*}, \secpar)} - \prob{\omulink_1(\mdss, \bdv^{j*}, \secpar)} \right|        \\
+			 & = \left| \prob{\hyb^*_{i + 1}(\mdss, {\adv}, \secpar) =1} - \prob{\hyb^*_{i}(\mdss, {\adv}, \secpar) = 1} \right| \\
+			 & = \left| \prob{\hyb^*_{i}(\mdss, {\adv}, \secpar) =1} - \prob{\hyb^*_{i + 1}(\mdss, {\adv}, \secpar) = 1} \right| \\
 		\end{align*}
 		Finally, as the scheme satisfies $\negl[]$-one-more unlinkability, we have that there exists a negligible function $\negl[]$ such that
-		$\left| \prob{\mdssULGame{\hyb^*_i}{\adv} =1} - \prob{\mdssULGame{\hyb^*_{i + 1}}{\adv} = 1} \right| \leq \negl$.
+		$$
+			\left| \prob{\hyb^*_i(\mdss, {\adv}, \secpar) =1} - \prob{\hyb^*_{i + 1}(\mdss, \adv, \secpar) = 1} \right| \leq \negl
+		$$
 
 	\end{proof}
 
