@@ -1,11 +1,14 @@
-We prove here that the construction shown in \cref{fig:gs-mdss} satisfies unlinkability.
+We prove here that the construction $\gsmdss$ shown in \cref{fig:gs-mdss} satisfies unlinkability.
 
 Recall that under our construction a share is a point $(x, y)$.
 For a one-more unlinkability adversary $\adv$ let $\bad$ denote the event that the share $\mdssShare{\mdssSecret_b}^*$ shares an $x$-coordinate with one of the other shares $\mdssShare{\mdssSecret_i}$.
 
 \begin{claim}
 	\label{cla:mdss-eq-when-uniq}
-	$\condprob{\mdssOMULGame{0}{\adv} = 1}{!\bad} = \condprob{\mdssOMULGame{1}{\adv} = 1}{!\bad}$
+	\begin{align*}
+		 & \condprob{\omulink_0(\gsmdss, \adv, \secpar) = 1}{!\bad}   \\
+		 & = \condprob{\omulink_1(\gsmdss, \adv, \secpar) = 1}{!\bad}
+	\end{align*}
 \end{claim}
 
 \begin{proof}
@@ -29,7 +32,7 @@ For a one-more unlinkability adversary $\adv$ let $\bad$ denote the event that t
 	For all finite fields $\FF$ such that $|\FF| = \secpar^{\omega(1)}$, the construction shown in \cref{fig:gs-mdss} satisfies $\mdssULVar$-one-more unlinkability for a negligibly small $\mdssULVar(\secpar)$.
 \end{theorem}
 \begin{proof}
-	For notational convenience let $G_0$ denote the event that $\mdssOMULGame{0}{\adv} = 1$ and $G_1$ the event that $\mdssOMULGame{1}{\adv} = 1$.
+	For notational convenience let $G_0$ denote the event that $\omulink_0(\gsmdss, \adv, \secpar) = 1$ and $G_1$ the event that $\omulink_1(\gsmdss, \adv, \secpar) = 1$.
 	\begin{align*}
 		 & \abs{\prob{G_0} - \prob{G_1}}                                                                               \\
 		 & = \abs{
