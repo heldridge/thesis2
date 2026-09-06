@@ -1,0 +1,47 @@
+\label{sec:prelim-pke}
+
+\begin{definition}[Public-Key Encryption]
+	A public-key encryption scheme (PKE) for a message space $\msgspace$ is a tuple of algorithms $\pke = (\setup, \kgen, \enc, \dec)$ defined as:
+
+	\begin{itemize}
+		\item $\setup(\secparam) \rightarrow \pkepp$: outputs public parameters $\pkepp$.
+
+		\item $\kgen(\pkepp) \rightarrow (sk, pk)$: generates a keypair $(sk, pk)$.
+
+		\item $\enc(\pkepp, pk, m) \rightarrow ct$: takes as input a public key $pk$ and a plaintext message $m \in \msgspace$ and outputs a ciphertext $ct$.
+
+		\item $\dec(\pkepp, sk, ct) \rightarrow \msg$: takes as input a secret key $sk$ and a ciphertext $ct$ and either outputs $\bot$ or the message $m$.
+
+	\end{itemize}
+\end{definition}
+
+\begin{definition}[Correctness]
+	We require that a PKE be perfectly correct, i.e.\ decryption of a properly generated ciphertext always succeeds.
+	Stated formally, we require that for all $\msg \in \msgspace$ and security parameter $\secpar$:
+	$$
+		\probsublong{
+			\begin{gathered}
+				\pkepp \gets \setup(\secparam) \\
+				\pk \gets \kgen(\pkepp) \\
+				\ct \gets \enc(\pkepp, pk, \msg)
+			\end{gathered}
+		}{ \dec(\sk, \ct) = \msg} = 1
+	$$
+\end{definition}
+
+\begin{definition}[\indcpa]
+	Let $\pke = (\setup, \kgen, \enc, \dec)$ be a public-key encryption scheme and let the random variable $\indcpa_b(\pke, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\indcpa_b(\pke, \adv, \secpar)$}{
+		\pkepp \gets \setup(\secparam) \\
+		(\pk, \sk) \gets \kgen(\pkepp) \\
+		(\st, \msg_0, \msg_1) \gets \adv_1^{}(\pk) \\
+		\ct^* \gets \enc(\pk, \msg_b) \\
+		b' \gets \adv_2^{}(\st, \ct^*) \\
+		\pcreturn b'
+	}
+	The $\indcpa(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
+	$$
+		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) = 1} - \prob{\indcpa_1(\pke, \adv, \secpar)}}
+	$$
+	We say that a PKE is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl$ such that $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
+\end{definition}

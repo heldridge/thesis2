@@ -1,0 +1,65 @@
+We are interested in a PPB for the following functionality:
+\fthrfull
+
+\noindent
+In other words, our goal is to construct an encryption scheme where a ciphertext $\ct$ can only be decrypted if some associated value $\uval$ is greater than a private threshold $\thr$, which is encoded in the public key.
+
+\subsection{Exploring and optimizing the NISC-based construction}
+Kohlweiss \emph{et al.} observe that a ``generic'' construction of PPBs can be derived from the use of non-interactive secure computation (NISC) and an appropriate ZK proof-of-knowledge~\cite{EC:KohLysNgu23}. However, they do not implement this construction, and mainly treat it as a ``theoretical'' alternative to their direct construction of a different functionality.  Thus, as a baseline we wish to determine if this protocol can work in practice for the specific threshold comparison functionality we are interested in.
+
+In practice, realizing this construction requires solving a number of engineering challenges. NISC constructions traditionally involve the use of a garbled circuit combined with a re-usable two-message OT scheme. The first challenge, therefore, is to identify an efficient circuit for threshold comparison that maximizes the advantages of efficient garbling schemes, such as the ability to calculate XOR gates for ``free''~\cite{CANS:KolSadSch09}. A more imposing challenge is the need to construct efficient zero-knowledge proofs ensuring that the garbled circuit has been constructed correctly. We accomplish this using efficient zkSNARKs~\cite{EC:Groth16}. We show that even complex garbling optimizations such as Free-XOR \cite{CANS:KolSadSch09} and Half-Gates \cite{EC:ZahRosEva15} can be realized with careful optimizations, by storing wire labels and circuit tables as field elements, and by using zero-knowledge-friendly hash functions such as Poseidon \cite{USENIX:GKRRS21}.\footnote{A surprising difficulty in this work is that the free-XOR technique cannot be natively employed on field elements, since the field addition operation is not its own inverse. The practical impact is that we must frequently convert lables between bit-string and field-element representation in our zk circuit, adding to the prover's computational overhead.}
+While we use this result mainly as a baseline for comparing our novel scheme below, we find that the resulting implementation is borderline practical. As shown in Table~\ref{tab:prior_work}, for $32$-bit comparisons we are able to realize our escrows in less than $14$KB, with approximately 12 seconds of proving time.
+
+\subsection{Our Scheme}
+Garbled circuits by definition hide the full state of the computation up to the circuit's output.
+In the context of a PPB for threshold comparison, this means that the state of the comparison between $\thr$ and $\uval$ must remain completely hidden, even though $\msg$ may \emph{fully reveal} $\uval$, along with other information about the user.
+Our scheme improves upon the baseline by allowing information about $\uval$ to be leaked in the case that $\uval > \thr$.
+Specifically, we build a PPB for the following functionality:
+\fthrleak
+% where $f'_{b}$ is defined as returning the longest prefix of $\uval$ represented in base $b$ such that each digit is greater than or equal to the corresponding digit of $\thr$. 
+where $f'_{b}$ represents some extra information about $v$ in relation to $t$.
+We will fully describe $f'_b$ after going over the basics of our construction.
+
+We  now describe our main construction.
+Let $\maxt$ be the maximum possible value of $\thr$.
+We can construct a PPB for $\fthr$ as follows:
+\begin{itemize}
+	\item The auditor publishes a public key consisting of $\maxt + 1$ public keys for an underlying encryption scheme: $pk_0,\dots,pk_{\maxt}$, the first $\thr$ of which are \textit{lossy}, i.e. cannot decrypt any messages encrypted to them.
+	\item The escrow is computed as $\ct \gets {\sf Enc}({pk_{\uval}}, \msg)$, along with a zero-knowledge proof that $ct$ was computed correctly.
+\end{itemize}
+If $\uval \leq \thr$, then $pk_{\uval}$ is lossy, and so $\ct$ cannot be decrypted.
+Correspondingly, if $\uval > \thr$ then $pk_{\uval}$ is non-lossy, and the message can be recovered. To decrypt the receiver tries all of their non-lossy secret keys until a decryption succeeds.
+
+Unfortunately, this construction requires an impractically large public key that scales linearly with the maximum threshold.
+To solve this issue, we alter our construction to allow for a tradeoff between public key and ciphertext size.
+We achieve this tradeoff by using multiple copies of the above construction, where each copy, or ``row,'' represents one digit of $\thr$ in some base $\base$.
+For example, if we are using base $10$, max threshold $\maxt = 99$, and $\thr = 42$, then the public key would consist of two rows of keys: $pk^0_0,\dots,pk^{10}_{0}$ and $pk^0_1,\dots,pk^{10}_{1}$, where $\{pk^0_0, pk^1_0, pk^2_0, pk^3_0, pk^4_0\}$ and $\{pk^0_1, pk^1_1, pk^2_1\}$ are lossy. Going forward, let $\thr[i]$ denote the digit of $\thr$ at position $i$.
+
+
+Say our value $\uval = 48$. To encrypt, we can start by computing the value $\ct^{\sf R}_0 \gets$ ${\sf Enc}(pk^0_4, \msg)$, as if $\thr[0] < 4$, then $\uval$ is clearly larger than $\thr$.
+But what if $\thr[0] = 4$? In this case, we would like decryption to be possible if and only if $\thr[0] = 4$ \textit{and} $\thr[1] < 8$. To achieve this, we can sample a one-time-pad (OTP) $\alpha$, and compute the following two ciphertexts:
+\begin{itemize}
+	\item $ct^{\sf M}_0 \gets {\sf Enc}(pk^5_0, \alpha)$
+	\item $ct^{\sf R}_1 \gets \alpha \circ {\sf Enc}(pk^8_1, m)$
+\end{itemize}
+where $\alpha \circ x$ denotes blinding $x$ with the one-time-pad. The final ciphertext is $ct = (ct^{\sf R}_0, ct^{\sf M}_0, ct^{\sf R}_1)$.
+To decrypt, the receiver first attempts to decrypt $\ct^{\sf R}_0$ with each non-lossy $sk^i_0$.
+If none of these succeed, they compute $\ct^{{\sf R}'}_1 \gets {\sf Dec}(sk^5_0, \ct^{\sf M}_0) \circ \ct^{\sf R}_1$, attempt to decrypt $\ct^{{\sf R}'}_1$ with each non-lossy $sk^i_1$, and if none of those succeed output $\perp$.
+We refer to $\ct^M_i$ as a ``match'' ciphertext, as it needs to be decrypted when a digit of $\uval$ exactly equals a digit of $\thr$, and $\ct^R_i$ as a ``reveal'' ciphertext, as it directly reveals the message.
+
+We note here the conflicting requirements between the match and reveal ciphertexts.
+Reveal ciphertexts must indicate whether a decryption succeeds in order for the receiver to know that they have successfully decrypted the message, i.e. they must be \emph{robust}.
+However, match ciphertexts must \textit{hide} whether decryption was successful, as revealing so would also reveal information about the value $\uval$, even if $\uval < \thr$.
+Practically, this means that we must use different encryption schemes for the match and reveal ciphertexts.
+Additionally, both schemes must satisfy some form of \textit{ambiguity}, which ensures that the ciphertexts don't reveal what public keys they were encrypted under.
+
+The above technique can be extended to thresholds of any number of digits.
+To do so, a match ciphertext after the first
+% ($\ct^{\sf M}_0$) 
+encrypts not just a new one-time pad $\alpha_i$, but instead $\alpha_i \circ \alpha_{i - 1}$, i.e.\ a pad blinded by the \textit{previous} OTP.
+This ensures that a reveal ciphertext can only be decrypted if \textit{all} previous digits have been matched.
+
+We can now see what $f'_\base({\uval, \thr})$ reveals about $\uval$.
+The auditor learns the longest (base $\base$) prefix of $\uval$ such that each digit is greater than or equal to the corresponding digit of $\thr$.
+
+

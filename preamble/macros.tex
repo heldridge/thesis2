@@ -108,6 +108,10 @@
 \newcommand{\domain}{\mathcal{D}}
 \newcommand{\range}{\mathcal{R}}
 \newcommand{\keyspace}{\mathcal{K}}
+\newcommand{\msgspace}{\mathcal{M}}
+\newcommand{\pke}{\mathsf{PKE}}
+\newcommand{\setup}{\mathsf{Setup}}
+\newcommand{\pkepp}{\Lambda_k}
 
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
@@ -156,6 +160,27 @@
 \newcommand{\thr}{t}
 \newcommand{\base}{b}
 \newcommand{\maxt}{\ell}
+\newcommand{\msg}{m}
+\newcommand{\ct}{\mathsf{ct}}
+\newcommand{\fthrfull}{\begin{equation*}
+		f(\thr, (\uval, \msg)) =
+		\begin{cases}
+			\msg \text{ if } \uval > \thr \\
+			\bot \text{ otherwise}
+		\end{cases}
+	\end{equation*}}
+\newcommand{\fthrleak}{\begin{equation*}
+		f_{thr}(\thr, (\uval, \msg)) =
+		\begin{cases}
+			(\msg, f'_{\base}(\uval, \thr)) \text{ if } \uval > \thr \\
+			\bot \text{ otherwise}
+		\end{cases}
+	\end{equation*}}
+\newcommand{\fthr}{f_{thr}}
+\newcommand{\xthdigit}[2]{\ensuremath{#1[#2]}}
+\newcommand{\xthbit}[2]{\xthdigit{#1}{#2}}
+\newcommand{\kgenlossy}{\kgen_{\mathsf{loss}}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% ENVIRONMENTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,48 @@
+\hme{move to global prelims}
+
+We use $[x,  y]$ to denote the set $\{x, x+1,\dots,y\}$, where $x, y \in \ZZ$ and $x \leq y$.
+We use $[x]$ as shorthand to denote $[1, x]$.
+When $x > y$ we allow $[x, y]$ to denote $\{x, x-1,\dots, y\}$.
+For an integer $x$ we use $\xthdigit{x}{i}_b$ to denote the $1$-indexed $i$'th digit of $x$ in base $b$, e.g. for the base-$10$ value $x = 357$, $\xthdigit{x}{1}_{10} = 3$.
+We may drop the subscript when the base is clear from context.
+We denote concatenation between the strings $x$ and $y$ with $x ||y$, and the empty string as $\varepsilon$.
+For any algorithm $\adv$, we use $y := \adv(x; r)$ to denote that the algorithm runs on input $x$ and random tape $r$.
+In most cases, we do not denote the random tape explicitly and simply write $y \leftarrow \adv(x)$.
+We may write $y \xleftarrow{r} \adv(x)$ to indicate sampling $r$ as appropriate and recording it for later use.
+We use $\secpar$ as the computational security parameter, and $\negl(\secpar)$ to denote negligible functions.
+For two probability ensembles $\{A_i\}_i$ and $\{B_i\}_i$, we use $\{A_i\}_i \pindist \{B_i\}_i$ to denote that the ensembles are identical, $\{A_i\}_i \sindist \{B_i\}_i$ to denote that the ensembles are statistically close, and $\{A_i\}_i \cindist \{B_i\}_i$ to denote that the ensembles are computationally indistinguishable. We use $\prob{E : A}$ to denote the probability of an event $E$ in an experiment defined by executing $A$.
+For a finite set $\mathcal{X}$, we will use $\mathcal{U}_{\mathcal{X}}$ to denote the uniform distribution over $\mathcal{X}$.
+For a distribution $\dist$ we will use $x \leftarrow \dist$ to indicate sampling a value according to the distribution.
+We will use $\fthr$ to denote the following function:
+\fthrleak
+
+Where $f'_b(v, t)$ is defined as follows.
+\procedureblock{$f'_b(\uval, \thr)$}{
+	x = \varepsilon \\
+	\pcfor i \in [\lceil \log_\base(\thr)\rceil] \\
+	\t \pcif \uval[i]_b \geq \thr[i]_b \pcthen x = x || \uval[i]_b
+	\: \pcelse \textbf{break}\\
+	\pcreturn x
+}
+
+We provide descriptions of the Diffie-Hellman assumption, the ElGamal encryption scheme, one-time pads, and non-interactive zero-knowledge proofs in \hme{would be appendix, but should just be global prelims.}
+
+\subsection{Lossy Public-Key Encryption}
+\label{sec:lossy_pke}
+
+\begin{definition}
+	A lossy public-key encryption scheme (PKE) \cite{C:PeiVaiWat08} for a message space $\msgspace$ is a tuple of algorithms $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ defined as:
+
+	\begin{itemize}
+		\item $\setup(\secparam) \rightarrow \pkepp$: outputs public parameters $\pkepp$.
+
+		\item $\kgen(\pkepp) \rightarrow (sk, pk)$: generates a keypair $(sk, pk)$.
+
+		\item $\kgenlossy(\pkepp) \rightarrow pk$: generates a lossy key $pk$.
+
+		\item $\enc(\pkepp, pk, m) \rightarrow ct$: takes as input a public key $pk$ and a plaintext message $m \in \msgspace$ and outputs a ciphertext $ct$.
+
+		\item $\dec(\pkepp, sk, ct) \rightarrow \msg$: takes as input a secret key $sk$ and a ciphertext $ct$ and either outputs $\bot$ or the message $m$.
+
+	\end{itemize}
+\end{definition}
