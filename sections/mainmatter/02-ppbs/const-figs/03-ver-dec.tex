@@ -1,0 +1,39 @@
+\begin{figure}[h]
+	\begin{pchstack}[boxed, center, space=1em]
+		\begin{pcvstack}[space=1em]
+			\procedure[linenumbering]{$\verpk(\Lambda, pk, \com_{KG})$}{
+				\pcparse (\lambda, \comparams, \crs_{KG}, \crs_{E},  \pkepp, \maxt, \base, \numdigits) = \Lambda \\
+				\pcparse (pk', \com_{KG}', \zkproof_{KG}) = pk \\
+				\pcreturn \zkverify_{KG}(\crs_{KG}, \zkproof_{KG}, (pk', \com_{KG})) \pcskipln \\
+				\t \wedge (\com_{KG}'  = \com_{KG})
+			}
+			\procedure[linenumbering]{$\verescrow(\Lambda, pk, \com_{E}, Z = (Z', \zkproof_{E}))$}{
+				\pcparse (\lambda, \comparams, \crs_{KG}, \crs_{E},  \pkepp, \maxt, \base, \numdigits) = \Lambda \\
+				\pcparse (pk', \com_{KG}', \zkproof_{KG}) = pk \\
+				\pcreturn \verpk(\Lambda, pk, \com_{KG}) \pcskipln \\
+				\t \wedge \: \zkverify_{E}((Z', \com_{E}, pk'), \zkproof_{E})
+			}
+			\procedure[linenumbering]{$\dec(\Lambda, sk, \com_{E}, Z = (Z', \zkproof_E))$}{
+				\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) = \Lambda \\
+				\pcparse (\{(\revsk_i^j, \matsk_i^j)\}_{i \in [\numdigits], j \in [0 ,b]}, pk) \pcskipln \\
+				\t = sk \\
+				\pcif \verescrow(\Lambda, pk, \com_{E}, Z) = 0 \:\pcreturn \bot \\
+				\pcparse (\{\pairct_i\}_{i \in [\numdigits]}, \otpct^*) = Z' \\
+				\otpk'_0 := {\sf OTP}.\varepsilon\\
+				\pcfor i \in [n] \\
+				\t (\otpct^{\rev}_i, \matct_i) \leftarrow \pairct_i \\
+				\t \revct_i \leftarrow \otpdec(\otpk'_{i - 1}, \otpct^{\rev}_i) \\
+				\t \pcfor j \in [\thr[i] + 1, \base] \\
+				\t[2] {\otpk^*}' = \pker.\dec(\revpp, \revsk_i^j, \revct_i) \\
+				\t[2] \pcif {\otpk^*}' \neq \bot \text{ } \pcreturn \OTP.\dec({\otpk^*}', \otpct^*) \\
+				\t \pcif i < n \\
+				\t\t \otpct^{\mat}_{i} \leftarrow \pkem.\dec(\matpp, \matsk_i^{\thr[i] + 1}, \matct_i) \\
+				\t\t \otpk'_i \leftarrow \otpdec(\otpk'_{i - 1}, \otpct^{\mat}_i) \\
+				\pcreturn \bot
+			}
+		\end{pcvstack}
+	\end{pchstack}
+	\caption{$(\maxt, \base)$-TCPPB continued (verification and decryption).}
+	\label{fig:ppb-comp-const-03}
+\end{figure}
+

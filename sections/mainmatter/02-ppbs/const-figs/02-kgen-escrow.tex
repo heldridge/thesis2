@@ -1,0 +1,79 @@
+\begin{figure}[h]
+	\begin{pcvstack}[boxed, center, space=1em]
+
+
+		\begin{pchstack}
+
+			\begin{pcvstack}[space=1em]
+				\procedure[linenumbering]{$\kgen\left(\Lambda, \thr, r_{KG}\right)$}{
+					\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pcskipln \\
+					\t \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) = \Lambda \\
+					(sk', pk') \xleftarrow{r_k} \pcskipln \\
+					\t \kgen'(\lambda, \revpp, \matpp, \numdigits, \thr) \\
+					\com_{KG} \leftarrow \commit(\comparams, \thr; r_{KG}) \\
+					\zkproof_{KG} \leftarrow \pcskipln \\
+					\zkprove_{KG}(\crs_{KG}, (pk', \com_{KG}), \pcskipln \\
+					\t (\thr, sk', r_k, r_{KG})) \\
+					pk \leftarrow (pk', \com_{KG}, \zkproof_{KG}) \\
+					sk \leftarrow (sk', pk) \\
+					\pcreturn (sk, pk)
+				}
+
+				\procedure[linenumbering]{$\kgen'\left(\lambda, \revpp, \matpp, \numdigits, \thr\right)$}{
+					\pcfor i \in [\numdigits]\\
+					\pcind \pcfor j \in [0, b] \\
+					\t[2] \pcif j \leq t[i] \\
+					\t[3] \revpk_i^j \leftarrow \pker.\kgenlossy(\revpp) \\
+					\t[3] \matpk_i^j \leftarrow \pkem.\kgenlossy(\matpp) \\
+					\t[3] \pairsk_i^j \leftarrow \bot \\
+					\t[2] \pcelse \\
+					\t[3] \revsk_i^j, \revpk_i^j \leftarrow \pker.\kgen(\revpp) \\
+					\t[3] \matsk_i^j, \matpk_i^j \leftarrow \pkem.\kgen(\matpp) \\
+					\t[3] \pairsk_i^j \leftarrow (\revsk_i^j, \matsk_i^j)\\
+					sk' = \{\pairsk_i^j\}_{i \in [\numdigits], j \in [0 , b - 1]} \\
+					pk' = \{\pairpk_i^j\}_{i \in [\numdigits], j \in [0 ,b - 1]} \\
+					\pcreturn (sk', pk')
+				}
+
+			\end{pcvstack}
+
+			\begin{pcvstack}[space=1em]
+
+				\procedure[linenumbering]{$\escrow(\Lambda, pk, (\uval, \msg), r_{E})$}{
+					\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) \pcskipln \\
+					\t = \Lambda \\
+					\pcparse (pk', \com_{KG}, \zkproof_{KG}) = pk \\
+					\pcif \verpk(\ppbpp, pk, \kgcom) = 0 \pcthen \\
+					\t \pcreturn \bot \\
+					Z' \xleftarrow{r_e} \escrow'(\revpp, \matpp, \numdigits, pk', v, m) \\
+					\com_{E} \leftarrow \commit(\comparams, (v, m); r_{E}) \\
+					\zkproof_{E} \leftarrow \pcskipln \\
+					\t \zkprove_{E}(\crs_{E}, (Z', \com_{E}, pk'), (v, m, r_e, \er)) \\
+					\pcreturn (Z', \zkproof_{E})
+				}
+
+				\procedure[linenumbering]{$\escrow'(\revpp, \matpp, \numdigits, pk, v, m)$}{
+					\otpk^* \leftarrow \OTP'.\kgen() \\
+					\otpct^* \leftarrow \OTP'.\enc(\otpk^*, \msg) \\
+					\otpk_1,\dots,\otpk_{\numdigits - 1} \leftarrow \otpkeygen() \\
+					\otpk_0 \leftarrow {\sf OTP}.\varepsilon \\
+					\pcfor i \in [n] \\
+					\t \revct_i \leftarrow \pker.\enc(\revpp, \revpk_i^{\uval[i]}, \otpk^*) \\
+					\t \otpct_i^{\rev} \leftarrow \otpenc(\otpk_{i - 1}, \revct_i) \\
+					\t \pcif i < \numdigits \\
+					\t[2] \otpct^{\mat}_i \leftarrow \otpenc(\otpk_{i - 1}, \otpk_i) \\
+					\t[2] \matct_i \leftarrow \pkem.\enc( \pcskipln \\
+					\t[3] \matpp, \matpk_i^{\uval[i] + 1}, \otpct^{\mat}_i) \\
+					\t \pcelse\\
+					\t[2] \matct_i \leftarrow \bot \\
+					\t \pairct_i := (\otpct_i^{\rev}, \matct_i) \\
+					\pcreturn (\{\pairct_i\}_{i \in [\numdigits]}, \otpct^*)
+				}
+			\end{pcvstack}
+		\end{pchstack}
+
+	\end{pcvstack}
+	\caption{$(\maxt, \base)$-TCPPB continued (key generation and escrow).}
+	\label{fig:ppb-comp-const-02}
+\end{figure}
+

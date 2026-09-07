@@ -1,0 +1,17 @@
+\begin{figure}[h]
+	\begin{pchstack}[boxed, center, space=1em]
+
+		\procedure[linenumbering]{$\setup(\secparam, \comparams)$}{
+			(\crs_{KG}, \td_{KG}) \leftarrow \zksetup_{KG}(\secparam) \\
+			(\crs_{E}, \td_{E}) \leftarrow \zksetup_{E}(\secparam) \\
+			\revpp \leftarrow \pker.\setup(\secparam) \\
+			\matpp \leftarrow \pkem.\setup(\secparam) \\
+			\numdigits = \lceil \log_{\base}(\maxt) \rceil \\
+			\Lambda = (\lambda, \comparams, \revpp, \matpp, \crs_{KG}, \crs_{E}, \numdigits) \\
+			\pcreturn(\ppbpp, (\td_{KG}, \td_{E}))
+		}
+
+	\end{pchstack}
+	\caption{A $\fthr$-PPB construction $(\maxt, \base)$-TCPPB.}
+	\label{fig:ppb-comp-const-01}
+\end{figure}
