@@ -1,0 +1,36 @@
+\begin{definition}
+	A statistically hiding non-interactive commitment scheme is a tuple of algorithms $\comscheme = (\csetup, \commit)$ defined over a message space $\comM$ and randomness space $\comR$ defined as:
+	\begin{itemize}
+		\item $\csetup(\secparam)\rightarrow \compp$: outputs public parameters $\comparams$.
+		\item $\commit(\comparams, m; r) \rightarrow \com$: takes as input a message $\msg \in \comM$ and some randomness $r \in \comR$ and outputs a commitment $\com$.
+	\end{itemize}
+\end{definition}
+
+We require that a commitment scheme satisfy the following properties.
+
+\begin{definition}[Statistical Hiding]
+	For any $\comparams$ output by $\csetup(\secparam)$ and for any $m_0, m_1 \in \comM$ it holds that
+	$$
+		\left\{\commit(\comparams, m_0; r) \::\: r \leftarrow \comR \right\} \sindist \left\{\commit(\comparams, m_1; r) \::\: r \leftarrow \comR \right\}
+	$$
+\end{definition}
+
+\begin{definition}[Computational Binding]
+	For all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that
+	$$
+		\begin{gathered}
+			\prob{
+				\begin{gathered}
+					\commit(\comparams, m_0; r_0) = \commit(\comparams, m_1, r_1) \\
+					\wedge \: m_0 \neq m_1
+				\end{gathered}
+				\::\:
+				\begin{gathered}
+					\comparams \leftarrow \csetup(\secparam) \\
+					(m_0, r_0, m_1, r_1) \leftarrow \adv(\comparams)
+				\end{gathered}
+			} \\
+			\leq \negl
+		\end{gathered}
+	$$
+\end{definition}

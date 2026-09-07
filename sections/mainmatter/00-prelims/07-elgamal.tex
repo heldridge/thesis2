@@ -1,0 +1,42 @@
+The ElGamal public-key encryption scheme \cite{C:ElGamal84} in groups of prime order has been proven IND-CPA secure under the DDH assumption \cite{ElGamalSec,C:CraSho98,NaoRei04}.
+Let $\groupgen$ be an algorithm that takes as input the security parameter $\secparam$ and outputs a group description $(\GG, p, g)$ where $\GG$ is a cyclic group of order $p$ with generator $g$.
+The message space $\msgspace$ is the generated group itself.
+A description of the scheme can be seen in \cref{fig:regelg}.
+
+\begin{figure}[h]
+	\begin{pcvstack}[boxed, center, space=1em]
+		\begin{pchstack}[center]
+			\procedure[linenumbering]{$\setup(\secparam)$}{
+				\pcreturn \groupgen(\secparam)
+			}
+		\end{pchstack}
+
+		\begin{pchstack}
+
+			\procedure[linenumbering]{$\kgen(\pkepp)$}{
+				\pcparse (\GG, g, p) = \pkepp \\
+				x \sample \ZZ_{p} \\
+				X \leftarrow g^x \\
+				\pk \leftarrow(p, g, X) \\
+				\sk \leftarrow(p, g, x) \\
+				\pcreturn (\sk, \pk)
+			}
+			\procedure[linenumbering]{$\enc(\pkepp, \pk, M)$}{
+				\pcparse (\GG, \groupgen, p) = \pkepp \\
+				y \sample \ZZ_{p} \\
+				Y \leftarrow g^y \\
+				T \leftarrow X^y \\
+				W \leftarrow T M \\
+				\pcreturn (Y, W)
+			}
+			\procedure[linenumbering]{$\dec(\pkepp, \sk, \ct)$}{
+				(Y, W) \leftarrow \ct  \\
+				T \leftarrow Y^x \\
+				M \leftarrow W T^{-1} \\
+				\pcreturn M
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{The ElGamal Encryption Scheme}
+	\label{fig:regelg}
+\end{figure}
