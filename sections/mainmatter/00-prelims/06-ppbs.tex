@@ -1,0 +1,89 @@
+We reproduce here the privacy preserving blueprint definition put forth in \cite{AC:DEFKPV24}, adapted to the non-updatable case.
+
+\begin{definition}
+	Let $\comscheme = (\csetup, \commit)$ be a statistically hiding non-interactive commitment scheme defined over $(\comM, \comR)$, and $f: \comM \times \comM \rightarrow \comM$ be a function. A Privacy Preserving Blueprint ($f$-PPB or just PPB) scheme is a tuple of algorithms $(\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,\allowbreak \verescrow,\allowbreak \dec)$ defined as:
+
+	\begin{itemize}
+		\item $\setup(\secparam, \comparams) \rightarrow (\ppbpp, \td)$: takes as input the security parameter and the public parameters of the commitment scheme, and outputs parameters for the scheme $\ppbpp$, which will contain $\comparams$, along with a trapdoor $\td$.
+		\item $\kgen(\ppbpp, \thr, r) \rightarrow (sk, pk)$: takes as input values $\thr\in \comM$ and $r \in \comR$ and outputs a key pair $(sk, pk)$. $(\thr, r)$ define a commitment $\kgcom$.
+		\item $\verpk(\ppbpp, pk, \kgcom) \rightarrow b$: takes as input a public key and a commitment, and outputs a bit $b \in \bin$ verifying the validity of $pk$.
+		\item $\escrow(\ppbpp, pk, \msg, r) \rightarrow \esc / \bot$: takes as input a public key, a message, and some randomness, and returns an escrow value $\esc$ for the commitment $\ecom$ defined by $(\msg, r)$, or $\bot$.
+		\item $\verescrow(\ppbpp, pk, \ecom, \esc) \rightarrow b$: takes as input a public key, a commitment, and an escrow, and outputs a bit $b \in \bin$ verifying the validity of the escrow.
+		\item $\dec(\ppbpp, sk,\ecom, \esc) \rightarrow \msg' / \bot$: takes as input a secret key, a commitment, and an escrow, and returns $\msg' = f(\thr, \msg) \in \comM$ or $\bot$.
+	\end{itemize}
+\end{definition}
+
+We require that  PPB scheme satisfy the following properties.
+
+\begin{definition}[Correctness]
+	There exists a negligible function $\negl[]$ such that for all $\comparams \leftarrow \csetup(\secparam)$, $\ppbpp \leftarrow \setup(\secparam, \comparams)$, all $\thr, \msg \in \comM$, and all $r \in \comR$:
+	$$
+		\prob{\dec(\ppbpp, sk, \com, \esc) \neq f(\thr, \msg)  \::\: \
+			\begin{gathered}
+				(sk, pk) \leftarrow \kgen(\ppbpp, \thr) \\
+				\esc \leftarrow \escrow(\ppbpp, pk, \msg, r) \\
+				\com \leftarrow \commit(\comparams, \msg; r)
+			\end{gathered}} \leq \negl
+	$$
+\end{definition}
+
+\begin{definition}[Soundness]
+	Let $\ppb = (\setup, \kgen, \verpk, \escrow, \verescrow, \dec)$ be a PPB scheme and let the random variable $\soundgame(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ denote the result of the following experiment:
+	\procedureblock{$\soundgame(\ppb, \adv, \secpar)$}{
+		\comparams \leftarrow \csetup(\secparam) \\
+		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
+		\thr, r_k \leftarrow \adv(\secparam, \ppbpp) \\
+		(pk, sk) \leftarrow \kgen(\ppbpp, \thr, r_k) \\
+		(\ecom, \msg, \er, \esc) \leftarrow \adv(pk) \\
+		\pcreturn [\ecom = \commit(\comparams, \msg; \er) \wedge \\
+			\t \verescrow(\ppbpp, pk, \ecom, \esc) \wedge \dec(\ppbpp, sk, \ecom, \esc) \neq f(\thr, \msg)]
+	}
+
+	The $\soundgame(\ppb, \adv, \secpar)$ advantage of $\adv$ is defined as:
+	$$
+		\advantage{\soundgame}{\ppb, \adv}= \prob{\soundgame(\ppb, \adv, \secpar) \Rightarrow 1}
+	$$
+	We say that a PPB scheme satisfies \emph{soundness} if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\soundgame}{\adv, \ppb} \leq \negl$.
+\end{definition}
+
+\begin{definition}[Threshold Hiding]
+	Let $\ppb = (\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\thrhidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
+	\procedureblock{$\thrhidegame_b(\ppb, \adv, \secpar)$}{
+		\comparams \leftarrow \csetup(\secparam) \\
+		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
+		(\thr_0, \thr_1) \leftarrow \adv(\ppbpp) \\
+		r \sample \comR \\
+		(\cdot, pk) \leftarrow \kgen(\ppbpp, t_b, r) \\
+		b' \leftarrow \adv(pk)
+		\pcreturn b'
+	}
+	The $\thrhidegame(\ppb, \adv, \secpar)$ advantage of $\adv$ is defined as:
+	\begin{align*}
+		 & \advantage{\thrhidegame}{\ppb, \adv}                                                                                                \\
+		 & = \left|\prob{\thrhidegame_0(\ppb, \adv, \secpar) \Rightarrow 1} - \prob{\thrhidegame_1(\ppb, \adv, \secpar) \Rightarrow 1} \right|
+	\end{align*}
+	A PPB satisfies threshold hiding if for all PPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\thrhidegame}{\ppb, \adv} \leq \negl$.
+\end{definition}
+
+\begin{definition}[Escrow Hiding]
+	Let $\ppb = (\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\eschidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
+	\procedureblock{$\eschidegame_b(\ppb, \adv, \Sim, \secpar)$}{
+		\comparams \leftarrow \csetup(\secparam) \\
+		(\ppbpp, \td) \leftarrow \setup(\secparam, \comparams) \\
+		(\thr, r_{KG}, pk, x) \leftarrow \adv(\ppbpp) \\
+		\pcif \verpk(\ppbpp, pk, \commit(\comparams, \thr; r_{KG})) = 0: \pcreturn \bot \\
+		r \sample \comR \\
+		\esc \leftarrow \pcif b = 0 \pcthen \escrow(\ppbpp, pk, x, r) \:\pcelse \Sim(\td, pk, f(\thr, x)) \\
+		b' \leftarrow \adv(\esc) \\
+		\pcreturn b'
+	}
+
+	The $\eschidegame(\ppb, \adv, \secpar)$ advantage of $\adv$ is defined as:
+	\begin{align*}
+		 & \advantage{\eschidegame}{\ppb, \adv} \\
+		 & = \left|
+		\prob{\eschidegame_0(\ppb, \adv, \secpar) \Rightarrow 1} - \prob{\eschidegame_1(\ppb, \adv, \secpar) \Rightarrow 1}
+		\right|
+	\end{align*}
+	A PPB satisfies escrow hiding if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\eschidegame}{\ppb, \adv} \leq \negl$.
+\end{definition}
