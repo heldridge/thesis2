@@ -1,0 +1,25 @@
+We present here our main construction of an efficient PPB for threshold comparison.
+Let $\pker$ and $\pkem$ be lossy public-key encryption schemes, and ${\sf OTP}$, $\otp'$ be one-time pad schemes, where $\OTP.\epsilon$ is some fixed key.
+Define the following two relations:
+
+\begin{align*}
+	\kgrel^{} = & \left\{
+	((pk', \com), (\thr, sk', r_k, r_c)) \::\:
+	\begin{gathered}
+		(sk', pk') = \kgen'(\lambda, \revpp, \matpp, \base, \numdigits, \thr; r_k) \\
+		\wedge \: \com = \commit(\comparams, \thr; r_c)
+	\end{gathered}
+	\right\}              \\
+	\erel^{} =  & \left\{
+	((Z', \com, pk), (\uval, \msg, r_e, r_c)) \::\:
+	\begin{gathered}
+		Z' = \escrow'(\revpp, \matpp, \numdigits, pk, \uval, \msg; r_e) \\
+		\wedge \: \com = \commit(\comparams, (\uval, \msg); r_c)
+	\end{gathered}
+	\right\}
+\end{align*}
+
+Let $\kglang^{}$ and $\elang^{}$ be the corresponding languages to these relations, and
+$\kgps^{}$, $\eps^{}$ be corresponding NIZKs for these languages.
+
+\input{sections/mainmatter/02-ppbs/04-construction-01-const-fig.tex}

@@ -110,11 +110,14 @@
 \newcommand{\keyspace}{\mathcal{K}}
 \newcommand{\msgspace}{\mathcal{M}}
 \newcommand{\pke}{\mathsf{PKE}}
+\newcommand{\PKE}{\pke}
 \newcommand{\setup}{\mathsf{Setup}}
 \newcommand{\pkepp}{\Lambda_k}
 \newcommand{\dl}{\pcnotionstyle{DL}}
 \newcommand{\ddh}{\pcnotionstyle{DDH}}
 \newcommand{\groupgen}{\mathsf{GGen}}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+
 
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
@@ -161,6 +164,15 @@
 \newcommand{\mdssOMULGame}[2]{PH}
 
 % PPBS
+\newcommand{\otpspace}{\mathcal{O}}
+\newcommand{\otppp}{\Lambda_{O}}
+\newcommand{\OTP}{{{\mathsf{OTP}}}}
+\newcommand{\otp}{\OTP}
+\newcommand{\otpkeygen}{\OTP.{{\mathsf{KGen}}}}
+\newcommand{\otpenc}{\OTP.{{\mathsf{Enc}}}}
+\newcommand{\otpdec}{\OTP.{{\mathsf{Dec}}}}
+\newcommand{\otpk}{\alpha}
+\newcommand{\otpct}{\beta}
 \newcommand{\uval}{v}
 \newcommand{\thr}{t}
 \newcommand{\base}{b}
@@ -223,6 +235,33 @@
 \newcommand{\thrhidegame}{\pcnotionstyle{THR\pcmathhyphen{}HIDE}}
 \newcommand{\eschidegame}{\pcnotionstyle{ESC\pcmathhyphen{}HIDE}}
 \newcommand{\ppb}{\mathsf{PPB}}
+\newcommand{\rev}{{{\mathsf{R}}}}
+\newcommand{\mat}{{{\mathsf{M}}}}
+\newcommand{\fin}{\mathsf{F}}
+\newcommand{\pkem}{{{\PKE_\mat}}}
+\newcommand{\pker}{{{\PKE_\rev}}}
+\newcommand{\pkef}{\PKE_{\fin}}
+\newcommand{\kgrel}{\ensuremath{\relation_{KG}}}
+\newcommand{\erel}{\ensuremath{\relation_{E}}}
+\newcommand{\revpp}{\pkepp^{\rev}}
+\newcommand{\matpp}{\pkepp^{\mat}}
+\newcommand{\numdigits}{n} % The number of digits in the base-b representation of t
+\newcommand{\kglang}{\ensuremath{\lang_{KG}}}
+\newcommand{\elang}{\ensuremath{\lang_{E}}}
+\newcommand{\proofsystem}{\Pi}
+\newcommand{\kgps}{\ensuremath{\proofsystem_{KG}}}
+\newcommand{\eps}{\ensuremath{\proofsystem_{E}}}
+\newcommand{\revpk}{rpk}
+\newcommand{\matpk}{mpk}
+\newcommand{\matsk}{msk}
+\newcommand{\revsk}{rsk}
+\newcommand{\pairpk}{\overbar{pk}}
+\newcommand{\pairsk}{\overbar{sk}}
+\newcommand{\ciphertext}{\ct}
+\newcommand{\revct}{\ciphertext^{\sf R}}
+\newcommand{\matct}{\ciphertext^{\sf M}}
+\newcommand{\pairct}{\overbar{\ciphertext}}
+
 
 
 

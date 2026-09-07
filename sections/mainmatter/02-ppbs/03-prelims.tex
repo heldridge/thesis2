@@ -25,24 +25,4 @@ Where $f'_b(v, t)$ is defined as follows.
 	\pcreturn x
 }
 
-We provide descriptions of the Diffie-Hellman assumption, the ElGamal encryption scheme, one-time pads, and non-interactive zero-knowledge proofs in \hme{would be appendix, but should just be global prelims.}
 
-\subsection{Lossy Public-Key Encryption}
-\label{sec:lossy_pke}
-
-\begin{definition}
-	A lossy public-key encryption scheme (PKE) \cite{C:PeiVaiWat08} for a message space $\msgspace$ is a tuple of algorithms $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ defined as:
-
-	\begin{itemize}
-		\item $\setup(\secparam) \rightarrow \pkepp$: outputs public parameters $\pkepp$.
-
-		\item $\kgen(\pkepp) \rightarrow (sk, pk)$: generates a keypair $(sk, pk)$.
-
-		\item $\kgenlossy(\pkepp) \rightarrow pk$: generates a lossy key $pk$.
-
-		\item $\enc(\pkepp, pk, m) \rightarrow ct$: takes as input a public key $pk$ and a plaintext message $m \in \msgspace$ and outputs a ciphertext $ct$.
-
-		\item $\dec(\pkepp, sk, ct) \rightarrow \msg$: takes as input a secret key $sk$ and a ciphertext $ct$ and either outputs $\bot$ or the message $m$.
-
-	\end{itemize}
-\end{definition}
