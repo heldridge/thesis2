@@ -30,9 +30,9 @@ $\maxt$ and $\base$ are assumed to be implicit inputs to all algorithms, and $\m
 
 We can now state our main theorem.
 
-% \begin{theorem}
-% 	\label{thm:ppbs-main}
-% 	If, $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme, $\pkem$ is a lossy, $\mathcal{U}_{\otpspace}$-\slap{} public-key encryption scheme, $(\pker, \pkem, \otp)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
-% \end{theorem}
-%
+\begin{theorem}
+	\label{thm:ppbs-main}
+	If $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme with message space $\msgspace_\rev$, $\pkem$ is a lossy, $\msgspace_\mat$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $\msgspace_\rev$ and $\msgspace_\mat$ are both finite, cyclic, abelian groups, $(\pker, \pkem)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
+\end{theorem}
+
 
