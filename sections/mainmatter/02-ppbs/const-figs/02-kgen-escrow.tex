@@ -53,17 +53,17 @@
 				}
 
 				\procedure[linenumbering]{$\escrow'(\revpp, \matpp, \numdigits, pk, v, m)$}{
-					\otpk^* \leftarrow \OTP'.\kgen() \\
-					\otpct^* \leftarrow \OTP'.\enc(\otpk^*, \msg) \\
-					\otpk_1,\dots,\otpk_{\numdigits - 1} \leftarrow \otpkeygen() \\
-					\otpk_0 \leftarrow {\sf OTP}.\varepsilon \\
+					\otpk^* \sample \msgspace_{\rev} \\
+					\otpct^* := \otpk^* \cdot \msg \\
+					\otpk_1,\dots,\otpk_{\numdigits - 1} \sample \msgspace_{\mat} \\
+					\otpk_0 := \msgspace_{\mat}.e \\
 					\pcfor i \in [n] \\
 					\t \revct_i \leftarrow \pker.\enc(\revpp, \revpk_i^{\uval[i]}, \otpk^*) \\
-					\t \otpct_i^{\rev} \leftarrow \otpenc(\otpk_{i - 1}, \revct_i) \\
+					\t \otpct_i^{\rev} := \otpk_{i - 1} \cdot \revct_i \\
 					\t \pcif i < \numdigits \\
-					\t[2] \otpct^{\mat}_i \leftarrow \otpenc(\otpk_{i - 1}, \otpk_i) \\
+					\t[2] \otpct^{\mat}_i := \otpk_{i - 1}\cdot \otpk_i \\
 					\t[2] \matct_i \leftarrow \pkem.\enc( \pcskipln \\
-					\t[3] \matpp, \matpk_i^{\uval[i] + 1}, \otpct^{\mat}_i) \\
+					\t[4] \matpp, \matpk_i^{\uval[i] + 1}, \otpct^{\mat}_i) \\
 					\t \pcelse\\
 					\t[2] \matct_i \leftarrow \bot \\
 					\t \pairct_i := (\otpct_i^{\rev}, \matct_i) \\

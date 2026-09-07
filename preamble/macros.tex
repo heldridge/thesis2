@@ -118,6 +118,13 @@
 \newcommand{\groupgen}{\mathsf{GGen}}
 \newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 
+\newcounter{hybctr}
+\newcommand{\prevhybctr}{\addtocounter{hybctr}{-1}\arabic{hybctr}\stepcounter{hybctr}}
+\newcommand{\newhyb}{\hyb_{\setcounter{hybctr}{0}\arabic{hybctr}}}
+\newcommand{\currhyb}{\hyb_{\arabic{hybctr}}}
+\newcommand{\prevhyb}{\hyb_{\prevhybctr}}
+\newcommand{\nexthyb}{\hyb_{\stepcounter{hybctr}\arabic{hybctr}}}
+
 
 % MDSS
 \newcommand{\mdssRecThr}{\ensuremath{t_{\mathsf{rec}}}}
@@ -261,6 +268,12 @@
 \newcommand{\revct}{\ciphertext^{\sf R}}
 \newcommand{\matct}{\ciphertext^{\sf M}}
 \newcommand{\pairct}{\overbar{\ciphertext}}
+\newcommand{\sla}{strong-lossy-ambiguity}
+\newcommand{\wla}{weak-lossy-ambiguity}
+\newcommand{\slap}{strong-lossy-ambiguous}
+\newcommand{\wlap}{weak-lossy-ambiguous}
+\newcommand{\slambgame}{\dist\pcnotionstyle{\pcmathhyphen{}SLAMB}}
+\newcommand{\wlambgame}{\pcnotionstyle{WLAMB}}
 
 
 

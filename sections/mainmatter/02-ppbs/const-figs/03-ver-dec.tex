@@ -19,16 +19,16 @@
 				\t = sk \\
 				\pcif \verescrow(\Lambda, pk, \com_{E}, Z) = 0 \:\pcreturn \bot \\
 				\pcparse (\{\pairct_i\}_{i \in [\numdigits]}, \otpct^*) = Z' \\
-				\otpk'_0 := {\sf OTP}.\varepsilon\\
+				\tilde{\otpk}_0 := \msgspace_{\mat}.e \\
 				\pcfor i \in [n] \\
-				\t (\otpct^{\rev}_i, \matct_i) \leftarrow \pairct_i \\
-				\t \revct_i \leftarrow \otpdec(\otpk'_{i - 1}, \otpct^{\rev}_i) \\
+				\t \pcparse \pairct_i  = (\otpct^{\rev}_i, \matct_i)\\
+				\t \revct_i := \tilde{\otpk}_{i - 1}^{-1} \cdot \otpct^{\rev}_i \\
 				\t \pcfor j \in [\thr[i] + 1, \base] \\
-				\t[2] {\otpk^*}' = \pker.\dec(\revpp, \revsk_i^j, \revct_i) \\
-				\t[2] \pcif {\otpk^*}' \neq \bot \text{ } \pcreturn \OTP.\dec({\otpk^*}', \otpct^*) \\
+				\t[2] \tilde{\otpk}^* := \pker.\dec(\revpp, \revsk_i^j, \revct_i) \\
+				\t[2] \pcif \tilde{\otpk}^* \neq \bot \text{ } \pcreturn (\tilde{\otpk}^*)^{-1} \cdot \otpct^* \\
 				\t \pcif i < n \\
-				\t\t \otpct^{\mat}_{i} \leftarrow \pkem.\dec(\matpp, \matsk_i^{\thr[i] + 1}, \matct_i) \\
-				\t\t \otpk'_i \leftarrow \otpdec(\otpk'_{i - 1}, \otpct^{\mat}_i) \\
+				\t\t \otpct^{\mat}_{i} := \pkem.\dec(\matpp, \matsk_i^{\thr[i] + 1}, \matct_i) \\
+				\t\t \tilde{\otpk}_i := \tilde{\otpk}_{i - 1}^{-1}\cdot \otpct^{\mat}_i \\
 				\pcreturn \bot
 			}
 		\end{pcvstack}

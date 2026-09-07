@@ -22,9 +22,17 @@ Define the following two relations:
 Let $\kglang^{}$ and $\elang^{}$ be the corresponding languages to these relations, and
 $\kgps^{}$, $\eps^{}$ be corresponding NIZKs for these languages.
 Out construction $(\maxt, \base)$-TCPPB can then be seen in \cref{fig:ppb-comp-const-01}, \cref{fig:ppb-comp-const-02}, and \cref{fig:ppb-comp-const-03}.
-$\maxt$ and $\base$ are assumed to be implicit inputs to all algorithms.
+$\maxt$ and $\base$ are assumed to be implicit inputs to all algorithms, and $\msgspace_\rev$ and $\msgspace_\mat$ are the message spaces of $\pke_\rev$ and $\pke_\mat$, respectively, and are both assumed to be finite, cyclic, abelian groups.
 
 \input{sections/mainmatter/02-ppbs/const-figs/01-setup.tex}
 \input{sections/mainmatter/02-ppbs/const-figs/02-kgen-escrow.tex}
 \input{sections/mainmatter/02-ppbs/const-figs/03-ver-dec.tex}
+
+We can now state our main theorem.
+
+% \begin{theorem}
+% 	\label{thm:ppbs-main}
+% 	If, $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme, $\pkem$ is a lossy, $\mathcal{U}_{\otpspace}$-\slap{} public-key encryption scheme, $(\pker, \pkem, \otp)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
+% \end{theorem}
+%
 

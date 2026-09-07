@@ -1,0 +1,86 @@
+Ambiguous encryption, originally defined in \cite{CCS:BLMG21}, requires that for certain distributions of messages an adversary cannot distinguish which public key a ciphertext was generated under, even with access to the corresponding secret keys.
+Our PPB construction will require a minor twist on this property: ambiguity with respect to \emph{lossy} keys.
+Match ciphertexts must be ambiguous even between lossy and non-lossy keys, a property we call \emph{\sla}, while reveal ciphertexts only require ambiguity between lossy keys, which we call \emph{\wla}.
+As in \cite{CCS:BLMG21}, \sla{} will be defined relative to a distribution $\dist$.
+We define these properties formally below.
+
+\begin{definition}[Strong Lossy Ambiguity] \label{def:amb} Let $\mathsf{PKE} = (\setup, $ $\kgen, \kgenlossy, \enc, \dec)$ be a lossy public-key encryption scheme for message space $\msgspace$ and let the random variable $\slambgame_b(\mathsf{PKE}, \adv, \lambda)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in\{0,1\}$, $\dist$ is a probability distribution over $\msgspace$, and $\lambda \in \mathbb{N}$, denote the result of the following probabilistic experiment:
+
+	\procedureblock{$\slambgame_b(\mathsf{PKE}, \adv, \lambda)$}{
+		\pkepp \leftarrow \setup(\secparam) \\
+		r_0, r_1, \st \leftarrow \adv_1(\dist, \pkepp) \\
+		(\sk_0, \pk_0) := \kgen(\pkepp; r_0) \\
+		\pk_1 := \kgenlossy(\pkepp; r_1) \\
+		m \leftarrow \dist \\
+		\ct^* \leftarrow \enc(\pk_b, m) \\
+		b' \leftarrow \adv_2\left(\st, , \ct^*\right) \\
+		\pcreturn b'
+	}
+
+
+	The $\slambgame_b(\mathsf{PKE}, \adv, \lambda)$ advantage of an adversary $\adv$ is defined as
+	\begin{align*}
+		 & \advantage{\slambgame}{\pke, \adv} \\
+		 & =
+		\left|
+		\prob{\slambgame_0(\pke, \adv, \secpar) \Rightarrow 1} -
+		\prob{\slambgame_1(\pke, \adv, \secpar) \Rightarrow 1}
+		\right|
+	\end{align*}
+
+	An encryption scheme $\mathsf{PKE}$ is $\slambgame$ secure, i.e.\ satisfies $\dist$-\sla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that $\advantage{\slambgame}{\pke, \adv} \leq \negl$.
+
+\end{definition}
+
+\begin{definition}[Weak Lossy Ambiguity]
+	Let $\mathsf{PKE} = (\setup,$ $\kgen, \kgenlossy, \enc, \dec)$ be a lossy public-key encryption scheme for message space $\mathcal{M}$ and let the random variable $\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$, where $\adv = \set{\adv_1, \adv_1}$, $b \in\{0,1\}$, and $\secpar \in \NN$ denote the result of the following probabilistic experiment:
+
+	\procedureblock{$\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$}{
+		\pkepp \leftarrow \setup(\secparam) \\
+		r_0, r_1, \msg, \st \leftarrow \adv_1(\pkepp) \\
+		\pk_0 := \kgenlossy(\pkepp; r_0) \\
+		\pk_1 := \kgenlossy(\pkepp; r_1) \\
+		\ct^* \leftarrow \enc(\pk_b, m) \\
+		b' \leftarrow \adv_2\left(\st, \ct^*\right) \\
+		\pcreturn b'
+	}
+
+	The $\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$ advantage of an adversary $\adv$ is defined as
+
+	$$
+		\advantage{\wlambgame}{\pke, \adv} =
+		\left|
+		\prob{\wlambgame_0(\pke, \adv, \secpar) \Rightarrow 1} -
+		\prob{\wlambgame_1(\pke, \adv, \secpar) \Rightarrow 1}
+		\right|
+	$$
+
+	An encryption scheme $\mathsf{PKE}$ is $\wlambgame$ secure, i.e. satisfies \wla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that $\advantage{\wlambgame}{\pke, \adv} \leq \negl$.
+\end{definition}
+
+We now show that \sla{} is strictly stronger than \wla{}.
+
+\begin{theorem}
+	Strong-lossy-ambiguity is strictly stronger than \wla{}.
+\end{theorem}
+
+\begin{proof}
+	We begin by showing that a scheme satisfying $\dist$-\sla{} for any $\dist$ also satisfies \wla{}.
+	Let $\pke$ be a $\dist$-\slap{} public key encryption scheme, and consider the following sequence of hybrids.
+
+	\begin{itemize}
+		\item $\newhyb$: This hybrid is identical to  $\wlambgame{}_0(\pke, \adv, \secpar)$.
+		\item $\nexthyb$: Sample $m' \leftarrow \dist$, and replace $\ct^*$ with $\enc(pk_0, m')$.
+		      By the lossiness of $\pke$, $\prevhyb \cindist \currhyb$.
+		\item $\nexthyb$: In this hybrid, $pk_1$ is computed using the non-lossy $\kgen$ algorithm, and $\adv$ receives $\enc(pk_1, m)$.
+		      By the $\dist$-\sla{} property of $\pke$, $\prevhyb \cindist \currhyb$.
+		\item $\nexthyb$: In this hybrid $pk_1$ is computed with the lossy $\kgen$ algorithm.
+		      We have that $\prevhyb \cindist \currhyb$ again by the \sla{} of $\pke$.
+		\item $\nexthyb$: This hybrid is identical to $\wlambgame{}_1(\pke, \adv, \secpar)$.
+		      $\prevhyb \cindist \currhyb$ again by the lossiness of $\pke$.
+	\end{itemize}
+	We therefore conclude that $\hyb_0 \cindist \currhyb$, and thus $\pke$ satisfies \wla{}.
+
+	Finally, consider a PKE scheme that satisfies \wla{}, and modify it so that encryption appends a copy of the encryption key to the message before computing a ciphertext.
+	This scheme clearly maintains \wla{} as ciphertexts encrypted under lossy keys reveal no information about the underlying message, while it leads to a trivial attack against \sla{} by an adversary that decrypts a ciphertext and checks for the non-lossy public key.
+\end{proof}
