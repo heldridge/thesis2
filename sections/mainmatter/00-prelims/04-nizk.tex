@@ -1,0 +1,96 @@
+We reproduce here the NIZK definition from \cite{AC:DEFKPV24}.
+Let $\relation$ be a polynomial-time verifiable binary relation.
+For a pair $(\statement, \witness) \in \relation$, we refer to $\statement$ as the statement and $\witness$ as the witness.
+Let $\lang = \set{\statement \:|\: \exists \witness : (\statement, \witness) \in \relation }$.
+
+\begin{definition}
+	A NIZK proof system for a language $\lang$ is a tuple of algorithms $\Pi = (\zksetup, \zkprove, \zkverify)$ defined as:
+
+	\begin{itemize}
+		\item $\zksetup(\secparam) \rightarrow (\crs, \td)$: outputs a common reference string $\crs$ and trapdoor $\td$.
+		\item $\zkprove(\crs, \statement, \witness) \rightarrow \zkproof$: outputs a proof $\zkproof$ for $(\statement, \witness) \in \relation$.
+		\item $\zkverify(\crs, \zkproof, \statement) \rightarrow b$: outputs $b \in \bin$, verifying the proof $\zkproof$ w.r.t.\ the public statement $\statement$.
+	\end{itemize}
+\end{definition}
+
+We will require NIZKs that satisfy the following properties:
+
+\begin{definition}[Perfect Completeness]
+	For $\crs \leftarrow \zksetup(\secparam)$, and all $(\statement, \witness) \in \relation$, it  holds that
+	$$
+		\prob{\zkverify(\crs, \zkprove(\crs, \statement, \witness), \statement) = 1} = 1
+	$$
+\end{definition}
+
+\begin{definition}[Soundness]
+	For all $\statement \notin \lang$ and all PPT adversaries $\adv$, it holds that
+	$$
+		\prob{\zkverify(\crs, \zkproof, \statement) = 1 \::\:
+			\begin{gathered}
+				\crs \leftarrow \zksetup(\secparam) \\
+				\zkproof \leftarrow \adv(\crs)
+			\end{gathered}
+		} \leq \negl
+	$$
+\end{definition}
+
+\begin{definition}[Zero-Knowledge]
+	There exists a PPT simulator $\Sim$ such that for all $(\statement, \witness) \in \relation$
+	$$
+		\left\{
+		(\crs, \zkproof) \:\middle|\:
+		\begin{gathered}
+			(\crs, \td) \leftarrow \zksetup(\secparam) \\
+			\zkproof \leftarrow \Sim(\crs, \td, \statement)
+		\end{gathered}
+		\right\}   \pindist
+		\left\{
+		(\crs, \zkproof) \:\middle|\:
+		\begin{gathered}
+			(\crs, \cdot) \leftarrow \zksetup(\secparam) \\
+			\zkproof \leftarrow \zkprove(\crs, \statement, \witness)
+		\end{gathered}
+		\right\}
+	$$
+\end{definition}
+
+We may also require that a NIZK system satisfy one of the following properties.
+
+\begin{definition}[Knowledge Soundness]
+	For all PPT $\adv$ there exists an extractor $\Ext_{\adv}$ such that
+	$$
+		\prob{
+			\begin{gathered}
+				\zkverify(\crs, \zkproof, \statement) = 1 \:\wedge \\
+				(\statement, \witness) \notin \relation
+			\end{gathered}
+			\::\:
+			\begin{gathered}
+				(\crs, \td) \leftarrow \zksetup(\secparam) \\
+				(\statement, \zkproof) \leftarrow \adv(\crs) \\
+				\witness \leftarrow \Ext_{\adv}(\trans_{\adv})
+			\end{gathered}
+		} \leq \negl
+	$$
+	where $\trans_{\adv}$ is a list containing all of $\adv$'s inputs as outputs.
+\end{definition}
+
+\begin{definition}{Strong Simulation-Extractability}
+	There exists an extractor $\Ext$ such that for all PPT $\adv$
+	$$
+		\prob{
+			\begin{gathered}
+				\zkverify(\crs, \zkproof, \statement) = 1 \:\wedge \\
+				(\statement, \zkproof) \notin Q \wedge (\statement, \witness) \notin \relation
+			\end{gathered}
+			\::\:
+			\begin{gathered}
+				(\crs, \td) \leftarrow \zksetup(\secparam) \\
+				Q \leftarrow \emptyset \\
+				(\statement, \zkproof) \leftarrow \adv^{\oracle_{\Sim(\cdot, \cdot)}}(\crs) \\
+				\witness \leftarrow \Ext(\crs, \td, \zkproof)
+			\end{gathered}
+		} \leq \negl
+	$$
+	Where $\oracle_{\Sim(\statement, \witness)}$ behaves as follows: it first checks whether $(\statement, \witness) \in \relation$, and if not, aborts; otherwise it generates $\pi \leftarrow \Sim(\td, \statement)$, sets $Q \leftarrow Q \cup \{(\statement, \zkproof)\}$, and returns $\zkproof$.
+\end{definition}
