@@ -209,19 +209,25 @@ We now begin proving our main theorem.
 		\pker.\dec(\revsk_i^j, \revct_i)                                       & \neq \bot \\
 		\pker.\dec(\revsk_i^j,\tilde{\otpk}_{i-1}^{-1} \cdot \otpct_i^{\rev})) & \neq \bot \\
 	\end{align*}
-
-	\vspace{-2em}
+	\vspace{-6em}
 	\begin{align*}
-		\pker.\dec\left(\revsk_i^j, \left( placeholder
-		          \right)^{-1} \cdot \otpct_i^{\rev} \right)
+		 & \pker.\dec\left(\revsk_i^j, \left(\rdec(\otpk_{d - 1}, \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d), \otpct_{d}^\mat, \dots, \otpct_{i - 1}^\mat)
+		\right)^{-1} \cdot \otpct_i^{\rev} \right)                                                                                                           \\
+		 & \neq \bot
 	\end{align*}
-	% \begin{align*}
-	% 	\pker.\dec( & \revsk_i^j, \otp.\dec(                                                                                                           \\
-	% 	            & \otp.\rdec(\otpk_{d - 1}, \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d),\dots,\otpct_{i-1}^{\mat}), \otpct_i^{\rev})) & \neq \bot
-	% \end{align*}
-	%
-	%
-	% \begin{align*}
-	% 	\pker.\dec(\revsk_i^j, \otp.\dec(\otp.\dec(g^{r'}, \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d)), \otpct_i^{\rev})) & \neq \bot \tag{\cref{lemma:rdecchain}}
-	% \end{align*}
+	\vspace{-5em}
+	\begin{align*}
+		\pker.\dec(\revsk_i^j, (g_C^{-r'}\cdot \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d))^{-1}\cdot \otpct_i^{\rev}) & \neq \bot \tag{\cref{lemma:rdecchain}}
+	\end{align*}
+
+	As $\matct_d$ was encrypted under a lossy key (as $\uval[d] < \thr[d]$), we can then break the lossy-correlation-resistance of $(\pker, \pkem)$ with a reduction that outputs
+	$$
+		(\mer_d,  \rer_i, r', \okgr_{i - 1}, \okgr_{d - 1} + \okgr_d, \okgr_*)
+	$$
+	Therefore, $\badprobrevnonbot{i}{j}(\secpar) \leq \negl$ for all $i \in [d + 1, \numdigits]$
+	and for all $j \in [\thr[i] + 1, \base]$, and so $\nu_3^{<}(\lambda)$ must be negligible.
+
+	Finally, we have already shown that $\badprobrev{i}{j}$ must be negligible at all positions where $\uval'[i] = \thr[i]$.
+	Therefore, $\nu_3^{=}(\secpar)$ must be negligible.
+	In turn, $\nu_3(\secpar)$ and then $\nu(\secpar)$ must be negligible, and therefore the scheme satisfies soundness.
 \end{proof}
