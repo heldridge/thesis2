@@ -104,4 +104,50 @@ As our construction uses the generic commit-and-prove technique from \cite{EC:Ko
 		\item Let \badprobrevF{} denote the probability that $\pker.\dec(\pkerpp, \revsk_d^{\uval'[d]}, \revct_d) \neq \otpk^*$.
 	\end{itemize}
 
+	If $\nu_3^{>}(\lambda)$ is non-negligible then at least one of the above must be non-negligible, as we must have $\tilde{\otpk}^* = \pker.\dec(\pkerpp, \revsk_d^{\uval'[d]}, \revct_d) \neq \otpk^*$ for the output of $\dec$ to not equal $m$.
+
+	Suppose that $\badprobmat{i} > 0$ for some $i \in [n - 1]$.
+	Then, we can break the correctness property of $\pkem$, as
+	$$
+		\pkem.\dec(\pkempp, sk, \pkem.\enc(\pkempp, pk, \msg'; \mer_i)) \neq \msg'
+	$$
+	Therefore, $\badprobmat{i} = 0$ for all $i \in [d - 1]$.
+
+	Next, it is clearly the case that $\badprobotpM{0} = 0$, as $\otpk_0'$ is set identically to how it is set in $\escrow'$.
+	We now show that for all $i \in [n - 1]$, if $\badprobmat{i - 1} = 0$ then $\badprobmat{i} = 0$.
+	As $\badprobmat{i - 1} = 0$, we have that $\otpct_i^{\mat} = \otpk_{i - 1}\cdot \otpk_i$.
+	Then, by definition and our assumption we have that $\tilde{\otpk}_i = (\otpk_{i - 1})^{-1}\cdot \otpk_{i - 1}\cdot \otpk_i = \otpk_i$.
+	Thus, by induction, we have that $\badprobotpM{i} = 0$ for all $i \in [0, d - 1]$.
+
+	Next, consider the case that $\badprobotpR{i} > 0$ for some $i$.
+	This is equivalent to stating that $(\tilde{\otpk}_{i - 1})^{-1}\cdot \otpct_i^{\rev} \neq \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)$.
+	Then, by the definition of $\otpct^{\rev}_i$ and the fact that $\badprobotpM{i - 1} = 0$, we have:
+	\begin{align*}
+		\otpk_{i - 1}^{-1} \cdot  \otpk_{i - 1}\cdot \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i) & \neq
+		\pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)                                                                                                                \\
+		\pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)                                              & \neq \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)
+	\end{align*}
+	We therefore have that $\badprobotpR{i} = 0$ for all $i \in [d]$.
+
+	Next, suppose that $\badprobrev{i}{j}$ is non-negligible for some $(i, j)$.
+	Then, we have that:
+	\begin{align*}
+		\pker.\dec(\pkerpp, \revsk_i^j, \revct_i) \neq \bot                                                                              \\
+		\pker.\dec(\pkerpp, \revsk_i^j, \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*)) \neq \bot \tag{\badprobotpR{i} = 0}          \\
+		\pker.\dec(\pkerpp, \revsk_i^j, \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)) \neq \bot \tag{Definition of $\enc$} \\
+	\end{align*}
+
+	Then, we can write a reduction $\bdv$ that breaks the weak-robustness property of $\pker$.
+	The reduction outputs $(0, 1, \otpk^*, \rer_i)$ and wins as $\uval'[i] < j$.
+	Therefore, $\badprobrev{i}{j}$ must be negligible for all $i \in [d - 1]$ and $j \in [t[i] + 1, \base]$ or when $i = d$ and $j \in [\thr[i] + 1, \uval'[d] - 1]$.
+
+	Finally, suppose that $\badprobrevF{} > 0$.
+	Then, we have that:
+	\begin{align*}
+		\pker.\dec(\pkerpp, \revsk_i^{\uval'[i]}, \revct_i) \neq \otpk^*                                                                     \\
+		\pker.\dec(\pkerpp, \revsk_i^{\uval'[i]}, \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*)) \neq \otpk^* \tag{\badprobotpR{i} = 0} \\
+	\end{align*}
+	This breaks the correctness of $\pker$, and therefore we have that $\badprobrevF{} = 0$, and that
+	$\nu_3^{>}(\lambda)$ is negligible.
+
 \end{proof}
