@@ -38,6 +38,50 @@ We can now state our main theorem.
 \subsection{Proofs}
 As our construction uses the generic commit-and-prove technique from \cite{EC:KohLysNgu23}, the proofs of correctness of $\verescrow$ and $\verpk$, follow from the same arguments, and we omit the proofs here.
 
+Before we begin prove the lemmas that will compose to our main theorem we first define some notation for iteratively applying the one-time-pad decryption operation.
+
+Define $\rdec(x, y_1,\dots,y_n)$ as follows:
+\procedureblock{$\rdec(x, y_1, \dots, y_n)$}{
+	\otpk := x\\
+	\pcfor i \in [n] \\
+	\t \otpk := \otpk^{-1}\cdot y_i\\
+	\pcreturn \otpk
+}
+
+\begin{lemma}
+	\label{lemma:rdecchain}
+	For a group with generator $g$, given $r_0, r_1, \dots, r_n$, one can efficiently compute a value $r'$ such that $\rdec(g^{r_0}, g^{r_1}, \dots, g^{r_n}) = (g^{r'})^{-1}\cdot g^{r_1}$.
+\end{lemma}
+
+\begin{proof}
+	Let $f(r_0, r_2, \dots, r_n) = \sum_{i \in \{0, 2, \dots, n\}}((\prod_{n - i} -1)r_i) $
+
+	We then have that:
+	\begin{align*}
+		\rdec(g^{r_0}, g^{r_1},\dots,g^{r_n})                                                & = \\
+		(g^{r_0})^{(\prod_n-1)}\cdot (g^{r_1})^{(\prod_{n - 1}-1)} \cdot \dots \cdot g^{r_n} & = \\
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)}
+	\end{align*}
+
+	Then, if $n$ is even we have that:
+	\begin{align*}
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{r_1}         \\
+		                                                                & = (g^{-f(r_0, r_2, \dots, r^n)})^{-1} \cdot g^{r_1}
+	\end{align*}
+	and so $r' = -f(r_0, r_2, \dots, r^n)$.
+
+	In the case that $n$ is odd we have that:
+	\begin{align*}
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1}                  \\
+		                                                                & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1} g^{r_1} g^{-r_1} \\
+		                                                                & = g^{f(r_0, r_2, \dots, r^n) - 2r_1} g^{r_1}                  \\
+		                                                                & = (g^{-f(r_0, r_2, \dots, r^n) + 2r_1})^{-1} g^{r_1}          \\
+	\end{align*}
+	and so $r' = -f(r_0, r_2, \dots, r^n) + 2r_1$.
+\end{proof}
+
+We now begin proving our main theorem.
+
 \begin{lemma}
 	\label{lemma:main-soundness}
 	If $\Pi_{E}$ is a knowledge-sound NIZK, $\comscheme$ is a binding commitment scheme, $\pker$ satisfies weak-robustness, and $\pker$, $\pkem$ are correct and satisfy lossy correlation resistance, then \schemename{} satisfies soundness.
