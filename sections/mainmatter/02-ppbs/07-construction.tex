@@ -150,4 +150,34 @@ As our construction uses the generic commit-and-prove technique from \cite{EC:Ko
 	This breaks the correctness of $\pker$, and therefore we have that $\badprobrevF{} = 0$, and that
 	$\nu_3^{>}(\lambda)$ is negligible.
 
+	\newcommand{\badprobrevnonbot}[2]{\ensuremath{\nu_{3, #1, #2}^{<, \mathsf{\rev}}}}
+	Suppose $\nu_3^{<}(\lambda)$ is non-negligible.
+	In this case, let $d$ be the index for which $\uval'[d] < \thr[d]$ and $\forall i < d, \: \uval'[i] = \thr[i]$.
+	Let $\badprobrevnonbot{i}{j}(\secpar)$ denote the probability that $\pker.\dec(\pkerpp, \revsk_i^j, \revct_i) \allowbreak\neq\allowbreak \bot$ for some $i \in [\numdigits]$ and $j \in [\thr[i] + 1, \base]$.
+	If $\nu_3^{<}(\secpar)$ is non-negligible, then at least one of $\badprobrevnonbot{i}{j}(\secpar)$ must be non-negligible.
+	By the same logic as above, we have that $\badprobrevnonbot{i}{j}(\secpar) = 0$ for all $i \in [d]$.
+
+	Now, suppose that $\badprobrevnonbot{i}{j}(\secpar)$ is non-negligible for some $i > d$.
+	By definition we have that there is a non-negligible probability that $\pker.\dec(\revsk_i^j, \revct_i) \neq \bot$.
+
+	We then have:
+	\begin{align*}
+		\pker.\dec(\revsk_i^j, \revct_i)                                       & \neq \bot \\
+		\pker.\dec(\revsk_i^j,\tilde{\otpk}_{i-1}^{-1} \cdot \otpct_i^{\rev})) & \neq \bot \\
+	\end{align*}
+
+	\vspace{-2em}
+	\begin{align*}
+		\pker.\dec\left(\revsk_i^j, \left( placeholder
+		          \right)^{-1} \cdot \otpct_i^{\rev} \right)
+	\end{align*}
+	% \begin{align*}
+	% 	\pker.\dec( & \revsk_i^j, \otp.\dec(                                                                                                           \\
+	% 	            & \otp.\rdec(\otpk_{d - 1}, \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d),\dots,\otpct_{i-1}^{\mat}), \otpct_i^{\rev})) & \neq \bot
+	% \end{align*}
+	%
+	%
+	% \begin{align*}
+	% 	\pker.\dec(\revsk_i^j, \otp.\dec(\otp.\dec(g^{r'}, \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d)), \otpct_i^{\rev})) & \neq \bot \tag{\cref{lemma:rdecchain}}
+	% \end{align*}
 \end{proof}
