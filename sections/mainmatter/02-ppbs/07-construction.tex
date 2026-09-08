@@ -1,7 +1,5 @@
 We present here our main construction of an efficient PPB for threshold comparison.
-Let $\pker$ and $\pkem$ be lossy public-key encryption schemes, and ${\sf OTP}$, $\otp'$ be one-time pad schemes, where $\OTP.\epsilon$ is some fixed key.
-Define the following two relations:
-
+Let $\pker$ and $\pkem$ be lossy public-key encryption schemes and define the following two relations:
 \begin{align*}
 	\kgrel^{} = & \left\{
 	((pk', \com), (\thr, sk', r_k, r_c)) \::\:
@@ -21,7 +19,7 @@ Define the following two relations:
 
 Let $\kglang^{}$ and $\elang^{}$ be the corresponding languages to these relations, and
 $\kgps^{}$, $\eps^{}$ be corresponding NIZKs for these languages.
-Out construction $(\maxt, \base)$-TCPPB can then be seen in \cref{fig:ppb-comp-const-01}, \cref{fig:ppb-comp-const-02}, and \cref{fig:ppb-comp-const-03}.
+Our construction $(\maxt, \base)$-TCPPB can then be seen in \cref{fig:ppb-comp-const-01}, \cref{fig:ppb-comp-const-02}, and \cref{fig:ppb-comp-const-03}.
 $\maxt$ and $\base$ are assumed to be implicit inputs to all algorithms, and $\msgspace_\rev$ and $\msgspace_\mat$ are the message spaces of $\pke_\rev$ and $\pke_\mat$, respectively, and are both assumed to be finite, cyclic, abelian groups.
 
 \input{sections/mainmatter/02-ppbs/const-figs/01-setup.tex}

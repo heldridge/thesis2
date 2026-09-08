@@ -4,8 +4,9 @@ The lossy variant, considered cryptographic ``folklore,'' uses an algorithm $\eg
 The scheme generates lossy keys by running the traditional ElGamal key generation algorithm with the alternate generator $h$.
 As the first element of a ciphertext remains $g^r$, computational lossiness follows from DDH.
 
-We begin by proving that this folklore scheme has the properties we require of it, and then give a transformation from a weak collision-free to a weak robust one.
-We then use these tools to describe concretely possible instantiations for $\pker$ and $\pkem$.
+We begin by proving that this folklore scheme has the properties we require of it.
+Next, we give a transformation from a weak collision-free to a weak robust PKE.
+We then use these tools to describe concrete instantiations for $\pker$ and $\pkem$.
 Finally, we give some optimizations to these instantiations that compress both the size of the escrow value and the public key.
 
 \subsection{Lossy ElGamal}
