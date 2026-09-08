@@ -28,7 +28,7 @@ We require that  PPB scheme satisfy the following properties.
 \end{definition}
 
 \begin{definition}[Soundness]
-	Let $\ppb = (\setup, \kgen, \verpk, \escrow, \verescrow, \dec)$ be a PPB scheme and let the random variable $\soundgame(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ denote the result of the following experiment:
+	Let $\ppb \allowbreak=\allowbreak (\allowbreak\setup, \allowbreak\kgen, \allowbreak\verpk, \allowbreak\escrow, \allowbreak\verescrow, \allowbreak\dec)$ be a PPB scheme and let the random variable $\soundgame(\allowbreak\ppb,\allowbreak \adv,\allowbreak \secpar)$ where $\secpar \in \NN$ denote the result of the following experiment:
 	\procedureblock{$\soundgame(\ppb, \adv, \secpar)$}{
 		\comparams \leftarrow \csetup(\secparam) \\
 		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
@@ -47,7 +47,7 @@ We require that  PPB scheme satisfy the following properties.
 \end{definition}
 
 \begin{definition}[Threshold Hiding]
-	Let $\ppb = (\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\thrhidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
+	Let $\ppb \allowbreak=\allowbreak (\allowbreak\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,$ $\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\thrhidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
 	\procedureblock{$\thrhidegame_b(\ppb, \adv, \secpar)$}{
 		\comparams \leftarrow \csetup(\secparam) \\
 		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
@@ -66,7 +66,7 @@ We require that  PPB scheme satisfy the following properties.
 \end{definition}
 
 \begin{definition}[Escrow Hiding]
-	Let $\ppb = (\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\eschidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
+	Let $\ppb = (\setup,\allowbreak \kgen,\allowbreak \verpk,\allowbreak \escrow,$\\ $\allowbreak \verescrow,\allowbreak \dec)$ be a PPB scheme and let the random variable $\eschidegame_b(\ppb, \adv, \secpar)$ where $\secpar \in \NN$ and $b \in \bin$ denote the result of the following experiment:
 	\procedureblock{$\eschidegame_b(\ppb, \adv, \Sim, \secpar)$}{
 		\comparams \leftarrow \csetup(\secparam) \\
 		(\ppbpp, \td) \leftarrow \setup(\secparam, \comparams) \\

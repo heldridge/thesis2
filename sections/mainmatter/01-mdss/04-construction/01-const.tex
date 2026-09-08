@@ -24,7 +24,7 @@ First, however, we must state what is guaranteed by the GS decoder.
 	\label{thm:GS}
 	Let $\FF$ be a finite field.
 	Let $\mdssPrivThr$, $\mdssRecThr$, $\mdssWindowSize$ be positive integers such that $\mdssRecThr > \sqrt{\mdssPrivThr\mdssWindowSize}$.
-	Then there exists an algorithm $\gsDecode(\mdssPrivThr, \mdssRecThr, \set{(x_i, y_i)}_{i\in[\mdssWindowSize]})$ where for all $i$: $x_i, y_i \in \FF$, that outputs all univariate polynomials $p$ of degree at most $\mdssPrivThr$ such that $y_i = p(x_i)$ for at least $\mdssRecThr$ values of $i \in [\mdssWindowSize]$.
+	Then there exists an algorithm $\gsDecode(\allowbreak\mdssPrivThr,\allowbreak \mdssRecThr,\allowbreak \set{(x_i, y_i)}_{i\in[\mdssWindowSize]})$ where for all $i$: $x_i, y_i \in \FF$, that outputs all univariate polynomials $p$ of degree at most $\mdssPrivThr$ such that $y_i = p(x_i)$ for at least $\mdssRecThr$ values of $i \in [\mdssWindowSize]$.
 \end{theorem}
 
 Our GS-based construction can then be seen in \cref{fig:gs-mdss}.

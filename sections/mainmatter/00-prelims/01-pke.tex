@@ -60,7 +60,7 @@ A lossy PKE must still satisfy correctness for keys generated through $\kgen$, a
 We define a computational notion of lossiness as opposed to the statistical notion originally described in \cite{C:PeiVaiWat08}.
 
 \begin{definition}[Computational Lossiness]
-	Let $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ be a lossy PKE scheme and let the random variable $\comploss_b(\pke, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
+	Let $\pke \allowbreak =\allowbreak (\allowbreak\setup,\allowbreak \kgen,\allowbreak \kgenlossy,\allowbreak \enc,\allowbreak \dec)$ be a lossy PKE scheme and let the random variable $\comploss_b(\pke, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
 	\procedureblock{$\comploss_b(\pke, \adv, \secpar)$}{
 		\pkepp \gets \setup(\secparam) \\
 		r, m_0, m_1, \st \gets \adv_1(\pkepp) \\
@@ -77,7 +77,7 @@ We define a computational notion of lossiness as opposed to the statistical noti
 \end{definition}
 
 \begin{definition}[Key Indistinguishability]
-	Let $\pke = (\setup, \kgen, \kgenlossy, \enc, \dec)$ be a lossy PKE scheme and let the random variable $\kindist_b(\pke, \adv, \secpar)$ where $b \in \bin$ and $\secpar \in \NN$ denote the result of the following experiment:
+	Let $\pke \allowbreak=\allowbreak (\allowbreak\setup,\allowbreak \kgen,\allowbreak \kgenlossy,\allowbreak \enc,\allowbreak \dec)$ be a lossy PKE scheme and let the random variable $\kindist_b(\pke, \adv, \secpar)$ where $b \in \bin$ and $\secpar \in \NN$ denote the result of the following experiment:
 	\procedureblock{$\kindist_b(\pke, \adv, \secpar)$}{
 		\pkepp \gets \setup(\secparam) \\
 		(\pk_0, \sk_0) \gets \kgen(\pkepp) \\
@@ -118,7 +118,7 @@ We repeat a simplified form of the definition below.
 \end{definition}
 
 \subsection{Collision-Free Encryption}
-Mohassel \cite{AC:Mohassel10} defines a relaxation of robustness called collision-freeness for PKE schemes.
+Mohassel \cite{AC:Mohassel10} defines a relaxation of robustness called collision-freeness.
 Intuitively, collision-freeness requires that a ciphertext decrypts to two different plaintexts when decrypted using distinct secret keys.
 We define the corresponding variant with adversarial randomness below.
 

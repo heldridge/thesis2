@@ -116,7 +116,7 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 
 
 	We now consider a sequence of hybrids.
-	Let $\hyb_j$ denote a game equivalent to \\ $\ulink_0(\mdss, \adv, \secpar)$, except the shares at indices $\set{q(\secpar) - j + 1, q(\secpar) - j + 2, \dots, q(\secpar)}$ are replaced with $\mdssShareAlg(s, 1)$, where $s$ is sampled uniformly from $\mdssShareSpace$.
+	Let $\hyb_j$ denote a game equivalent to \\ $\ulink_0(\mdss, \adv, \secpar)$, except the shares at indices $\{q(\secpar) - j + 1, q(\secpar) - j + 2, \dots, \allowbreak q(\secpar)\}$ are replaced with $\mdssShareAlg(s, 1)$, where $s$ is sampled uniformly from $\mdssShareSpace$.
 	Note that $\hyb_0$ is exactly the same as $\ulink_0(\mdss, \adv, \secpar)$, as the interval $\set{q(\secpar) + 1, \dots, q(\secpar)}$ is empty.
 
 	\begin{claim}
@@ -129,7 +129,7 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 	\begin{proof}
 		For $\hyb_j$ we define the following notation.
 		\begin{itemize}
-			\item Let $\mdssRelBatch$ be the smallest integer such that $\sum_{i \in [\mdssRelBatch]} |\indexSet_i| \geq j$. In other words, $\mdssProj(\mdssSecret, \mdssNumShares_{\mdssRelBatch, b}, \indexSet_{\mdssRelBatch, b})$ is the ``batch'' in which the share $\mdssBlindShare_j$ appears.
+			\item Let $\mdssRelBatch$ be the smallest integer such that $\sum_{i \in [\mdssRelBatch]} |\indexSet_i| \geq j$. In other words, $\mdssProj(\allowbreak\mdssSecret,\allowbreak \mdssNumShares_{\mdssRelBatch, b},\allowbreak \indexSet_{\mdssRelBatch, b})$ is the ``batch'' in which the share $\mdssBlindShare_j$ appears.
 			\item Let $\mdssLIBRB = \sum_{i \in [\mdssRelBatch - 1]} |\indexSet_i|$, i.e.\ the last index before the relevant batch.
 			\item Let $\mdssIWRB = j - \mdssLIBRB$, i.e.\ the index within the relevant batch at which $\mdssBlindShare_j$ appears.
 			\item Define the function $\mdssSampleShare(\secparam)$ as one that samples $\mdssSecret \sample \mdssSecretSpace$ and returns $\mdssShareAlg(\secparam, \mdssSecret, 1)$.

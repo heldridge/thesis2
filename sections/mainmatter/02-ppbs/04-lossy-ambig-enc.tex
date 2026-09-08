@@ -4,7 +4,8 @@ Match ciphertexts must be ambiguous even between lossy and non-lossy keys, a pro
 As in \cite{CCS:BLMG21}, \sla{} will be defined relative to a distribution $\dist$.
 We define these properties formally below.
 
-\begin{definition}[Strong Lossy Ambiguity] \label{def:amb} Let $\mathsf{PKE} = (\setup, $ $\kgen, \kgenlossy, \enc, \dec)$ be a lossy public-key encryption scheme for message space $\msgspace$ and let the random variable $\slambgame_b(\mathsf{PKE}, \adv, \lambda)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in\{0,1\}$, $\dist$ is a probability distribution over $\msgspace$, and $\lambda \in \mathbb{N}$, denote the result of the following probabilistic experiment:
+\begin{definition}[Strong Lossy Ambiguity] \label{def:amb}
+	Let $\mathsf{PKE} = (\setup, $ $\kgen, \kgenlossy,\allowbreak \enc,\allowbreak \dec)$ be a lossy public-key encryption scheme for message space $\msgspace$ and let the random variable $\slambgame_b(\mathsf{PKE}, \adv, \lambda)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in\{0,1\}$, $\dist$ is a probability distribution over $\msgspace$, and $\lambda \in \mathbb{N}$, denote the result of the following probabilistic experiment:
 
 	\procedureblock{$\slambgame_b(\mathsf{PKE}, \adv, \lambda)$}{
 		\pkepp \leftarrow \setup(\secparam) \\
@@ -33,7 +34,7 @@ We define these properties formally below.
 \end{definition}
 
 \begin{definition}[Weak Lossy Ambiguity]
-	Let $\mathsf{PKE} = (\setup,$ $\kgen, \kgenlossy, \enc, \dec)$ be a lossy public-key encryption scheme for message space $\mathcal{M}$ and let the random variable $\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$, where $\adv = \set{\adv_1, \adv_1}$, $b \in\{0,1\}$, and $\secpar \in \NN$ denote the result of the following probabilistic experiment:
+	Let $\mathsf{PKE} = (\setup,$ $\kgen, \kgenlossy, \enc,\allowbreak \dec)$ be a lossy public-key encryption scheme for message space $\mathcal{M}$ and let the random variable $\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$, where $\adv = \set{\adv_1, \adv_1}$, $b \in\{0,1\}$, and $\secpar \in \NN$ denote the result of the following probabilistic experiment:
 
 	\procedureblock{$\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$}{
 		\pkepp \leftarrow \setup(\secparam) \\
@@ -58,10 +59,10 @@ We define these properties formally below.
 	An encryption scheme $\mathsf{PKE}$ is $\wlambgame$ secure, i.e. satisfies \wla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that $\advantage{\wlambgame}{\pke, \adv} \leq \negl$.
 \end{definition}
 
-We now show that \sla{} is strictly stronger than \wla{}.
+We now show that \sla{} is a strictly stronger notion than \wla{}.
 
 \begin{theorem}
-	Strong-lossy-ambiguity is strictly stronger than \wla{}.
+	Strong-lossy-ambiguity is a strictly stronger notion than \wla{}.
 \end{theorem}
 
 \begin{proof}
