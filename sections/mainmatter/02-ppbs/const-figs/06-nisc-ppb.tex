@@ -1,0 +1,91 @@
+\begin{figure}
+	\begin{pchstack}[boxed, center, space=1em]
+
+		\begin{pcvstack}[space=1em]
+			\begin{pchstack}[center, space=1em]
+				\procedure[linenumbering]{$\setup(\secparam, \comparams)$}{
+					(\crs_{KG}, \td_{KG}) \leftarrow \zksetup_{KG}(\secparam) \\
+					(\crs_{E}, \td_{E}) \leftarrow \zksetup_{E}(\secparam) \\
+					\ppbpp = (\secpar, \comparams, \crs_{KG}, \crs_{E}) \\
+					\pcreturn(\ppbpp, (\td_{KG}, \td_{E}))
+				}
+
+				\procedure[linenumbering]{$\kgen'\left(\lambda, x\right)$}{
+					n := |x| \\
+					\pcfor i \in [n] \pcdo \\
+					\t (\otseck_i, \otpubk_i) \leftarrow \otinit(\secparam, x[i])\\
+					sk' \leftarrow \{\otseck_i\}_{i \in [n]} \\
+					pk' \leftarrow \{\otpubk_i\}_{i \in [n]} \\
+					\pcreturn (sk', pk')
+				}
+			\end{pchstack}
+
+			\procedure[linenumbering]{$\kgen\left(\ppbpp, x, r_{KG}\right)$} {
+				\pcparse (\secpar, \comparams, \crs_{KG}, \crs_{E}) = \ppbpp \\
+				(sk', pk') \xleftarrow{r_k} \kgen'(\lambda, x) \\
+				\com_{KG} \leftarrow \commit(\comparams, x; r_{KG}) \\
+				\zkproof_{KG} \leftarrow \zkprove_{KG}(\crs_{KG}, (pk', C), (\thr, sk', r_k, r_c)) \\
+				pk \leftarrow (pk', \com_{KG}, \zkproof_{KG}) \\
+				sk \leftarrow (sk', pk) \\
+				\pcreturn (sk, pk)
+			}
+
+			\procedure[linenumbering]{$\verpk(\ppbpp, pk, \com_{KG})$}{
+				\pcparse (\secpar, \comparams, \crs_{KG}, \crs_{E}) = \ppbpp \\
+				\pcparse (pk', \com'_{KG}, \zkproof_{KG})  = pk \\
+				\pcreturn \zkverify_{KG}(\crs_{KG}, \zkproof_{KG}, (pk', \com_{KG})) \\
+				\t \wedge (\com'_{KG} = \com_{KG})
+			}
+
+			\procedure[linenumbering]{$\verescrow(\ppbpp, pk, \com_{E}, Z = (Z', \zkproof_{E}))$}{
+				\pcparse (\secpar, \comparams, \crs_{KG}, \crs_{E}) = \ppbpp \\
+				\pcparse (pk', \com'_{KG}, \zkproof_{KG})  = pk \\
+				\pcreturn \verpk(\ppbpp, pk, \com_{KG}) \\
+				\t \zkverify_E((Z', \com_E, pk'), \zkproof_E)
+			}
+		\end{pcvstack}
+
+
+	\end{pchstack}
+	\caption{A generic NISC-based PPB construction}
+	\label{fig:PPB_generic_construction}
+\end{figure}
+
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\escrow'(\secpar, pk', \uval)$}{
+			\pcparse pk' = \{\otpubk_i\}_{i \in [n]} \\
+			(k, \gcirc) \leftarrow \gcircuit(\secparam, C) \\
+			\pcfor i \in [n] \pcdo \\
+			\t \otct_i \leftarrow \otsend(pk_i, \pginput(k, i, 0), \pginput(k, i, 1)) \\
+			\pcfor i \in [|\uval|] \pcdo \\
+			\t \gx_{n + i} \leftarrow \pginput(k, n + i, \xthbit{\uval}{i}) \\
+			ct' := \{ct_1,\dots, ct_n\} \\
+			\gx' := \{\gx_{n + 1}, \dots, \gx_{n + |\uval|}\} \\
+			\pcreturn (\gcirc, ct', \gx')
+		}
+
+		\procedure[linenumbering]{$\escrow(\ppbpp, pk, \uval, r_E)$}{
+			\pcparse (\secpar, \comparams, \crs_{KG}, \crs_{E}) = \ppbpp \\
+			\pcparse (pk', \com_{KG}, \zkproof_{KG}) = pk \\
+			Z' \xleftarrow{r_e} \escrow'(\secpar, pk', \uval) \\
+			\com_{E} \leftarrow \commit(\comparams, \uval; r_E) \\
+			\zkproof_E \leftarrow \zkprove_E(\crs_E, (Z', \com_E, pk'), (\uval)) \\
+			\pcreturn (Z', \zkproof_E)
+		}
+
+		\procedure[linenumbering]{$\dec(\ppbpp, sk, \com_E, Z = (Z', \zkproof_E))$}{
+			\pcparse (\secpar, \comparams, \crs_{KG}, \crs_{E}) = \ppbpp \\
+			\pcparse (\{\otseck_i\}_{i \in [n]} , pk) = sk \\
+			\pcif \verescrow(\ppbpp, pk, \com_E, Z) = 0 \pcthen \pcreturn \bot \\
+			\pcparse (\gcirc, \{\otct_1,\dots,\otct_n\}, \{\gx_{n+1},\dots,\gx_{n + |\uval|}\}) = Z' \\
+			\pcfor i \in [n] \pcdo \\
+			\t \gx_i \leftarrow \otreceive(\otseck_i, \otct_i) \\
+			\gx := \{\gx_i\}_{i \in [n + |\uval|]} \\
+			\pcreturn \geval(\gcirc, \gx)
+		}
+	\end{pcvstack}
+	\caption{A generic NISC-based PPB construction, continued.}
+	\label{fig:PPB_generic_construction_cont}
+\end{figure}
+
