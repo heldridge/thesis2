@@ -146,16 +146,16 @@ We prove here that the instantiation from \cref{sec:instantiation} satsifies los
 
 	As $\adv$ has non-negligible advantage, we must have that with non-negligible probability:
 	\begin{align*}
-		\pker.\dec(\revsk, (\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_1 \cdot \pker.\enc(\revpk, \otpk_3; \rencr))) & \\
+		\pker.\dec(\revsk, (\otpk_1^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_2 \cdot \pker.\enc(\revpk, \otpk^*; \rencr))) & \\
 		\neq \bot                                                                                                                          &
 	\end{align*}
 
 	\vspace{-2em}
 	\begin{align*}
-		(\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_1 \cdot \pker.\enc(\revpk, \otpk_3; \rencr))                      & = g^{\rkgrB\rencr} \tag{Definition of $\pker$}              \\
-		\left(\otpk_0^{-1} \cdot \frac{h^{\mkglr\mencr}\otpk_2}{g^{\mkgir\mencr}}\right)^{-1} \cdot (\otpk_1 \cdot g^{\rkgrA\rencr}\otpk_3) & = g^{\rkgrB\rencr} \tag{Definitions of $\pker$ and $\pkem$} \\
-		\frac{\otpk_0\otpk_1\otpk_3 g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_2h^{\mkglr\mencr}}                                              & = g^{\rkgrB\rencr}                                          \\
-		\frac{\otpk_0\otpk_1\otpk_3 g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_2g^{\rkgrB\rencr}}                                              & = h^{\mkglr\mencr}                                          \\
+		(\otpk_1^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_2 \cdot \pker.\enc(\revpk, \otpk^*; \rencr))                      & = g^{\rkgrB\rencr} \tag{Definition of $\pker$}              \\
+		\left(\otpk_1^{-1} \cdot \frac{h^{\mkglr\mencr}\otpk_3}{g^{\mkgir\mencr}}\right)^{-1} \cdot (\otpk_2 \cdot g^{\rkgrA\rencr}\otpk^*) & = g^{\rkgrB\rencr} \tag{Definitions of $\pker$ and $\pkem$} \\
+		\frac{\otpk_1\otpk_2\otpk^* g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_3h^{\mkglr\mencr}}                                              & = g^{\rkgrB\rencr}                                          \\
+		\frac{\otpk_1\otpk_2\otpk^* g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_3g^{\rkgrB\rencr}}                                              & = h^{\mkglr\mencr}                                          \\
 		g^{\okgrA + \okgrB + \okgrD + \mkgir\mencr + \rkgrA\rencr - \rkgrB\rencr - \okgrC}                                                  & = h^{\mkglr\mencr}                                          \\
 		\okgrA + \okgrB + \okgrD + \mkgir\mencr + \rkgrA\rencr - \rkgrB\rencr - \okgrC - \mkglr\mencr                                       & = s
 	\end{align*}

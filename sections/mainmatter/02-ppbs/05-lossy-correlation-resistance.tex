@@ -3,6 +3,7 @@ This in turn means that they should be unable to craft lossy ciphertexts such th
 
 \begin{definition}[Lossy Correlation Resistance]
 	Let $\pker$ and $\pkem$ be lossy public-key encryption schemes, with message spaces that are finite, cyclic, abelian groups.
+	Let $g_M$ and $g_C$ be the generators for the message and ciphertext space of $\pker$, respectively.
 	Let the variable $\badcorgame(\pker, \pkem, \adv, \secpar)$ where $\secpar \in \mathbb{N}$ denote the result of the following probabilistic experiment:
 
 	\procedureblock{$\badcorgame(\pker, \pkem, \adv, \secpar)$}{
@@ -12,10 +13,11 @@ This in turn means that they should be unable to craft lossy ciphertexts such th
 		(\matsk, \matpk) := \pkem.\kgen(\pkempp) \\
 		(\revsk_0, \revpk_0) := \pker.\kgen(\pkerpp) \\
 		(\revsk_1, \revpk_1) := \pker.\kgen(\pkerpp) \\
-		(\mencr, \rencr, \otpk_0, \otpk_1, \otpk_2, \otpk^*) \leftarrow \adv(\pkempp, \pkerpp, \matpk_\ell, \matpk, \revpk_0, \revpk_1) \\
+		(\mencr, \rencr, \otkgr_1, \otkgr_2, \otkgr_3, \otkgr^*) \leftarrow \adv(\pkempp, \pkerpp, \matpk_\ell, \matpk, \revpk_0, \revpk_1) \\
+		\forall i \in [3]: \otpk_i := g_C^{\otpkgr_i} \\
 		\pcreturn \pker.\dec(\revsk1, \\
-		\t (\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \pkem.\enc(\pkepp, \matpk_\ell, \otpk_2; \mencr)))^{-1} \\
-		\t \cdot (\otpk_1 \cdot \pker.\enc(\revpk_0, \otpk^*; \rencr)) \\
+		\t (\otpk_1^{-1} \cdot \pkem.\dec(\matsk, \pkem.\enc(\pkepp, \matpk_\ell, \otpk_3; \mencr)))^{-1} \\
+		\t \cdot (\otpk_2 \cdot \pker.\enc(\revpk_0, g_M^{\otpkgr^*}; \rencr)) \\
 		\t )
 		) \neq \bot
 	}
