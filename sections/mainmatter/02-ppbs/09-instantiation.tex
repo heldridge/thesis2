@@ -103,6 +103,7 @@ Each $\pker$ ciphertext is $4$ group elements, and so we can have $\pkem$ be fou
 
 
 \subsection{Optimizations}
+\label{sec:ppb-optimizations}
 We describe here optimizations that reduce the public-key and escrow size of the concrete PPB scheme described in \cref{sec:instantiation} while preserving security.
 
 \subsubsection{Randomness Reuse.}
@@ -124,4 +125,41 @@ A match ciphertext $\matct$ encrypting a pad $\otpk = (\otpk_0, \otpk_1)$ then h
 $(g^{x_0r_{\mat}} \cdot \otpk_0, g^{x_1r_{\mat}} \cdot \otpk_1)$,
 with $r_{\mat}$ included separately in the escrow value.
 With this optimization the scheme's public-key only needs to include two ElGamal public-keys in each cell, rather than four as before.
+
+\subsection{Proofs}
+We prove here that the instantiation from \cref{sec:instantiation} satsifies lossy correlation resistance.
+
+\begin{theorem}
+	The instantiations of $\pker$, $\pkem$ described in \cref{sec:instantiation}, satisfy lossy-correlation-resistance if the discrete logarithm problem is hard for $\egpphgen$.
+\end{theorem}
+
+\begin{proof}
+	We begin by recalling from \cref{sec:ppb-optimizations} that $\pker$ and $\pkem$ are both made up of two copies of an underlying ElGamal PKE scheme over a group $\group$ run in parallel.
+	We will abuse notation and use the same variables above to describe only the \emph{second} copy of the scheme (i.e.\ the one in the $\pker$ construction that encrypts $\flag$).
+	For readability we will also refrain from listing the $g^y$ (i.e.\ randomness) portion of ElGamal ciphertexts.
+
+	Assume that there exists an adversary $\adv$ such that $\advantage{\badcorgame}{\pker, \pkem,  \adv}$ is non-negligible.
+	We can then construct a reduction $\bdv$ to the discrete log problem for $\egpphgen$.
+	$\bdv$ receives $(g, h)$, samples $(\rkgr_0, \rkgr_1, \mkgr_0, \mkgr_1) \sample \Z$, invokes $\adv$ on $((g, h), h^{\mkgr_1}, g^{\mkgr_0},$ $g^{\rkgr_0}, g^{\rkgr_1})$, and receives $(\mencr, \rencr, \okgrA, \okgrB, \okgrC, \okgrD)$.
+	$\bdv$ then outputs $\okgrA + \okgrB + \okgrD + \mkgir\mencr + \rkgrA\rencr - \rkgrB\rencr - \okgrC - \mkglr\mencr$.
+
+	As $\adv$ has non-negligible advantage, we must have that with non-negligible probability:
+	\begin{align*}
+		\pker.\dec(\revsk, (\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_1 \cdot \pker.\enc(\revpk, \otpk_3; \rencr))) & \\
+		\neq \bot                                                                                                                          &
+	\end{align*}
+
+	\vspace{-2em}
+	\begin{align*}
+		(\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \matct))^{-1} \cdot (\otpk_1 \cdot \pker.\enc(\revpk, \otpk_3; \rencr))                      & = g^{\rkgrB\rencr} \tag{Definition of $\pker$}              \\
+		\left(\otpk_0^{-1} \cdot \frac{h^{\mkglr\mencr}\otpk_2}{g^{\mkgir\mencr}}\right)^{-1} \cdot (\otpk_1 \cdot g^{\rkgrA\rencr}\otpk_3) & = g^{\rkgrB\rencr} \tag{Definitions of $\pker$ and $\pkem$} \\
+		\frac{\otpk_0\otpk_1\otpk_3 g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_2h^{\mkglr\mencr}}                                              & = g^{\rkgrB\rencr}                                          \\
+		\frac{\otpk_0\otpk_1\otpk_3 g^{\mkgir\mencr}g^{\rkgrA\rencr}}{\otpk_2g^{\rkgrB\rencr}}                                              & = h^{\mkglr\mencr}                                          \\
+		g^{\okgrA + \okgrB + \okgrD + \mkgir\mencr + \rkgrA\rencr - \rkgrB\rencr - \okgrC}                                                  & = h^{\mkglr\mencr}                                          \\
+		\okgrA + \okgrB + \okgrD + \mkgir\mencr + \rkgrA\rencr - \rkgrB\rencr - \okgrC - \mkglr\mencr                                       & = s
+	\end{align*}
+	Where $s$ is the discrete log of $h$ with respect to $g$.
+
+	Therefore $\bdv$ succeeds with non-negligible probability, which contradicts our assumption that discrete log is hard in $\group$, and so $(\pker, \pkem)$ satisfy lossy-correlation-resistance.
+\end{proof}
 
