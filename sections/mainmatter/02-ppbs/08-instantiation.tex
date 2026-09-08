@@ -103,7 +103,6 @@ Each $\pker$ ciphertext is $4$ group elements, and so we can have $\pkem$ be fou
 
 
 \subsection{Optimizations}
-\label{sec:ppb-optimizations}
 We describe here optimizations that reduce the public-key and escrow size of the concrete PPB scheme described in \cref{sec:instantiation} while preserving security.
 
 \subsubsection{Randomness Reuse.}
@@ -125,6 +124,7 @@ A match ciphertext $\matct$ encrypting a pad $\otpk = (\otpk_0, \otpk_1)$ then h
 $(g^{x_0r_{\mat}} \cdot \otpk_0, g^{x_1r_{\mat}} \cdot \otpk_1)$,
 with $r_{\mat}$ included separately in the escrow value.
 With this optimization the scheme's public-key only needs to include two ElGamal public-keys in each cell, rather than four as before.
+
 
 \subsection{Proofs}
 We prove here that the instantiation from \cref{sec:instantiation} satsifies lossy correlation resistance.

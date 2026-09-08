@@ -30,7 +30,78 @@ We can now state our main theorem.
 
 \begin{theorem}
 	\label{thm:ppbs-main}
-	If $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme with message space $\msgspace_\rev$ and ciphertext space $\msgspace_\mat$, $\pkem$ is a lossy, $\msgspace_\mat$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $\msgspace_\rev$ and $\msgspace_\mat$ are both finite, cyclic, abelian groups, $(\pker, \pkem)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
+	If $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme with message space $\msgspace_\rev$ and ciphertext space $\msgspace_\mat$, $\pkem$ is a lossy, $\mathcal{U}_{\msgspace_\mat}$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $\msgspace_\rev$ and $\msgspace_\mat$ are both finite, cyclic, abelian groups, $(\pker, \pkem)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
 \end{theorem}
 
 
+\FloatBarrier
+\subsection{Proofs}
+As our construction uses the generic commit-and-prove technique from \cite{EC:KohLysNgu23}, the proofs of correctness of $\verescrow$ and $\verpk$, follow from the same arguments, and we omit the proofs here.
+
+\begin{lemma}
+	\label{lemma:main-soundness}
+	If $\Pi_{E}$ is a knowledge-sound NIZK, $\comscheme$ is a binding commitment scheme, $\pker$ satisfies weak-robustness, and $\pker$, $\pkem$ are correct and satisfy lossy correlation resistance, then \schemename{} satisfies soundness.
+\end{lemma}
+
+\begin{proof}
+	Suppose for the sake of contradiction that there exists an adversary $\adv$ such that $\advantage{\soundgame}{\mathsf{TCPPB}, \adv} = \nu(\secpar)$ is non-negligible.
+	In the adversary's first stage it outputs $(\thr, \kgr)$, and the challenger sets $(sk, pk) \leftarrow \kgen(\ppbpp, \thr, \kgr)$.
+	In its second stage, the adversary $\adv$ outputs $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$.
+	We can divide our analysis into the following three cases depending on the properties of these outputs.
+	\begin{enumerate}
+		\item There exist some $\er'$ and $(\uval', \msg') \neq (\uval, \msg)$ such that $\commit((\uval, \msg), \er) = \commit((\uval', \msg'), \er')$ and $\esc = \escrow(\ppbpp, pk, (\uval', \msg'), \er')$.
+		\item $Z' \neq \escrow'(\pkerpp, \pkempp, \numdigits, pk, \uval, \msg)$ and (1) does not hold.
+		\item Neither (1) nor (2) hold (i.e. $\adv$'s output is well-formed).
+	\end{enumerate}
+	Let the probability of $\adv$'s outputs satisfying property $j$ be denoted by $\nu_j(\secpar)$.
+	If $\nu(\lambda)$ is non-negligible, then at least one of $\nu_1(\secpar)$, $\nu_2(\secpar)$, $\nu_3(\secpar)$ must be non-negligible.
+
+	${}$
+
+	Suppose that $\nu_2(\secpar)$ is non-negligible.
+	In this case $\adv$ produced a proof of a false statement and we can construct a reduction $\bdv$ to the knowledge-soundness of $\Pi_{E}$.
+	$\bdv$ runs $\adv$, simulates the generation of $pk$, receives $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$, and outputs $((Z', \ecom, pk), \zkproof_{E})$.
+	As the statement is false any extractor must fail, meaning $\prob{\bdv \text{ wins}}$ is non-negligible, thus contradicting our assumption that $\Pi_{E}$ satisfies knowledge soundness.
+	Therefore, $\nu_2(\secpar)$ is negligible.
+
+	As $\nu_2(\secpar)$ is negligible we can assume there exists an extractor $\Ext_{\adv}$ that given $\trans_{\adv}$ outputs $(\uval', \msg', r_e, \er)$ such that $\ecom = \commit(\compp, (\uval', \msg'); \er)$ and $\esc'\allowbreak =\allowbreak \escrow'(\allowbreak\pkerpp,\allowbreak \pkempp,\allowbreak \numdigits,\allowbreak pk,\allowbreak \uval',\allowbreak \msg'; r_e)$.
+
+	${}$
+
+	Suppose $\nu_1(\secpar)$ is non-negligible.
+	In this case we can break the computational binding property of the commitment scheme by using a reduction that uses the extractor and outputs $(\msg, \er, \msg', r_c)$.
+	Therefore, $\nu_1(\secpar)$ must be negligible.
+
+	${}$
+
+	Suppose $\nu_3(\secpar)$ is non-negligible.
+	In this case we can break a property of $\pker$ or $\pkem$.
+	In all cases, the reduction begins by using the extractor to learn $(\uval', \msg', r_e, \er)$.
+	The reduction can then use $r_e$ and $r_k$ to infer the randomness used to generate each individual value in $\escrow'$.
+	Let $\rer_i$ and $\mer_i$ be the randomness used at iteration $i$ of $\escrow'$ for $\pker.\enc$ and $\pkem.\enc$, respectively.
+
+	Let $\nu_3^{>}(\lambda)$ denote the probability that when $\nu_3(\secpar)$ is true,  $\uval' > \thr$.
+	Let  $\nu_3^{<}(\lambda)$ be the case that $\uval' < \thr$, and $\nu_3^{=}(\secpar)$ be the case that $\uval' = \thr$.
+	If $\nu_3(\lambda)$ is non-negligible, then at least one of $\nu_3^{>}(\lambda)$, $\nu_3^{<}(\lambda)$, $\nu_3^{=}(\secpar)$ must be non-negligible.
+
+	${}$
+
+	Suppose $\nu_3^{>}(\lambda)$ is non-negligible.
+	In this case, let $d$ be the index for which $\uval'[d] > \thr[d]$ and $\forall i < d,\: \uval'[i] = \thr[i]$.
+	We can split this into further cases depending on the behavior of $\dec$.
+	To do so, we define the following notation.
+
+	\newcommand{\badprobmat}[1]{\ensuremath{\nu_{3, #1}^{>,\mat}(\secpar)}}
+	\newcommand{\badprobotpM}[1]{\ensuremath{\nu_{3, #1}^{>, \mathsf{OM}}(\secpar)}}
+	\newcommand{\badprobotpR}[1]{\ensuremath{\nu_{3, #1}^{>, \mathsf{OR}}(\secpar)}}
+	\newcommand{\badprobrev}[2]{\ensuremath{\nu_{3, #1, #2}^{>, \mathsf{\rev}}(\secpar)}}
+	\newcommand{\badprobrevF}{\ensuremath{\nu_{3, d, \uval'[d]}^{>, \mathsf{*}}(\secpar)}}
+	\begin{itemize}
+		\item Let \badprobmat{i} denote the probability that $\pkem.\dec(\pkempp, \matsk_i^{\thr[i] + 1}, \mct_i) \allowbreak\neq\allowbreak \otpk_{i - 1} \cdot \otpk_i$ for some $i \in [d - 1]$.
+		\item Let \badprobotpM{i} denote the probability that $\tilde{\otpk}_i \neq \otpk_i$ for some $i \in [0, d - 1]$
+		\item Let \badprobotpR{i} denote the probability that $\revct_i \neq \pker.\enc(\pkerpp, \revpk_i^{\uval'[i]}, \otpk^*; \rer_i)$ for some $i \in [d]$.
+		\item Let \badprobrev{i}{j} denote the probability that $\pker.\dec(\pkerpp, \revsk_i^j, \revct_i) \neq \bot$ for some $i \in [d - 1]$ and $j \in [\thr[i] + 1, \base]$, or for $i = d$ and $j \in [\thr[i] + 1, \uval'[d] - 1]$.
+		\item Let \badprobrevF{} denote the probability that $\pker.\dec(\pkerpp, \revsk_d^{\uval'[d]}, \revct_d) \neq \otpk^*$.
+	\end{itemize}
+
+\end{proof}
