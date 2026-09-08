@@ -53,9 +53,11 @@
 				}
 
 				\procedure[linenumbering]{$\escrow'(\revpp, \matpp, \numdigits, pk, v, m)$}{
-					\otpk^* \sample \msgspace_{\rev} \\
+					\otpkgr^* \sample [p_\rev - 1] \\
+					\otpk^* := g_\rev^{\otpkgr^*} \\
 					\otpct^* := \otpk^* \cdot \msg \\
-					\otpk_1,\dots,\otpk_{\numdigits - 1} \sample \msgspace_{\mat} \\
+					\otpkgr_1, \dots, \otpkgr_{\numdigits - 1} \sample [p_\mat - 1] \\
+					\forall i \in [\numdigits - 1], \otpk_i := g_\mat^{\otpkgr_i} \\
 					\otpk_0 := \msgspace_{\mat}.e \\
 					\pcfor i \in [n] \\
 					\t \revct_i \leftarrow \pker.\enc(\revpp, \revpk_i^{\uval[i]}, \otpk^*) \\
