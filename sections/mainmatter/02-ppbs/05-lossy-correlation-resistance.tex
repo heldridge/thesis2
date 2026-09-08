@@ -1,0 +1,29 @@
+In order to preserve soundness we will need a client to be unable to cause the PPB decryption process to terminate early.
+This in turn means that they should be unable to craft lossy ciphertexts such that their decryptions appear to be valid ciphertexts for some non-lossy key. We refer to this property as lossy correlation resistance and define it formally here.
+
+\begin{definition}[Lossy Correlation Resistance]
+	Let $\pker$ and $\pkem$ be lossy public-key encryption schemes, with message spaces that are finite, cyclic, abelian groups.
+	Let the variable $\badcorgame(\pker, \pkem, \adv, \secpar)$ where $\secpar \in \mathbb{N}$ denote the result of the following probabilistic experiment:
+
+	\procedureblock{$\badcorgame(\pker, \pkem, \adv, \secpar)$}{
+		\pkempp \leftarrow \pkem.\setup(\secparam) \\
+		\pkerpp \leftarrow \pker.\setup(\secparam) \\
+		\matpk_\ell := \pkem.\kgenlossy(\pkempp) \\
+		(\matsk, \matpk) := \pkem.\kgen(\pkempp) \\
+		(\revsk_0, \revpk_0) := \pker.\kgen(\pkerpp) \\
+		(\revsk_1, \revpk_1) := \pker.\kgen(\pkerpp) \\
+		(\mencr, \rencr, \otpk_0, \otpk_1, \otpk_2, \otpk^*) \leftarrow \adv(\pkempp, \pkerpp, \matpk_\ell, \matpk, \revpk_0, \revpk_1) \\
+		\pcreturn \pker.\dec(\revsk1, \\
+		\t (\otpk_0^{-1} \cdot \pkem.\dec(\matsk, \pkem.\enc(\pkepp, \matpk_\ell, \otpk_2; \mencr)))^{-1} \\
+		\t \cdot (\otpk_1 \cdot \pker.\enc(\revpk_0, \otpk^*; \rencr)) \\
+		\t )
+		) \neq \bot
+	}
+
+	The $\badcorgame(\pker, \pkem, \adv, \lambda)$ advantage of $\adv$ is defined as:
+	$$
+		\advantage{\badcorgame}{\pker, \pkem, \adv} = \prob{\badcorgame(\pker, \pkem, \adv, \secpar) \Rightarrow 1}
+	$$
+
+	We say that schemes $(\pker, \pkem)$ together satisfy lossy correlation resistance if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl$ such that $\advantage{\badcorgame}{\pker, \pkem, \adv} \leq \negl$.
+\end{definition}

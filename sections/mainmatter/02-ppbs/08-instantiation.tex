@@ -1,0 +1,126 @@
+We describe here a concrete instantiation of our PPB scheme using a lossy variant of the ElGamal encryption scheme \cite{C:ElGamal84}.
+% \input{figures/folklore_lossy_elgamal}
+The lossy variant, considered cryptographic ``folklore,'' uses an algorithm $\egpphgen$ that takes as input a security parameter $\secparam$ and outputs a group description with \emph{two} generators $G = (\group, \egprime, \ggen, \hgen)$, where the discrete log of $\hgen$ with respect to $\ggen$ is unknown.
+The scheme generates lossy keys by running the traditional ElGamal key generation algorithm with the alternate generator $h$.
+As the first element of a ciphertext remains $g^r$, computational lossiness follows from DDH.
+
+We begin by proving that this folklore scheme has the properties we require of it, and then give a transformation from a weak collision-free to a weak robust one.
+We then use these tools to describe concretely possible instantiations for $\pker$ and $\pkem$.
+Finally, we give some optimizations to these instantiations that compress both the size of the escrow value and the public key.
+
+\subsection{Lossy ElGamal}
+
+A lossy PKE based on ElGamal can be seen in \cref{fig:folklore_lossyelg}.
+\input{sections/mainmatter/02-ppbs/const-figs/04-lossy-elgamal.tex}
+
+\begin{theorem}
+	If the Decisional-Diffie-Hellman assumption holds relative to $\egpphgen$, then the scheme shown in \cref{fig:folklore_lossyelg} satisfies computational lossiness.
+\end{theorem}
+
+\begin{proof}
+	We prove security using a sequence of hybrids.
+
+	\begin{itemize}
+		\item $\newhyb$: This hybrid is identical to $\complossygame_0$.
+		\item $\nexthyb$: In this hybrid $\ct = (g^y, (h^{ry}\msg_0))$ is replaced with $(g^y, (h^{rz}\msg_0))$ for $z \sample \mathbb{Z}_p$.
+		      We then have that $\prevhyb \cindist \currhyb$, as otherwise we could build a reduction $\bdv$ to DDH as follows.
+		      $\bdv$ receives $(g, h, g^y, c)$ from the challenger, and $(r, m_0, m_1)$ from $\adv$.
+		      $\bdv$ sends $(g^y, c^r\msg_0)$ to $\adv$, and outputs what $\adv$ outputs.
+		      In the case that $c = h^y$, $\adv$'s view is exactly as it is in $\prevhyb$, while when $c = h^z$, $\adv$'s view is exactly as it is in $\currhyb$.
+		\item $\nexthyb$: In this hybrid $\ct$ is replaced with $(g^y, (h^{rz}\msg_1))$.
+		      As $z$ is a uniformly random element of $\mathbb{Z}_p$ the message is fully masked, and so $\prevhyb \pindist \currhyb$.
+		\item $\nexthyb$: In this hybrid $\ct$ is replaced with $(g^y, (h^{ry}\msg_1))$.
+		      We have that $\prevhyb \cindist \currhyb$ from DDH as before.
+		      Note that $\currhyb$ is identical to $\complossygame_1$.
+	\end{itemize}
+	We therefore have that $\hyb_0 \cindist \currhyb$, and so the scheme satisfies computational lossiness.
+
+\end{proof}
+
+\begin{theorem}
+	The scheme shown in \cref{fig:folklore_lossyelg} satisfies $\mathcal{U}_\group$-strong-lossy-ambiguity.
+\end{theorem}
+
+\begin{proof}
+	We prove security using a sequence of hybrids.
+
+	\begin{itemize}
+		\item $\newhyb$: This game is identical to $\stronglossyambgame_0$.
+		\item $\nexthyb$: In this hybrid $\ct = (g^y, pk_0^y\cdot \msg)$ is replaced with $\ct = (g^y, pk_1^y\cdot \msg)$.
+		      As $m$ is sampled uniformly at random from $\group$, we have that $\prevhyb \pindist \currhyb$.
+	\end{itemize}
+
+	Then, as $\currhyb$ is identical to $\stronglossyambgame_1$, we have that the scheme satisfies $\mathcal{U}_\group$-strong-lossy-ambiguity.
+\end{proof}
+
+\subsection{A Weak Collision-Free to Robust Transform}
+
+We give here a generic transformation from a weak collision-free PKE to a robust one.
+The transform can be seen in \cref{fig:weak_robust_transform}.
+
+\input{sections/mainmatter/02-ppbs/const-figs/05-rob-transform.tex}
+
+\begin{theorem}
+	If $\pke$ satisfies weak collision-freeness, then the scheme $\pke'$ shown in \cref{fig:weak_robust_transform} satisfies weak robustness.
+\end{theorem}
+
+\begin{proof}
+	Assume there exists an adversary $\adv$ such that $\advantage{\robust}{\pke', \adv}$ is non-negligible.
+	We can then construct a reduction $\bdv$ to the collision-freeness of $\pke$ as follows.
+
+	$\bdv$ receives $\{pk_i\}_{i\in[n]}$, computes $\{pk_i'\}_{i\in [n]} \leftarrow \kgen(\secparam)$, runs $\adv(\secparam, \{(pk'_i,$ $ pk_i)\}_{i\in[n]})$, receives $(j, k, m, r = (r_0, r_1))$, and outputs $(j, k, \phi, r_1)$.
+	As $\adv$'s advantage is non-negligible, it must be the case that $\dec(sk_k, \enc(pk_j, \phi; r_1')) = \phi$ with non-negligible probability.
+	Therefore $\bdv$'s advantage is non-negligible, which is a contradiction, and so the scheme satisfies weak robustness.
+\end{proof}
+
+\begin{theorem}
+	If $\pke$ satisfies weak-lossy-ambiguity, then the scheme $\pke'$ shown in \cref{fig:weak_robust_transform} satisfies weak-lossy-ambiguity.
+\end{theorem}
+
+\begin{proof}
+	We prove security using a sequence of hybrids.
+
+	\begin{itemize}
+		\item $\newhyb$: This hybrid is identical to $\wlambgame_0$.
+		\item $\nexthyb$: In this hybrid $\ct_0 \leftarrow \enc(pk_{0, 0}, m)$ is replaced with $\enc(pk_{1, 0}, m)$.
+		      We then have that $\prevhyb \cindist \currhyb$ as otherwise we could build a reduction $\bdv$ to the \wla{} of $\pke$ as follows.
+		      $\bdv$ receives $(r_0 = (r_{0, 0}, r_{0, 1}), r_1 = (r_{1, 0}, r_{1, 1}), m)$ from $\adv$, and sends $(r_{0, 0}, r_{1, 0}, m)$ to the challenger, receiving $\ct^*$.
+		      $\bdv$ then sends $(\ct^*, \enc(\kgenlossy(;r_{0, 1}), \phi))$ to $\adv$, and outputs whatever $\adv$ outputs.
+		\item $\nexthyb$: In this hybrid $\ct_1$ is replaced by $\enc(pk_{1, 1}, \phi)$.
+		      We again have that $\prevhyb \cindist \currhyb$ by the \wla{} of $\pke$.
+	\end{itemize}
+
+	Then, as $\currhyb$ is identical to $\wlambgame_1$, we have that $\hyb_0 \cindist \currhyb$ and $\pke'$ satisfies \wla{}.
+\end{proof}
+
+\subsection{Instantiation}
+\label{sec:instantiation}
+
+$\pker$ can be instantiated as the result of applying the transform show in \cref{fig:weak_robust_transform} to the lossy ElGamal variant $\lelgamal$ shown in \cref{fig:folklore_lossyelg}.
+Next, we need to ensure that the message space of $\pkem$ is the same as the ciphertext space of $\pker$.
+Each $\pker$ ciphertext is $4$ group elements, and so we can have $\pkem$ be four copies of $\lelgamal$ run in parallel.
+
+
+\subsection{Optimizations}
+We describe here optimizations that reduce the public-key and escrow size of the concrete PPB scheme described in \cref{sec:instantiation} while preserving security.
+
+\subsubsection{Randomness Reuse.}
+As written, a $\pker$ public-key would consist of two sub-keys $pk_0 = g^{x_0}$, $pk_1 = g^{x_1}$, and a ciphertext would consist of two ElGamal encryptions of the form
+$((g^y, g^{x_0y}\cdot m), (g^z, g^{x_1z} \cdot \phi))$.
+We can compress this ciphertext via randomness re-use.
+ElGamal encryption allows an encryptor to re-use the same $g^r$ value across encryptions under different public-keys.
+This was first shown to be secure in \cite{PKC:Kurosawa02}, and later tested securely under a more stringent security definition in \cite{PKC:BelBolSta03}.
+We can leverage this to use the same $g^{r_{\rev}}$ value across \emph{all} reveal ciphertexts, as each is under a different key.
+$\pker$ ciphertexts now take the form:
+$(g^{x_0r_{\rev}}\cdot m, g^{x_1r_{\rev}} \cdot \phi)$,
+with $g^{r_{\rev}}$ included separately in the escrow value.
+
+\subsubsection{Shared Public Keys.}
+After the above optimization match ciphertexts $\matct$ must consist of \emph{two} ElGamal encryptions.
+For these, we can use the same $(pk_0, pk_1)$ present in the $\pker$ public key.
+We can additionally use the same randomness-reuse trick as before, using the same random value $r_{\mat}$ for all match ciphertexts.
+A match ciphertext $\matct$ encrypting a pad $\otpk = (\otpk_0, \otpk_1)$ then has the form:
+$(g^{x_0r_{\mat}} \cdot \otpk_0, g^{x_1r_{\mat}} \cdot \otpk_1)$,
+with $r_{\mat}$ included separately in the escrow value.
+With this optimization the scheme's public-key only needs to include two ElGamal public-keys in each cell, rather than four as before.
+

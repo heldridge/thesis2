@@ -1,0 +1,32 @@
+For the sake of completeness we give here a full description of the NISC-based PPB originally described in \cite{EC:KohLysNgu23} when instantiated using oblivious transfer and garbled circuits.
+As the proofs of correctness and security are provided in \cite{EC:KohLysNgu23} we omit them here.
+
+Before describing the instantiation we first briefly recall the interfaces of oblivious transfer and garbling schemes.
+
+\begin{definition}[Oblivious Transfer]
+	A one-out-of-two Oblivious Transfer (OT) protocol is a tuple of algorithms $\ot = (\otinit, \otsend, \otreceive)$ defined as:
+	\begin{itemize}
+		\item $\otinit(\secparam, b)$ takes as input a bit $b \in \bin$ and outputs a secret key/public key pair $(\otseck, \otpubk)$.
+		\item $\otsend(\otpubk, \otval_0, \otval_1)$ takes as input a public key and two values and outputs a ciphertext $\otct$.
+		\item $\otreceive(\otseck, \otct)$ takes as input a secret key and a ciphertext and outputs a value $\otval'$.
+	\end{itemize}
+
+	We refer the reader to other texts discussing oblivious transfer in more depth such as \cite{EC:Kalai05} for a complete definition.
+\end{definition}
+
+
+\begin{definition}[Garbling Schemes]
+	A garbling scheme is a tuple of algorithms $\gc = (\gcircuit,$ $\ginput, \geval)$ defined as:
+	\begin{itemize}
+		\item $\gcircuit(\secparam, \circuit)$ takes as input a circuit $\circuit: \bin^n \rightarrow \bin^m$ and outputs the garbled circuit $\gcirc$ and key $k$.
+		\item $\ginput(k, x)$ takes as input a key $k$ and string $x \in \bin^n$ and outputs a garbled input $\tilde{x}$.
+		\item $\geval(\gcirc, \tilde{x})$ takes as input a garbled circuit and input, and outputs $y \in \bin^m$.
+	\end{itemize}
+
+	We say that a garbling scheme is \emph{projective} if each bit of the garbled input $\gx$ depends on one bit of the actual input $x$, i.e. each bit of the input is garbled independently of the other bits.
+	We will let $\pginput(k, x_i)$ denote the algorithm to garble a single bit of input, i.e.
+	$\ginput(k, x) = \{\pginput(k, i, \xthbit{x}{i})\}_{i \in [n]}$ for $x \in \bin^n$.
+
+	As with OT, we refer the reader to \cite{CCS:BelHoaRog12} for a full description of garbling schemes.
+\end{definition}
+

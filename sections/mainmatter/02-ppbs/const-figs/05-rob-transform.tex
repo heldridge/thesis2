@@ -1,0 +1,41 @@
+\begin{figure}[h]
+	\begin{pcvstack}[boxed, center, space=1em]
+		\begin{pchstack}[center, space=1em]
+			\procedure[linenumbering]{$\setup'(\secparam)$}{
+				\flag \sample \msgspace \\
+				\pcreturn (\setup(\secparam), \flag)
+			}
+			\procedure[linenumbering]{$\kgen'((\pkepp, \flag))$}{
+				(sk_0, pk_0) \leftarrow \kgen(\secparam) \\
+				(sk_1, pk_1) \leftarrow \kgen(\secparam) \\
+				\pairsk = (sk_0, sk_1) \\
+				\pairpk = (pk_0, pk_1) \\
+				\pcreturn (\pairsk, \pairpk)
+			}
+			\procedure[linenumbering]{$\kgenlossy'((\pkepp, \flag))$}{
+				pk_0 \leftarrow \kgenlossy(\secparam) \\
+				pk_1 \leftarrow \kgenlossy(\secparam) \\
+				\pairpk = (pk_0, pk_1) \\
+				\pcreturn \pairpk
+			}
+		\end{pchstack}
+		\begin{pchstack}[center, space=1em]
+			\procedure[linenumbering]{$\enc'((\pkepp, \flag), pk, \msg)$}{
+				(pk_0, pk_1) \leftarrow pk \\
+				\ct_0 \leftarrow \enc(pk_0, \msg) \\
+				\ct_1 \leftarrow \enc(pk_1, \flag) \\
+				\pcreturn (\ct_0, \ct_1)
+			}
+			\procedure[linenumbering]{$\dec'((\pkepp, \flag), sk, \ct)$}{
+				(sk_0, sk_1) \leftarrow sk \\
+				(\ct_0, \ct_1) \leftarrow \ct \\
+				\pcif \dec(sk_1, \ct_1) \neq \flag \\
+				\t \pcreturn \bot  \\
+				\pcelse \\
+				\t \pcreturn \dec(sk_0, \ct_0)
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{A transform from a collision-free $\pke$ to a weakly-robust scheme $\pke'$.}
+	\label{fig:weak_robust_transform}
+\end{figure}

@@ -1,0 +1,43 @@
+\begin{figure}[h]
+	\begin{pcvstack}[boxed, center, space=1em]
+		\begin{pchstack}[center, space=1em]
+			\procedure[linenumbering]{$\setup(\secparam)$}{
+				\pcreturn \egpphgen(\secparam)
+			}
+			\procedure[linenumbering]{$\kgen(\pkepp)$}{
+				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
+				x \sample \Z_{\egprime} \\
+				X \leftarrow \ggen^x \\
+				pk \leftarrow(\egprime, \ggen, X) \\
+				sk \leftarrow(\egprime, \ggen, x) \\
+				\pcreturn (sk, pk)
+			}
+			\procedure[linenumbering]{$\enc(\pkepp, pk, M)$}{
+				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
+				y \sample \Z_{\egprime} \\
+				Y \leftarrow \ggen^y \\
+				T \leftarrow X^y \\
+				W \leftarrow T M \\
+				\pcreturn (Y, W)
+			}
+		\end{pchstack}
+		\begin{pchstack}[center, space=1em]
+			\procedure[linenumbering]{$\dec(\pkepp, sk, ct)$}{
+				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
+				(Y, W) \leftarrow ct  \\
+				T \leftarrow Y^x \\
+				M \leftarrow W T^{-1} \\
+				\pcreturn M
+			}
+			\procedure[linenumbering]{$\kgenlossy(\pkepp)$}{
+				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
+				r \sample \bin^{\lambda} \\
+				X \leftarrow h^r \\
+				pk \leftarrow (\egprime, \ggen, X) \\
+				\pcreturn pk
+			}
+		\end{pchstack}
+	\end{pcvstack}
+	\caption{A lossy PKE adapted from the ElGamal encryption scheme, $\lelgamal$. }
+	\label{fig:folklore_lossyelg}
+\end{figure}
