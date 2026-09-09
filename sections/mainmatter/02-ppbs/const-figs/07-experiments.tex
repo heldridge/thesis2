@@ -1,0 +1,18 @@
+\begin{table}[th]
+	\label{tab:experiments}
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{Scheme}                  & $\ell$   & \textbf{Escrow Size (bytes)} & \textbf{Prover Time (seconds)} \\
+		\hline
+		\multirow{2}{*}{Garbled Circuit} & $2^{32}$ & 13,472                       & $11.95$                        \\
+		                                 & $2^{64}$ & 26,784                       & $30.06$                        \\
+		\hline
+		\multirow{2}{*}{TCPPB}           & $2^{32}$ & 1,600                        & $4.42$                         \\
+		                                 & $2^{64}$ & 3,136                        & $7.86$                         \\
+		\hline
+	\end{tabular}
+	\caption[Escrow Sizes and Prover Times of \schemename{} and the baseline NISC-based PPB]{Escrow sizes and prover times of the baseline NISC-based PPB and the TCPPB presented in this work. The TCPPB uses base $b = 41$.}
+
+\end{table}
+

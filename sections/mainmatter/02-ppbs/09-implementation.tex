@@ -1,0 +1,17 @@
+As the goal of our construction is an efficient $\escrow$ algorithm, our implementation and experiments focus on this portion of the schemes.
+Code for our implementations can be found at \url{https://github.com/heldridge/efficient-ppbs}.
+
+Our implementation for \schemename{} uses the concrete algorithm instantiations described in \cref{sec:ppbs-instantiation} and the optimizations described in \cref{sec:ppb-optimizations}.
+For proof generation we implement $\escrow'$ in Circom \cite{belles2022circom} version 2.2.2, using the Baby JubJub elliptic curve \cite{whitehat2020baby} as the underlying group for the encryption schemes.
+Proofs were generated using snarkjs \cite{snarkjs}.
+
+The baseline scheme we compare against is the NISC-based PPB described in \cite{EC:KohLysNgu23}.
+We instantiate the NISC with the well-known construction based on garbled circuits \cite{FOCS:Yao82b}, which we describe in \cref{sec:baseline-ppb}.
+In this scheme, the auditor's public key consists of $\numdigits$ oblivious transfer (OT) receiver messages, where $n$ is bit length of the integers to be compared.
+An escrow is then a garbled $n$-bit comparison circuit, the labels corresponding to the user's input, and the OT sender messages encoding the remaining labels.
+We use the Free-XOR optimized comparator circuit from \cite{CANS:KolSadSch09}.
+
+A notable downside of this construction is that proving over the garbling algorithm requires non-black-box use of random oracles due to optimizations like Free-XOR \cite{CANS:KolSadSch09} and Half-Gates \cite{EC:ZahRosEva15}.
+Despite this caveat we have implemented this approach to provide the closest possible alternative to our main PPB scheme, giving it the best opportunity to serve as a viable comparison.
+We implement standard garbling with the Free-XOR and Half-Gates optimizations, and use Poseidon \cite{USENIX:GKRRS21} as our hash function.
+Wire labels are stored as $254$-bit arrays and converted to field elements before hashes are performed, with the resulting digest then converted back to a $254$-bit array.

@@ -1,0 +1,5 @@
+Experiments were run on a desktop computer with an AMD Ryzen 5 5600X CPU and 32GB of RAM.
+We test our schemes on implementations for comparing integers up $2^{32}$ and $2^{64}$. For \schemename{} we use $b = 41$, which results in $n = 6$ in the first case and $n = 12$ in the second.\footnote{We set $b = 41$ as it represents a reasonable tipping point for the escrow size: $\lceil \log_{40}(2^{32}) \rceil = 7$, $\lceil \log_{41}(2^{32}) \rceil = 6$.}
+The results of our experiments can be seen in \cref{tab:experiments}.
+Our \schemename{} gives a $\geq 8 \times$ improvement in escrow size, along with a $\geq 2 \times$ improvement in prover time as compared to the baseline scheme.
+\input{sections/mainmatter/02-ppbs/const-figs/07-experiments.tex}
