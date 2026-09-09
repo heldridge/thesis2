@@ -1,0 +1,44 @@
+The Benaloh encryption scheme~\cite{THESIS:Ben87,SAC:Ben94} can be seen in \cref{fig:benaloh_encscheme}.
+The following theorem is proved in \cite{THESIS:Ben87}.
+\begin{theorem}[{\cite{THESIS:Ben87}}]
+	If the prime residuosity assumption holds with respect to $\GrpGen$  then for all prime-valued polynomials $\bemod \coloneqq \bemod(\secpar)$, the scheme described in \cref{fig:benaloh_encscheme} is a linearly homomorphic, IND-CPA secure public-key encryption scheme with message space $\Z_\bemod$.
+\end{theorem}
+
+\begin{figure}[h]
+	\begin{pchstack}[boxed, center, space=1em]
+		\begin{pcvstack}
+			\procedure[linenumbering, bodylinesep=0.5em]{$\Gen(\secparam, \bemod)$}{
+				(p, q, g) \gets \GrpGen(\secparam, \bemod) \\
+				N \coloneqq pq \\
+				\pk \coloneqq (\bemod, g, N) \\
+				\sk \coloneqq (\bemod, g, p, q) \\
+				\pcreturn (\pk, \sk)
+			}
+
+			\procedure[linenumbering, bodylinesep=0.5em]{$\Dec(\sk, \ct)$}{
+				\pcparse \sk = (\bemod, g, p, q) \\
+				N \coloneqq pq \\
+				x \coloneqq \dlog(p, q, g, \ct) \\
+				\pcreturn x
+			}
+		\end{pcvstack}
+		\begin{pcvstack}
+			\procedure[linenumbering, bodylinesep=0.5em]{$\Enc(\pk, x)$}{
+				\pcparse \pk = (\bemod, g, N) \\
+				\gamma \gets \Z^\ast_N \\
+				\ct \coloneqq g^x \gamma^\bemod \pmod{N} \\
+				\pcreturn \ct
+			}
+
+			\procedure[linenumbering, bodylinesep=0.5em]{$\Eval(\pk, \ctvec, \vec{v})$}{
+				\pcparse \pk = (\bemod, g, N) \\
+				\pcparse \ctvec =  (\ct_1, \ldots, \ct_\ell) \\
+				\pcparse \vec{v} = (v_1, \ldots, v_\ell) \\
+				\ct = \prod_{i=1}^\ell \ct_i^{v_i} \pmod{N} \\
+				\pcreturn \ct
+			}
+		\end{pcvstack}
+	\end{pchstack}
+	\caption{The Benaloh encryption scheme~\cite{THESIS:Ben87,SAC:Ben94}}
+	\label{fig:benaloh_encscheme}
+\end{figure}
