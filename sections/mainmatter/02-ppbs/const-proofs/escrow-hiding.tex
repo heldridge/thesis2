@@ -177,5 +177,40 @@
 	\end{itemize}
 
 	We therefore conclude that $$\bigg\{ \escrow(\ppbpp, pk, (\uval, \msg), r) \bigg\} \cindist \bigg\{\Sim(\ppbpp, \td, pk, f(\thr, (\uval, \msg)) \bigg\}$$ in the case that $\uval < \thr$.
+
+	We now turn to the case that $\uval = \thr$, and consider the following series of hybrids.
+	We keep things here at the proof-sketch level and refer the reader to the previous series of hybrids for more detailed reductions.
+
+	\begin{itemize}
+		\item $\newhyb$: The original escrow hiding game when $b = 0$, i.e. $\escrow(\ppbpp, pk, x, r)$.
+
+		\item $\nexthyb$: The proof $\zkproof_{E}$ is simulated using the trapdoor $\td_{E}$. By the zero-knowledge property of $\Pi_{E}$, $\prevhyb \pindist \currhyb$.
+
+		\item $\nexthyb$: Replace $\com_{E}$ with $\commit(\compp, (0, \epsilon))$. By the statistical hiding property of the commitment scheme scheme, $\prevhyb \sindist \currhyb$.
+
+		\item $\nexthyb$: Replace $\revct_i$ with $\pker.\enc(\pkerpp, \revpk_i^0, \otpk^*)$ for all $i \in [\numdigits]$.
+		      As $\revpk_i^{\uval[i]}$ is lossy for all $i$ (as $\uval = \thr$), we have that $\prevhyb \cindist \currhyb$ via a series of sub-hybrids and the \wla{} of $\pker$.
+
+		\item $\nexthyb$: Replace $\revct_i$ with $\pker.\enc(\pkerpp, \revpk_i^0, \epsilon)$ for all $i \in \numdigits$.
+		      As $\revpk_i^0$ is lossy for all $i$, we have that $\prevhyb \cindist \currhyb$ via a series of sub-hybrids and the computational lossiness of $\pker$.
+
+		\item $\nexthyb$: Replace $\otpct^*$ with $\otpk^* \cdot \epsilon$.
+		      As the output contains no information about $\otpk^*$, we have that $\prevhyb \pindist \currhyb$ by the perfect security of $\otp'$.
+
+		\item $\nexthyb$: Replace $\mct_i$ with $\pkem.\enc(\pkempp, \matpk_i^0, \otpct_i^{\mat})$ for all $i \in [\numdigits]$.
+		      As $\matpk_i^{\uval[i] + 1}$ is injective for all $i$ (as $\uval = \thr$), we have that $\prevhyb \cindist \currhyb$ via a series of sub-hybrids and the \sla{} of $\pkem$.
+
+		\item $\nexthyb$: The simulator honestly generates the proof $\pi_{E}$.
+		      By the zero-knowledge property of $\Pi_{E}$, $\prevhyb \pindist \currhyb$.
+	\end{itemize}
+	Note that $\currhyb$ is identical to the functioning of the simulator.
+
+
+	Finally, we consider the case that $\uval > \thr$.
+	If $\uval[i] \geq \thr[i]$ for all $i \in [\numdigits]$ then $\uval' = \uval$, and so the simulation is clearly perfect.
+	Otherwise, there must be some digit $d$ for which $\uval[d] < \thr$.
+	We can then use an identical sequence of games as in the case that $\uval < \thr$ to show that the output of the simulator is indistinguishable to the output of $\escrow$.
+
+	We therefore conclude that $$\bigg\{ \escrow(\ppbpp, pk, (\uval, \msg), r) \bigg\} \cindist \bigg\{\Sim(\ppbpp, \td, pk, f(\thr, (\uval, \msg)) \bigg\}$$ for $\uval < \thr$, $\uval = \thr$, and $\uval > \thr$, and therefore \schemename{} satisfies escrow hiding.
 \end{proof}
 
