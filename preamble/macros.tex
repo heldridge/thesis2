@@ -333,6 +333,311 @@
 \newcommand{\otval}{x}
 \newcommand{\otmsgspace}{\mathcal{M}}
 
+% STAR
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Paper Specific
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --- Algorithms ---
+\newcommand{\dopestar}{MDSS-STAR\xspace} % Our protocol name, for use in text mode
+
+\newcommand{\Gen}{\mathsf{Gen}}
+\newcommand{\Setup}{\mathsf{Setup}}
+\newcommand{\GrpGen}{\mathsf{GrpGen}}
+
+\newcommand{\Enc}{\mathsf{Enc}}
+\newcommand{\Dec}{\mathsf{Dec}}
+\newcommand{\ListDecode}{\mathsf{ListDecode}}
+
+\newcommand{\CtxSample}{\mathsf{CSample}}
+\newcommand{\Eval}{\mathsf{Eval}}
+
+\newcommand{\ProtoAgg}{\proto_{\mathsf{agg}}} % Secure aggregation protocol
+\newcommand{\ProtoOPRF}{\proto_\mathsf{oprf}} % Oblivious PRF protocol
+
+% --- Primitives ---
+\newcommand{\encscheme}{\mathcal{E}} % Encryption scheme
+
+% --- Encryption Scheme ---
+\newcommand{\ctxspace}{\mathcal{C}} % Ciphertext space
+\newcommand{\randsk}{\mathsf{rsk}} % Secret key of randomness server
+
+\newcommand{\ctx}{\mathsf{ct}} % Ciphertext
+\newcommand{\ptx}{z} % Plaintext
+\newcommand{\ctvec}{\mathbf{ct}}
+\newcommand{\ctveci}[1]{\mathbf{ct}^{#1}}
+
+\newcommand{\bemod}{\nu} % Message space modulus for Benaloh scheme
+\newcommand{\resmod}[2]{\mathsf{Res}^{#1}_{#2}}
+\newcommand{\nonresmod}[2]{\overline{\mathsf{Res}}^{#1}_{#2}}
+\newcommand{\eulertot}{\varphi}
+\newcommand{\bemodbound}{B}
+\newcommand{\dlog}{\mathsf{dlog}}
+
+% --- Secure Aggregation ---
+\newcommand{\user}{\mathsf{U}} % User
+\newcommand{\useri}[1]{\mathsf{U}_{#1}} % i-th user
+\newcommand{\aggserver}{\mathsf{S}_{\mathsf{agg}}} % Aggregation server
+\newcommand{\randserver}{\mathsf{S}_{\mathsf{rand}}} % Randomness server
+\newcommand{\numclients}{n}
+
+\newcommand{\numheavyhit}{t} % Parameter for number of heavy hitters
+
+\newcommand{\threshold}{t_{\sf rec}} % Aggregation threshold
+\newcommand{\pd}{t_{\sf priv}} % Aggregation polynomial degree
+\newcommand{\nd}{d} % Aggregation number of dealers
+\newcommand{\np}{c} % Aggregation number of polynomials
+\newcommand{\val}{v} % A reported value
+\newcommand{\report}{\mathsf{rpt}}
+\newcommand{\userctr}{\mathsf{ctr}} % Counter used by rand server
+
+\newcommand{\Polys}{\mathcal{P}} % polynomial space
+
+\newcommand{\prfkey}{k}
+
+% --- Ideal Functionalities ---
+\newcommand{\freport}{\mathcal{F}_{\sf report}^{\threshold,\pd,\max}}
+\newcommand{\collect}{{\sf collect}}
+\newcommand{\collectEvil}{{\sf collectEvil}}
+\newcommand{\msgevil}{{\sf msgEvil}}
+
+\newcommand{\fdope}[1][\ell]{\mathcal{F}_{\mathsf{dope}}^{\field, #1}}
+\renewcommand{\eval}{{\sf eval}}
+\newcommand{\fsetup}{\overline{\mathcal{F}}_{\mathsf{setup}}}
+\newcommand{\frandoracle}{\overline{\mathcal{F}}_{\mathsf{ro}}}
+
+\newcommand{\foprf}{\mathcal{F}_{\sf oprf}} % OPRF functionality
+\newcommand{\fmix}{\mathcal{F}_{\sf mix}^{\max}}
+
+\newcommand{\foss}{\mathcal{F}_{\sf oss}^{\sf MDSS}} % Oblivious Share Sampling functionality
+
+\newcommand{\counter}{{\sf count}}
+
+% -- Protocols
+\newcommand{\preport}{\proto_{\sf report}^{\threshold,\pd, \max}}
+\newcommand{\pdope}[1][\pd]{\proto_{\sf dope}^{\encscheme, #1}}
+\newcommand{\poss}{\proto_{\sf oss}^{{\sf MDSS}_c}}
+
+% --- UC Stuff ---
+\newcommand{\ucideal}{\mathsf{IDEAL}}
+\newcommand{\ucreal}{\mathsf{REAL}}
+\newcommand{\ucenv}{\mathcal{Z}}
+
+\newcommand{\sid}{{\sf sid}}
+\newcommand{\ssid}{{\sf ssid}}
+\newcommand{\qid}{{\sf qid}}
+\newcommand{\init}{{\sf init}}
+\newcommand{\proceed}{{\sf proceed}}
+\newcommand{\observe}{\mathsf{observe}}
+\newcommand{\query}{\mathsf{query}}
+
+\newcommand{\siddope}{\sid_{\sf dope}}
+\newcommand{\sidmix}{\sid_{\sf mix}}
+\newcommand{\sidoss}{\sid_{\sf oss}}
+
+\newcommand{\simoss}{{\sf SimOSS}}
+
+% -- MDSS --
+\newcommand{\mdssc}{\ensuremath{{\sf MDSS}_c}} % MDSS Construction
+\newcommand{\chmdss}{{\sf CH\text{-}MDSS}} % CHMDSS Instantiation
+\newcommand{\Share}{{\sf Share}} % The share algorithm
+\newcommand{\reconstruct}{{\sf Reconstruct}} % The reconstruction algorithm
+\renewcommand{\max}{N} % The MDSS max parameter
+\newcommand{\secspace}{\mathcal{H}} % The MDSS secret space
+\newcommand{\sh}{sh} % An MDSS share
+\newcommand{\window}{w} % The MDSS window size, i.e. the number of points input to the Reconstruct algorithm
+\newcommand{\indexset}{\mathcal{I}}
+\newcommand{\proj}{{\sf Proj}} % The MDSS projection shorthand
+\newcommand{\shidx}{\iota} % The unique index used for each share by the Randomness Server
+\newcommand{\shidxset}{\mathcal{J}} % The set of indices kept by the Randomness Server to ensure that all are unique
+\newcommand{\sharespace}{\mathcal{H}} % The space of secret shares
+\newcommand{\idealthreshold}{t}
+
+%% - IT-MDSS
+\newcommand{\itchmdss}{{\sf IT\text{-}CH\text{-}MDSS}}
+\newcommand{\batchsizes}{{\sf batchSizes}}
+\newcommand{\cvals}{{\sf cVals}}
+\newcommand{\batchsize}{{\sf bs}}
+\newcommand{\cval}{{\sf c}}
+\newcommand{\decodeiterations}{{\sf I}}
+\newcommand{\step}{{\sf Step}}
+\newcommand{\remainingshares}{\mathcal{Z}}
+\newcommand{\recoveredvalues}{\mathcal{V}}
+\newcommand{\agreeingpoints}{\mathcal{P}}
+\newcommand{\failed}{failed}
+\newcommand{\singledecode}{{\sf STEP-DECODE}}
+
+
+%% - CH-MDSS
+\newcommand{\xcoord}{\alpha}
+\newcommand{\ycoord}{\beta}
+\newcommand{\blocklength}{\max}
+\newcommand{\targetlength}{\lambda}
+\newcommand{\gsdegree}{\pd}
+\newcommand{\minprob}{p^*}
+
+%% - Heuristic Assumption
+\newcommand{\numpoints}{m}
+\newcommand{\numTotalDealers}{h}
+\newcommand{\pdalt}{\ell}
+
+% --- DOPE ---
+\newcommand{\dopectmasked}{\ct}
+\newcommand{\dopemaskedshare}{\gamma}
+\newcommand{\dopemask}{\alpha}
+\newcommand{\dopeoutput}{y}
+\newcommand{\polycoeff}{\beta}
+\newcommand{\polycoeffi}[1]{\beta_{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic Math
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\vec}[1]{\mathbf{#1}} % Vector
+\newcommand{\veci}[2]{\mathbf{#1}^{(#2)}} % Index into vector
+\newcommand{\veclen}[1]{|#1|} % Length of vector
+\newcommand{\innerprod}[2]{\left\langle #1, #2 \right\rangle} % inner product
+
+\newcommand{\zrange}[2]{[#1, #2]} % List of integers from #1 to #2
+\newcommand{\nrange}[1]{[#1]} % List of natural numbers till #2
+
+\newcommand{\parens}[1]{\left( #1 \right)} % Round brackets
+\newcommand{\setsize}[1]{\left| #1 \right|} % Set size
+
+\mathchardef\mhyphen="2D
+
+% Math symbols
+\newcommand{\N}{\mathbb{N}} % Natural numbers
+\newcommand{\Zpos}{\mathbb{Z}^+} % Integers \ {0}.
+\newcommand{\Zmul}{\mathbb{Z}^\ast} % Multiplicative .
+\newcommand{\field}{\mathbb{F}} % field
+\newcommand{\ring}{\mathcal{R}} % ring
+
+% Matrix notation
+\newcommand{\rowidx}{r}
+\newcommand{\srow}{\rowidx_s}
+\newcommand{\trow}{\rowidx_t}
+
+% Zipf
+\newcommand{\zipfsup}{B}
+\newcommand{\zipfexp}{s}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic Crypto
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Use the cryptocode package wherever possible.
+% https://mirrors.ircam.fr/pub/CTAN/macros/latex/contrib/cryptocode/cryptocode.pdf
+\renewcommand{\secpar}{\lambda}
+
+\newcommand{\share}[1]{{\langle #1 \rangle}} % Secret sharing
+\newcommand{\sharei}[2]{{\langle #1 \rangle}_{#2}} % Share of the i-th party
+
+\newcommand{\honset}{\mathcal{H}} % Set of honest users
+\newcommand{\corruptset}{\mathcal{I}} % Set of corrupt users
+
+\newcommand{\func}{\mathcal{F}} % Functionality
+\newcommand{\proto}{\Pi} % Protocol
+
+\definecolor{gamechangecolor}{gray}{0.90}
+\newcommand*{\mathgamechange}[1]{\text{\gamechange{$#1$}}}
+
+\newcommand{\env}{\mathcal{Z}} % Ideal execution environment
+\renewcommand{\simulator}{\mathcal{S}}
+
+% --- Hybrid Arguments ---
+% \newhyb: Starts a new hybrid argument by resetting the counter and printing Hybrid 0.
+% \nexthyb: Starts the next step in the hybrid and increments the counter and prints Hybrid i+1.
+% \currhyb: Can be used to refer to the current hybrid and prints Hybrid i.
+% \prevhyb: Can be used to refer to the previous hybrid and prints Hybrid i-1.
+% \shifthyb{j}: Can be used to refer to the i-th previous hybrid. \shifthyb{j} prints Hybrid j-i.
+\newcommand{\hybrid}{\ensuremath{\mathsf{Hyb}}}
+\newcommand{\shifthyb}[1]{\ensuremath{\hybrid_{\the\numexpr\value{hybctr}-#1\relax}}\xspace}
+
+\newcounter{subhybridctr}[hybctr]
+\newcommand{\newsubhyb}{\ensuremath{\hybrid_{\setcounter{subhybridctr}{0}\thehybctr.\thesubhybridctr}}\xspace}
+\newcommand{\currsubhyb}{\ensuremath{\hybrid_{\thehybctr.\thesubhybridctr}}\xspace}
+\newcommand{\prevsubhyb}{\ensuremath{\hybrid_{\thehybctr.\the\numexpr\value{subhybridctr}-1\relax}}\xspace}
+\newcommand{\nextsubhyb}{\ensuremath{\hybrid_{\stepcounter{subhybridctr}\thehybctr.\thesubhybridctr}}\xspace}
+\newcommand{\shiftsubhyb}[1]{\ensuremath{\hybrid_{\thehybctr.\the\numexpr\value{subhybridctr}-#1\relax}}\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Algorithms
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Customize cryptocode procedure style
+% \renewcommand{\pclnseparator}{:}
+% \renewcommand{\pcrlnseparator}{}
+% \renewcommand{\pclnspace}{0.5em}
+% \renewcommand{\pclnrspace}{0.5em}
+% \renewcommand{\pclnstyle}[1]{\color{gray} #1}
+
+% Psuedocode comments 
+\newcommand*{\algcomment}[1]{{\color{gray} \text{$\triangleright$ #1}}}
+\newcommand*{\algremark}[1]{\text{\color{gray}\textbf{[Remark:} #1\textbf{]}}}
+\newcommand*{\algcommentbreak}{\\ //~}
+\newcommand*{\inlineremark}[1]{{\color{gray} [#1]}}
+
+% Custom list for algorithm 
+\newlist{algenumerate}{enumerate}{3}
+\setlist[algenumerate]{label=\color{gray}\arabic*:, font=\small, leftmargin=0.45cm, noitemsep,topsep=2pt,parsep=2pt,partopsep=1pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Misc
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\propertyname}[1]{\textbf{#1:}}
+
+% Unmarked footnote i.e., a footnote without a number
+\newcommand{\umkdfootnote}[1]{%
+	\bgroup
+	\renewcommand\thefootnote{\fnsymbol{footnote}}%
+	\renewcommand\thempfootnote{\fnsymbol{mpfootnote}}%
+	\footnotetext[0]{#1}%
+	\egroup
+}
+
+% Paragraph headings
+\newcommand{\mypg}[1]{\noindent\textbf{#1}\ }
+
+\newcommand{\repourl}{\url{https://anonymous.4open.science/r/tfios}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{remark}
+\newtheorem{observation}{Observation}
+
+\newcommand{\boxsep}{
+	\vspace{1mm}
+	\hrule
+	\vspace{2mm}
+}
+
+\setlist{leftmargin=*}
+
+\DeclareFloatingEnvironment{functionality}
+\crefname{functionality}{Functionality}{Functionalities}
+
+\DeclareFloatingEnvironment{protocol}
+\crefname{protocol}{Protocol}{Protocols}
+
+% Heuristic Assumption
+\newtheorem{heuristic}{Heuristic Assumption}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Citations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\citestar}{CCS:DSQGLH22}
+\newcommand{\citepopstar}{USENIX:LiNavTes24}
+\newcommand{\citepoplar}{SP:BBCGI21}
+\newcommand{\citeshamir}{Shamir79}
+\newcommand{\citeairtag}{USENIX:EBGHJ24}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\myparagraph}[1]{\smallskip \noindent {\bf #1}}
+
 
 
 

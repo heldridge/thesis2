@@ -190,3 +190,126 @@
     url = {https://github.com/iden3/snarkjs},
     version = {0.7.5},
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%        STAR         %
+%%%%%%%%%%%%%%%%%%%%%%%
+@inproceedings{prio,
+    author = {Corrigan-Gibbs, Henry and Boneh, Dan},
+    title = {Prio: private, robust, and scalable computation of aggregate
+             statistics},
+    year = {2017},
+    isbn = {9781931971379},
+    publisher = {USENIX Association},
+    address = {USA},
+    abstract = {This paper presents Prio, a privacy-preserving system for the
+                collection of aggregate statistics. Each Prio client holds a
+                private data value (e.g., its current location), and a small set
+                of servers compute statistical functions over the values of all
+                clients (e.g., the most popular location). As long as at least
+                one server is honest, the Prio servers learn nearly nothing about
+                the clients' private data, except what they can infer from the
+                aggregate statistics that the system computes. To protect
+                functionality in the face of faulty or malicious clients, Prio
+                uses secret-shared non-interactive proofs (SNIPs), a new
+                cryptographic technique that yields a hundred-fold performance
+                improvement over conventional zero-knowledge approaches. Prio
+                extends classic private aggregation techniques to enable the
+                collection of a large class of useful statistics. For example,
+                Prio can perform a least-squares regression on high-dimensional
+                client-provided data without ever seeing the data in the clear.},
+    booktitle = {Proceedings of the 14th USENIX Conference on Networked Systems
+                 Design and Implementation},
+    pages = {259–282},
+    numpages = {24},
+    location = {Boston, MA, USA},
+    series = {NSDI'17},
+}
+
+@inproceedings{zhu2020federated,
+    title = {Federated heavy hitters discovery with differential privacy},
+    author = {Zhu, Wennan and Kairouz, Peter and McMahan, Brendan and Sun,
+              Haicheng and Li, Wei},
+    booktitle = {International Conference on Artificial Intelligence and
+                 Statistics},
+    pages = {3837--3847},
+    year = {2020},
+    organization = {PMLR},
+}
+
+@inproceedings{bittau2017prochlo,
+    title = {Prochlo: Strong privacy for analytics in the crowd},
+    author = {Bittau, Andrea and Erlingsson, {\'U}lfar and Maniatis, Petros and
+              Mironov, Ilya and Raghunathan, Ananth and Lie, David and Rudominer,
+              Mitch and Kode, Ushasree and Tinnes, Julien and Seefeld, Bernhard},
+    booktitle = {Proceedings of the 26th symposium on operating systems
+                 principles},
+    pages = {441--459},
+    year = {2017},
+}
+
+@inproceedings{bittau2017prochlo,
+    title = {Prochlo: Strong privacy for analytics in the crowd},
+    author = {Bittau, Andrea and Erlingsson, {\'U}lfar and Maniatis, Petros and
+              Mironov, Ilya and Raghunathan, Ananth and Lie, David and Rudominer,
+              Mitch and Kode, Ushasree and Tinnes, Julien and Seefeld, Bernhard},
+    booktitle = {Proceedings of the 26th symposium on operating systems
+                 principles},
+    pages = {441--459},
+    year = {2017},
+}
+
+@article{bun2019heavy,
+    title = {Heavy hitters and the structure of local privacy},
+    author = {Bun, Mark and Nelson, Jelani and Stemmer, Uri},
+    journal = {ACM Transactions on Algorithms (TALG)},
+    volume = {15},
+    number = {4},
+    pages = {1--40},
+    year = {2019},
+    publisher = {ACM New York, NY, USA},
+}
+
+@article{apple2021exposure,
+    title = {Exposure Notification Privacy-preserving Analytics (ENPA) white
+             paper},
+    author = {Apple and Google},
+    year = {2021},
+}
+
+@techreport{ietf-ppm-dap-13,
+    number = {draft-ietf-ppm-dap-13},
+    type = {Internet-Draft},
+    institution = {Internet Engineering Task Force},
+    publisher = {Internet Engineering Task Force},
+    note = {Work in Progress},
+    url = {https://datatracker.ietf.org/doc/draft-ietf-ppm-dap/13/},
+    author = {Tim Geoghegan and Christopher Patton and Brandon Pitman and Eric
+              Rescorla and Christopher A. Wood},
+    title = {{Distributed Aggregation Protocol for Privacy Preserving
+             Measurement}},
+    pagetotal = 93,
+    year = 2024,
+    month = nov,
+    day = 2,
+    abstract = {There are many situations in which it is desirable to take
+                measurements of data which people consider sensitive. In these
+                cases, the entity taking the measurement is usually not
+                interested in people's individual responses but rather in
+                aggregated data. Conventional methods require collecting
+                individual responses and then aggregating them, thus representing
+                a threat to user privacy and rendering many such measurements
+                difficult and impractical. This document describes a multi-party
+                distributed aggregation protocol (DAP) for privacy preserving
+                measurement (PPM) which can be used to collect aggregate data
+                without revealing any individual user's data.},
+}
+
+@article{bassily2017practical,
+    title = {Practical locally private heavy hitters},
+    author = {Bassily, Raef and Nissim, Kobbi and Stemmer, Uri and Guha Thakurta
+              , Abhradeep},
+    journal = {Advances in Neural Information Processing Systems},
+    volume = {30},
+    year = {2017},
+}

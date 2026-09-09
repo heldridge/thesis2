@@ -1,0 +1,67 @@
+\begin{tikzpicture}[
+		chip/.style={
+				draw,
+				fill=gray!10,
+				thick,
+				minimum width=1cm,
+				minimum height=1cm,
+			},
+		pin/.style={
+				line width=0.7pt,
+			},
+		server/.style={
+				draw,
+				fill=black!85,
+				rounded corners=2pt,
+				minimum width=2.5cm,
+				minimum height=1.25cm,
+				drop shadow,
+			},
+		bay/.style={
+				fill=gray!20,
+				draw=gray!50,
+				rounded corners=0.5pt,
+				minimum height=0.15cm,
+				minimum width=0.3cm,
+			},
+		light/.style={
+				circle,
+				minimum size=2pt,
+				inner sep=0pt,
+			},
+		every node/.style={font=\sffamily}
+	]
+
+	% --- Client ---
+	\node[alice, minimum size=1cm] (user) at (0,4) {Client};
+
+	% --- Randomness Server ---
+	\node[chip] (chip) at (-2,0) {};
+	\foreach \x in {-0.25, 0, 0.25} {
+			\draw[pin] ($(chip.north)+(\x,0)$) -- ++(0,0.3);
+			\draw[pin] ($(chip.south)+(\x,0)$) -- ++(0,-0.3);
+		}
+	\foreach \y in {-0.25, 0, 0.25} {
+			\draw[pin] ($(chip.west)+(0,\y)$) -- ++(-0.3,0);
+			\draw[pin] ($(chip.east)+(0,\y)$) -- ++(0.3,0);
+		}
+	\node at (chip.south) [below=1em] {\textbf{Randomness Server}};
+
+	% --- Aggregation Server ---
+	\node[server] (srv) at (2,0) {};
+	\foreach \x in {-0.9,-0.6,-0.3,0,0.3,0.6} {
+			\foreach \y in {0.25, -0.25} {
+					\node[bay] at ($(srv.center) + (\x,\y)$) {};
+				}
+		}
+	\foreach \i/\col in {0.25/green, 0/yellow, -0.25/red} {
+			\node[light, fill=\col] at ($(srv.east) + (-0.25,\i)$) {};
+		}
+
+	\node at (srv.south) [below=0.4em] {\textbf{Aggregation Server}};
+
+	% Arrows from user to chip and server
+	\draw[<->, dashed, thick] ($(user.south) + (-0.3,-0.5)$) -- node[midway, left, yshift=15pt, align=center] {(1) Protocol to \\ generate report} ($(chip.north) + (0,0.5)$);
+	\draw[->, thick] ($(user.south) + (0.3,-0.5)$) -- node[midway, right, yshift=8pt] {(2) Send report} ($(srv.north) + (0,0.3)$);
+	\node[below=2em of srv] [align=center] {(3) Aggregate to \\ compute heavy-hitters};
+\end{tikzpicture}
