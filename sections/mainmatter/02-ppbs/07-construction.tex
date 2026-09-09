@@ -199,7 +199,7 @@ We now begin proving our main theorem.
 	\newcommand{\badprobrevnonbot}[2]{\ensuremath{\nu_{3, #1, #2}^{<, \mathsf{\rev}}}}
 	Suppose $\nu_3^{<}(\lambda)$ is non-negligible.
 	In this case, let $d$ be the index for which $\uval'[d] < \thr[d]$ and $\forall i < d, \: \uval'[i] = \thr[i]$.
-	Let $\badprobrevnonbot{i}{j}(\secpar)$ denote the probability that $\pker.\dec(\pkerpp, \revsk_i^j, \revct_i) \allowbreak\neq\allowbreak \bot$ for some $i \in [\numdigits]$ and $j \in [\thr[i] + 1, \base]$.
+	Let $\badprobrevnonbot{i}{j}(\secpar)$ denote the probability that $\pker.\dec(\allowbreak\pkerpp,\allowbreak \revsk_i^j,\allowbreak \revct_i) \allowbreak\neq\allowbreak \bot$ for some $i \in [\numdigits]$ and $j \in [\thr[i] + 1, \base]$.
 	If $\nu_3^{<}(\secpar)$ is non-negligible, then at least one of $\badprobrevnonbot{i}{j}(\secpar)$ must be non-negligible.
 	By the same logic as above, we have that $\badprobrevnonbot{i}{j}(\secpar) = 0$ for all $i \in [d]$.
 

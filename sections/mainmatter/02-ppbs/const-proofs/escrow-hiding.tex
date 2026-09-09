@@ -1,6 +1,6 @@
 \begin{lemma}
 	\label{lemma:main-ec}
-	If $\pker$ is a lossy and \wlap{} public-key encryption scheme, $\pkem$ is a lossy and $\mathcal{U}_{\msgspace_\mat}$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $(\csetup, \commit)$ satisfies statistical hiding and computational binding, $\Pi_{E}$ satisfies zero-knowledge, and $\Pi_{KG}$ satisfies strong simulation extractability, then \schemename{} satisfies escrow hiding.
+	If $\pker$ is a lossy and \wlap{} public-key encryption scheme, $\pkem$ is a lossy, $\mathcal{U}_{\msgspace_\mat}$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $(\csetup, \commit)$ satisfies statistical hiding and computational binding, $\Pi_{E}$ satisfies zero-knowledge, and $\Pi_{KG}$ satisfies strong simulation extractability, then \schemename{} satisfies escrow hiding.
 \end{lemma}
 
 \begin{proof}
@@ -54,7 +54,7 @@
 
 		      ${}$
 
-		      As $\nu_2(\secpar)$ is negligible, we can assume that there exists an extractor $\Ext$ that given $\pi_{KG}$ outputs $(\thr', sk', r_k, r_c)$ such that $C_{KG} = \commit(\compp, \thr; r_c)$ and $(sk', pk') = \kgen'(\secpar, \pkepp^{\rev}, \pkepp^{\mat}, \base, \numdigits, \thr; r_k)$.
+		      As $\nu_2(\secpar)$ is negligible, we can assume that there exists an extractor $\Ext$ that given $\pi_{KG}$ outputs $(\thr', sk', r_k, r_c)$ such that $C_{KG} = \commit(\compp, \thr; r_c)$ and $(sk',\allowbreak pk')\allowbreak = \allowbreak\kgen'(\allowbreak\secpar, \allowbreak\pkepp^{\rev}, \pkepp^{\mat}, \base, \numdigits, \thr; r_k)$.
 
 		      ${}$
 
