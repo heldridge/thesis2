@@ -26,62 +26,55 @@ After interacting with the Randomness Server, clients transmit their report to a
 	\caption{The STAR model. Note that there is an implicit assymetry in the computational resources of the Randomness Server and the Aggregation Server.}
 	\label{fig:star-model}
 \end{figure}
-%
-% Unfortunately, the STAR protocol suffers from substantial privacy leakage: the Aggregation Server learns a pseudonomized version of the \emph{complete frequency histogram} of client inputs.
-% Recognizing this issue, a follow-up work called POPSTAR (Li et al., USENIX 2024) reduces the leakage to a partial histogram, where only a subset of values have their frequency leaked.
-% Notably, the values that have their frequencies leaked are selected \emph{at random}, with rare values having the same probability of being leaked as those with more reports.
-% More critically, both STAR and POPSTAR are extremely vulnerable to an Aggregation Server that colludes with (or poses as) a client.
-% An Aggregation Server that makes a \emph{single query} to the Randomness Server
-% can identify \emph{all} reports of a target input value $\val$, even if $\val$ is not a heavy-hitter.
-% While this ``spying'' attack was acknowledged in prior work, it was explicitly defined to be outside the threat model~\autocite{\citestar, \citepopstar}, despite being a realistic threat to any deployment.
-% Continuing the URL example, an Aggregation Server could use this attack to identify all users visiting a site related to pancreatic cancer.
-% Such a value is unlikely to be a heavy-hitter, and reveals considerable information about those reporting it.
-% Finally, we emphasize that this attack is possible even in the \emph{honest-but-curious} setting, as it only requires the Aggregation Server to learn a client's view during the report generation phase.
-%
-%
-% \subsection{Our Contributions: Guaranteed Protection for Rare Values} The weaknesses described above motivate the need for a $t$-heavy-hitters protocol with new security guarantees.
-% Ideally, a protocol would both \emph{guarantee} protection for rare values, granting total privacy to those reported infrequently, and have hardened security against spying attacks.
-%
-% We note here that any system in which the Aggregation Server can freely query the Randomness Server and aggregate shares must allow some sort of spying.
-% For a value of interest $v$ the Aggregation Server can create $t - 1$ shares for $v$ via the Randomness Server, and then can combine those shares with every submitted report to tell if it contains $v$.
-% While such an attack is inevitable, we can still hope to force the Aggregation Server to make a large number of queries to the Randomness Server in order to launch the attack, rather than just a single query per-value as in STAR and POPSTAR.
-% Such a limitation would allow deployed systems to more effectively detect a misbehaving Aggregation Server.
-%
-% Given this, our contributions are as follows:
-% \begin{enumerate}
-% 	\item We construct the first $t$-heavy-hitters protocol in the STAR model that guarantees perfect security for rare values, i.e.\ those reported under $k$ times for a well defined privacy threshold $k < t$.
-%
-% 	\item We extend our protocol to construct the first STAR-model $t$-heavy-hitters protocol with \emph{spying resistance}, requiring the optimal $k - 1$ queries per-value to launch a spying attack.
-% \end{enumerate}
-% We prove our protocol secure in the honest-but-curious setting, and show that it is efficient enough to be deployed today.
-% Report generation is under three seconds, and aggegation runs in approximately 1 hour for $100,000$ reports.
-% A comparison between this and prior work can be seen in \cref{fig:comparison}.
-%
-% The constructions of STAR and POPSTAR are fundamentally based on secret sharing, and the main novelties of this paper are in the construction, application, and optimization of secret sharing systems.
-% We achieve perfect security for rare values by using an optimized implementation of \emph{multi-dealer secret sharing} \cite{\citeairtag}, and spying resistance via the construction of a novel \emph{oblivious share sampling} protocol, a 2-party protocol that allows one party to sample a secret share of a value without learning the full sharing.
-%
-% \begin{figure}
-% 	\centering
-% 	\begin{tabular}{ |c|c|c|c| }
-% 		\hline
-% 		\makecell{Scheme}              &
-% 		\makecell{Leakage}             &
-% 		\makecell{Spying\\ Resistance} &
-% 		\makecell{Agg\\ Runtime}                                                             \\
-% 		\hline
-% 		STAR                           & \makecell{full\\ histogram}    & \ding{55} & 2 sec  \\
-% 		\hline
-% 		POPSTAR                        & \makecell{partial\\ histogram} & \ding{55} & 10 sec \\
-% 		\hline
-% 		\textbf{This Work}             & \makecell{privacy\\ threshold} & \ding{51} & 1 hour \\
-% 		\hline
-% 	\end{tabular}
-% 	\caption{A comparison between this and prior work. Aggregation runtimes are over $100,000$ reports.}
-% 	\label{fig:comparison}
-% \end{figure}
-%
-%
-%
-%
-%
-%
+
+Unfortunately, the STAR protocol suffers from substantial privacy leakage: the Aggregation Server learns a pseudonomized version of the \emph{complete frequency histogram} of client inputs.
+Recognizing this issue, a follow-up work called POPSTAR (Li et al., USENIX 2024) reduces the leakage to a partial histogram, where only a subset of values have their frequency leaked.
+Notably, the values that have their frequencies leaked are selected \emph{at random}, with rare values having the same probability of being leaked as those with more reports.
+More critically, both STAR and POPSTAR are extremely vulnerable to an Aggregation Server that colludes with (or poses as) a client.
+An Aggregation Server that makes a \emph{single query} to the Randomness Server
+can identify \emph{all} reports of a target input value $\val$, even if $\val$ is not a heavy-hitter.
+While this ``spying'' attack was acknowledged in prior work, it was explicitly defined to be outside the threat model~\autocite{\citestar, \citepopstar}, despite being a realistic threat to any deployment.
+Continuing the URL example, an Aggregation Server could use this attack to identify all users visiting a site related to pancreatic cancer.
+Such a value is unlikely to be a heavy-hitter, and reveals considerable information about those reporting it.
+Finally, we emphasize that this attack is possible even in the \emph{honest-but-curious} setting, as it only requires the Aggregation Server to learn a client's view during the report generation phase.
+
+\subsection{Our Contributions: Guaranteed Protection for Rare Values} The weaknesses described above motivate the need for a $t$-heavy-hitters protocol with new security guarantees.
+Ideally, a protocol would both \emph{guarantee} protection for rare values, granting total privacy to those reported infrequently, and have hardened security against spying attacks.
+
+We note here that any system in which the Aggregation Server can freely query the Randomness Server and aggregate shares must allow some sort of spying.
+For a value of interest $v$ the Aggregation Server can create $t - 1$ shares for $v$ via the Randomness Server, and then can combine those shares with every submitted report to tell if it contains $v$.
+While such an attack is inevitable, we can still hope to force the Aggregation Server to make a large number of queries to the Randomness Server in order to launch the attack, rather than just a single query per-value as in STAR and POPSTAR.
+Such a limitation would allow deployed systems to more effectively detect a misbehaving Aggregation Server.
+
+Given this, our contributions are as follows:
+\begin{enumerate}
+	\item We construct the first $t$-heavy-hitters protocol in the STAR model that guarantees perfect security for rare values, i.e.\ those reported under $k$ times for a well defined privacy threshold $k < t$.
+
+	\item We extend our protocol to construct the first STAR-model $t$-heavy-hitters protocol with \emph{spying resistance}, requiring the optimal $k - 1$ queries per-value to launch a spying attack.
+\end{enumerate}
+We prove our protocol secure in the honest-but-curious setting, and show that it is efficient enough to be deployed today.
+Report generation is under three seconds, and aggegation runs in approximately 1 hour for $100,000$ reports.
+A comparison between this and prior work can be seen in \cref{fig:comparison}.
+
+The constructions of STAR and POPSTAR are fundamentally based on secret sharing, and the main novelties of this paper are in the construction, application, and optimization of secret sharing systems.
+We achieve perfect security for rare values by using an optimized implementation of \emph{multi-dealer secret sharing} \cite{\citeairtag}, and spying resistance via the construction of a novel \emph{oblivious share sampling} protocol, a 2-party protocol that allows one party to sample a secret share of a value without learning the full sharing.
+
+\begin{figure}
+	\centering
+	\begin{tabular}{ |c|c|c|c| }
+		\hline
+		\makecell{Scheme}              &
+		\makecell{Leakage}             &
+		\makecell{Spying\\ Resistance} &
+		\makecell{Agg\\ Runtime}                                                             \\
+		\hline
+		STAR                           & \makecell{full\\ histogram}    & \ding{55} & 2 sec  \\
+		\hline
+		POPSTAR                        & \makecell{partial\\ histogram} & \ding{55} & 10 sec \\
+		\hline
+		\textbf{This Work}             & \makecell{privacy\\ threshold} & \ding{51} & 1 hour \\
+		\hline
+	\end{tabular}
+	\caption{A comparison between this and prior work. Aggregation runtimes are over $100,000$ reports.}
+	\label{fig:comparison}
+\end{figure}
