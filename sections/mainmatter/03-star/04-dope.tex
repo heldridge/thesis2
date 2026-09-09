@@ -4,6 +4,17 @@ We say that such a protocol realizes \emph{double-oblivious polynomial evaluatio
 
 \input{sections/mainmatter/03-star/figures/dope-func.tex}
 
+\subsection{Initial Functionalities}
+Our protocol will use a setup functionality $\fsetup^\encscheme$ (\cref{fig:func:setup}) and a random oracle $\frandoracle^\ctxspace$ (\cref{fig:func:rand-oracle}).
+Informally, the setup functionality provides the public key of the Randomness Server to all clients, while the random oracle helps non-interactively sample random ciphertexts.
+
+\input{sections/mainmatter/03-star/figures/setup-func.tex}
+\input{sections/mainmatter/03-star/figures/ro-func.tex}
+
+
+
+\subsection{Protocol}
+
 We describe a protocol realizing the functionality in \cref{fig:protocol_dope}.
 Our protocol uses a linearly homomorphic public-key encryption scheme with a dense ciphertext space.
 
@@ -12,3 +23,99 @@ In this work, we use the Benaloh encryption scheme, described in \cref{sec:benal
 We use this scheme as it supports having a polynomial order finite field as the message space, which is what is will be required by the MDSS scheme used in our $t$-heavy-hitters construction.
 
 \input{sections/mainmatter/03-star/figures/dope-protocol.tex}
+
+We can now state and prove our main theorem for our DOPE protocol.
+\begin{theorem}\label{lemma:dope}
+	Let $\field$ be a finite field and let $\encscheme$ be any linearly homomorphic (\cref{def:enc-linear-homomorphism}) public-key encryption scheme with dense ciphertext space $\ctxspace$ (\cref{def:dense-ctx-space}) and with message space $\field$.
+	Then, for any integer-valued polynomial $\ell \coloneqq \ell(\secpar)$, $\pdope[\ell]$ (\cref{fig:protocol_dope}) securely realizes $\fdope[\ell]$ (\cref{fig:ideal_dope}) in the $\parens{\fsetup^{\encscheme}, \frandoracle^\ctxspace}$-hybrid model.
+\end{theorem}
+
+\begin{proof}
+	Let $\adv$ be an adversary that interacts with the parties running $\pdope$.
+	We describe a simulator $\simulator$ below such that the view of any environment $\env$ in an interaction with $\adv$ and $\pdope$ is indistinguishable from its view of an interaction with $\simulator$ in $\fdope$.
+	% \aditya{TODO: Describe dummy parties etc.,}
+
+	\begin{techbox}
+		\begin{center}
+			\textbf{Simulator} $\simulator$
+		\end{center}
+
+
+		$\simulator$ internally invokes $\adv$ and forwards all messages between $\env$ and $\adv$.
+
+		\begin{enumerate}
+			\item Upon first activation, it initializes an empty table $T$ and computes $(\pk, \sk) \gets \encscheme.\Gen(\secparam)$.
+			      For every invocation of $\fsetup$, it returns $\pk$ if invoked by a corrupt user and returns $(\pk, \sk)$ if invoked by a corrupt $\randserver$.
+
+			\item Upon receiving $(\query, \sid', x)$ on behalf of $\frandoracle^\ctxspace$, it proceeds as follows.
+			      \begin{enumerate}
+				      \item If $\sid' = \sid$ and $\randserver$ is corrupt, it checks if $(\sid, x) \in T$, and if not, it samples $\polycoeff \gets \field$ uniformly at random, computes $\ct \gets \encscheme.\Enc(\pk, \polycoeff)$ and sets $T[\sid, x] \coloneqq (\polycoeff, \ct)$.
+				            It then retrieves $(\polycoeff, \ct) \coloneqq T[\sid, x]$ and sends $\ct$ to $\adv$.
+
+				      \item If $\sid' = \sid$ and $\randserver$ is honest, it checks if $(\sid, x) \in T$, and if not, it samples $\polycoeff \gets \field$ uniformly at random, computes $\ct \gets \encscheme.\Enc(\pk, 0)$ and sets $T[\sid, x] \coloneqq (\polycoeff, \ct)$.
+				            It then retrieves $(\polycoeff, \ct) \coloneqq T[\sid, x]$ and sends $\ct$ to $\adv$.
+
+				      \item If $\sid' \neq \sid$, it checks if $(\sid', x) \in T$, and if not, it samples $\ct \gets \ctxspace$ uniformly at random and sets $T[\sid', x] \coloneqq \ct$.
+				            It then sends $T[\sid', x]$ to the activating party.
+			      \end{enumerate}
+
+			\item Upon receiving $(\eval, \sid, \user)$ from $\fdope[\ell]$, if $\randserver$ is corrupt, sample $\dopemaskedshare \gets \field$ uniformly at random, compute $\dopectmasked \gets \encscheme.\Enc(\pk, \sk)$ and send $(\dopectmasked, \dopemaskedshare)$ to $\adv$.
+
+			\item When $\adv$ invokes a corrupt user $\user$ with input $(\eval, \sid, \val, x)$, $\simulator$ proceeds as follows.
+			      \begin{enumerate}
+				      \item For all $i \in \nrange{\ell}$, if $(\sid, \val \concat i) \not\in T$, it samples $\polycoeff \gets \field$ uniformly at random, computes $\ct \gets \encscheme.\Enc(\pk, \polycoeff)$ and sets $T[\sid, \val \concat i] \coloneqq (\polycoeff, \ct)$.
+
+				      \item For each $i \in \nrange{\ell}$, let $(\polycoeff_i, \ct_i) \coloneqq T[\sid, \val \concat i]$.
+				            It samples $\dopemask \gets \field$ uniformly at random and computes
+				            \begin{gather*}
+					            \dopemaskedshare \coloneqq \dopemask + \val + \sum_{i=1}^\ell \polycoeff_i \cdot x^i, \text{ and} \\
+					            \dopectmasked \gets \encscheme.\Enc(\pk, \dopemaskedshare),
+				            \end{gather*}
+				            and sends $(\dopectmasked, \dopemaskedshare)$ to $\adv$ on behalf of the corrupt user.
+				            Moreover, if $\randserver$ is corrupt it sends $(\dopectmasked, \dopemaskedshare)$ to $\adv$ on behalf of $\randserver$.
+			      \end{enumerate}
+		\end{enumerate}
+	\end{techbox}
+
+	Next, we use a hybrid argument to show that the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\pdope[\ell]$ with the adversary $\adv$ is indistinguishable from the joint distribution of the output of honest parties and $\env$ in an execution of $\fdope[\ell]$ with the simulator $\simulator$ described above.
+
+	\begin{itemize}[leftmargin=*]
+		\item \newhyb: This hybrid corresponds to the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\pdope[\ell]$ with $\adv$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\fsetup$ is simulated by $\simulator$.
+
+		      Observe that $\simulator$ computes $(\pk, \sk) \gets \encscheme.\Gen(\secparam)$ and responds to queries as in $\fsetup$.
+		      It thus follows that $\prevhyb \pindist \currhyb$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\frandoracle^\ctxspace$ is simulated by $\simulator$ when $\randserver$ is corrupt.
+
+		      The only difference between \prevhyb and \currhyb is that in \prevhyb, $\frandoracle$ returns a uniformly random element from the ciphertext space $\ctxspace$ for each query, while in this hybrid, the $\simulator$ returns an encryption of a random message when $\randserver$ is corrupt.
+		      It then follows from the dense ciphertext property of $\encscheme$ that $\prevhyb \cindist \currhyb$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\frandoracle^\ctxspace$ is simulated by $\simulator$.
+
+		      The only difference between \prevhyb and \currhyb is when $\randserver$ is honest.
+		      In this case, the output of the query is a uniformly random element from $\ctxspace$ in \prevhyb while in this hybrid it is an encryption of $0$.
+		      Since $\simulator$ does not need the secret key $\sk$ when $\randserver$ is honest, it follows from the IND-CPA security of $\encscheme$ that $\prevhyb \cindist \currhyb$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\simulator$ simulates the view of a corrupt parties.
+
+		      Observe that due to the linear homomorphism of the encryption scheme, in \prevhyb, the honest user sends an encryption of $\dopemask + \val + \sum_{i=1}^\ell \polycoeff_i \cdot x^i$ to $\randserver$, where $\dopemask \gets \field$ is sampled uniformly at random.
+		      In this hybrid, $\simulator$ sends an encryption of a uniformly random field element, which in turn implies that the message sent by honest users to $\randserver$ are identically distributed.
+		      Next, note that for corrupt users, $\simulator$ sends an encryption of $\dopemask + \val + \sum_{i=1}^\ell \polycoeff_i \cdot x^i$, where $\dopemask$ is sampled using the corrupt user's random tape---which from the linear homomorphism of the encryption scheme is distributed identically to \prevhyb.
+		      It thus follows that $\prevhyb \pindist \currhyb$.
+
+		\item \nexthyb: This hybrid corresponds to the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\fdope[\ell]$ with $\simulator$.
+
+		      Observe that from the dense ciphertext property of the encryption scheme, in \prevhyb, the output of honest parties corresponds to the decryption of the ciphertext
+		      \begin{equation*}
+			      \ct' = \encscheme.\Eval\parens{\pk, (\ct_0, \dots, \ct_{\ell}), (1, x, \dots, x^{\ell})},
+		      \end{equation*}
+		      where $\ct_0 \gets \encscheme.\Enc(\pk, \val)$ and $\ct_i \gets \encscheme.\Enc(\pk, \polycoeff_i)$ for $\polycoeff_i \gets \field$.
+		      It then follows immediately from the linear homomorphism property of the encryption scheme that $\prevhyb \cindist \currhyb$.
+	\end{itemize}
+
+	It follows from our argument above that $\hybrid_0 \cindist \currhyb$, which in turn implies that $\pdope[\ell]$ securely realizes $\fdope[\ell]$ in the $\parens{\fsetup^{\encscheme}, \frandoracle^\ctxspace}$-hybrid model.
+\end{proof}
+
+

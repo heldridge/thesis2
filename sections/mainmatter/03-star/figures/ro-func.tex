@@ -1,0 +1,17 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Functionality} $\frandoracle^{\ctxspace}$}
+
+			This functionality is parameterized by a set $\ctxspace$ and an algorithm to sample elements uniformly at random from $\ctxspace$.
+
+			\boxsep
+
+			Upon first activation, initialize an empty table $T$.
+			Upon receiving $(\query, \sid, x)$ from a party, if $(\sid, x) \not\in T$, sample $\ct \gets \ctxspace$ uniformly at random, and set $T[\sid, x] \coloneqq \ct$.
+			Return $T[\sid, x]$ to the activating party.
+		\end{techbox}
+	\end{center}
+	\caption{Shared random oracle functionality.}
+	\label{fig:func:rand-oracle}
+\end{figure}

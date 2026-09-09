@@ -101,7 +101,7 @@
 \newcommand{\hme}[1]{\textcolor{red}{HME: #1}}
 
 % General
-\newcommand{\hyb}{\mathcal{H}}
+\newcommand{\hyb}{\ensuremath{\mathcal{H}}}
 \newcommand{\G}{\mathcal{G}}
 \newcommand{\game}{\mathsf{Game}}
 \newcommand{\sizedSubsets}[2]{\binom{#1}{#2}}
@@ -120,10 +120,10 @@
 
 \newcounter{hybctr}
 \newcommand{\prevhybctr}{\addtocounter{hybctr}{-1}\arabic{hybctr}\stepcounter{hybctr}}
-\newcommand{\newhyb}{\hyb_{\setcounter{hybctr}{0}\arabic{hybctr}}}
-\newcommand{\currhyb}{\hyb_{\arabic{hybctr}}}
-\newcommand{\prevhyb}{\hyb_{\prevhybctr}}
-\newcommand{\nexthyb}{\hyb_{\stepcounter{hybctr}\arabic{hybctr}}}
+\newcommand{\newhyb}{\ensuremath{\hyb_{\setcounter{hybctr}{0}\arabic{hybctr}}}}
+\newcommand{\currhyb}{\ensuremath{\hyb_{\arabic{hybctr}}}}
+\newcommand{\prevhyb}{\ensuremath{\hyb_{\prevhybctr}}}
+\newcommand{\nexthyb}{\ensuremath{\hyb_{\stepcounter{hybctr}\arabic{hybctr}}}}
 
 
 % MDSS

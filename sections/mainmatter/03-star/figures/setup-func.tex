@@ -1,0 +1,17 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Functionality} $\fsetup^{\encscheme}$}
+
+			This functionality is parameterized by a public-key encryption scheme $\encscheme$.
+
+			\boxsep
+
+			On the first activation, run $(\pk, \sk) \gets \encscheme.\Gen(\secparam)$ and store $(\pk, \sk)$.
+			Upon activation by a user $\user$, return $\pk$ to $\user$.
+			Upon activation by $\randserver$, return $(\pk, \sk)$ to $\randserver$.
+		\end{techbox}
+	\end{center}
+	\caption{Shared setup functionality.}
+	\label{fig:func:setup}
+\end{figure}
