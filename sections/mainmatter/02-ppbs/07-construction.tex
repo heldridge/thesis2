@@ -33,6 +33,15 @@ We can now state our main theorem.
 	If $\pker$ is a weakly robust, lossy, \wlap{} public-key encryption scheme with message space $\msgspace_\rev$ and ciphertext space $\msgspace_\mat$, $\pkem$ is a lossy, $\mathcal{U}_{\msgspace_\mat}$-\slap{} public-key encryption scheme with message space $\msgspace_\mat$, $\msgspace_\rev$ and $\msgspace_\mat$ are both finite, cyclic, abelian groups, $(\pker, \pkem)$ satisfy lossy correlation resistance, $\comscheme = (\csetup, \commit)$ is a secure commitment scheme, $\kgps$ is zero-knowledge and strong simulation extractable, and $\eps$ is zero-knowledge and satisfies knowledge soundness, then \schemename{} is a secure $\fthr$-PPB scheme.
 \end{theorem}
 
+\subsection{Examples}
+We provide here some examples of our construction's output and computation in order to provide intuition.
+All examples use $\base = 10$ and $\maxt = 9999$.
+\cref{tab:expk} represents the output of $\kgen$ in table form.
+\cref{fig:failed_dec_example} gives an example of the output of $\escrow$ and the $\dec$ computation for a value under the auditor's threshold, while \cref{fig:successful_dec_example} gives an example for a value above the threshold.
+\input{sections/mainmatter/02-ppbs/examples/kgen-output.tex}
+\input{sections/mainmatter/02-ppbs/examples/failed-dec.tex}
+\input{sections/mainmatter/02-ppbs/examples/succ-dec.tex}
+
 
 \FloatBarrier
 \subsection{Proofs}

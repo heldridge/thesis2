@@ -1,0 +1,49 @@
+\begin{figure}[ht]
+	\centering
+	\begin{tcolorbox}[sharp corners,colback=white,boxrule=0.3mm,left=1mm]
+		\begin{subfigure}{\textwidth}
+			\centering
+			\begin{tabular}{|c|c|}
+				\hline
+				$\otpct_1^\rev =  \varepsilon \cdot \pker.\enc(\revpk^1_1, m) $
+				 & $ct^\mat_1 =  \pkem.\enc(\matpk^{2}_1, \varepsilon \cdot \alpha_1) $ \\
+				\hline
+				$\otpct_2^\rev= \alpha_1 \cdot \pker.\enc(\revpk^4_2, m ) $
+				 & $ct^\mat_2 =  \pkem.\enc(\matpk^5_2, \alpha_2 \cdot \alpha_1) $      \\
+				\hline
+				$\otpct_3^\rev=  \alpha_2 \cdot \pker.\enc(\revpk^2_3, m) $
+				 & $ct^\mat_3 =  \pkem.\enc(\matpk^3_3, \alpha_3 \cdot \alpha_2) $      \\
+				\hline
+				$\otpct_4^\rev =  \alpha_3 \cdot \pker.\enc(\revpk^8_4, m ) $
+				 & $\bot$                                                               \\
+				\hline
+			\end{tabular}
+			\caption{Example $\escrow$ for $\uval = 1427$.}
+		\end{subfigure}
+
+		\vspace{1.5em}
+
+		\begin{subfigure}{\textwidth}
+			\centering
+			\begin{tabular}{|c|c|}
+				\hline
+				$\textcolor{red}{\bot =  \pker.\dec(\revsk^j_1, \epsilon^{-1} \cdot \otpct^\rev_1)} $
+				 & $\textcolor{blue}{\tilde{\otpk}_1 =  \epsilon^{-1} \cdot \pkem.\dec(\matsk^{2}_1, ct^\mat_1) =\alpha_1} $             \\
+				\hline
+				$\textcolor{red}{\bot =  \pker.\dec(\revsk^j_{2}, (\tilde{\otpk}_1)^{-1} \cdot \otpct^{\rev}_2)}$
+				 & $ \textcolor{blue}{\tilde{\otpk}_2 =  (\tilde{\otpk}_1)^{-1} \cdot \pkem.\dec(\matsk^5_2, ct^\mat_2)   =\alpha_2}$    \\
+				\hline
+				$\textcolor{red}{\bot =  \pker.\dec(\revsk^j_3, (\tilde{\otpk}_2)^{-1} \cdot \otpct^{\rev}_3)} $
+				 & $\textcolor{red}{\tilde{\otpk}_3 =  (\tilde{\otpk}_2)^{-1} \cdot \pkem.\dec(\matsk^9_3, ct^\mat_3)  \neq \alpha_3 } $ \\
+				\hline
+				$\textcolor{red}{\bot =  \pker.\dec(\revsk^j_4, (\tilde{\otpk}_3)^{-1} \cdot \otpct^{\rev}_4)} $
+				 &                                                                                                                       \\
+				\hline
+			\end{tabular}
+			\caption{Example failed $\dec$ for $\uval = 1427 < \thr = 1486$. \textcolor{red}{Red} indicates a failed decryption, while \textcolor{blue}{Blue} indicates a successful one. Note that the decryptor cannot tell whether a decrypted $\tilde{\otpk}_i$ is correct.}
+		\end{subfigure}
+	\end{tcolorbox}
+	\caption{An example of an $\escrow$ and failed $\dec$ for a value $\uval < \thr$.}
+	\label{fig:failed_dec_example}
+\end{figure}
+
