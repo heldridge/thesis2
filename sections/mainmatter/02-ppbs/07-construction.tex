@@ -38,7 +38,7 @@ We can now state our main theorem.
 \subsection{Proofs}
 As our construction uses the generic commit-and-prove technique from \cite{EC:KohLysNgu23}, the proofs of correctness of $\verescrow$ and $\verpk$, follow from the same arguments, and we omit the proofs here.
 
-Before we begin prove the lemmas that will compose to our main theorem we first define some notation for iteratively applying the one-time-pad decryption operation.
+Before we prove the lemmas that will compose to our main theorem we first define some notation for iteratively applying the one-time-pad decryption operation.
 
 Define $\rdec(x, y_1,\dots,y_n)$ as follows:
 \procedureblock{$\rdec(x, y_1, \dots, y_n)$}{
@@ -81,6 +81,8 @@ Define $\rdec(x, y_1,\dots,y_n)$ as follows:
 \end{proof}
 
 We now begin proving our main theorem.
+
+\subsubsection{Soundness}
 
 \begin{lemma}
 	\label{lemma:main-soundness}
@@ -215,7 +217,7 @@ We now begin proving our main theorem.
 		\right)^{-1} \cdot \otpct_i^{\rev} \right)                                                                                                           \\
 		 & \neq \bot
 	\end{align*}
-	\vspace{-5em}
+	% \vspace{-5em}
 	\begin{align*}
 		\pker.\dec(\revsk_i^j, (g_C^{-r'}\cdot \pkem.\dec(\matsk_d^{\thr[d] + 1}, \matct_d))^{-1}\cdot \otpct_i^{\rev}) & \neq \bot \tag{\cref{lemma:rdecchain}}
 	\end{align*}
@@ -230,4 +232,26 @@ We now begin proving our main theorem.
 	Finally, we have already shown that $\badprobrev{i}{j}$ must be negligible at all positions where $\uval'[i] = \thr[i]$.
 	Therefore, $\nu_3^{=}(\secpar)$ must be negligible.
 	In turn, $\nu_3(\secpar)$ and then $\nu(\secpar)$ must be negligible, and therefore the scheme satisfies soundness.
+\end{proof}
+
+\subsubsection{Correctness}
+\begin{lemma}
+	\label{lemma:main-correctness}
+	If $\Pi_{KG}$ and $\Pi_{E}$ are complete and $\pker$ and $\pkem$ are correct, then \schemename{} satisfies correctness of $\dec$.
+\end{lemma}
+
+\begin{proof}
+
+	We first consider the case that $\uval > \thr$. In this case, there is some index $d$ for which $\uval[d] > \thr[d]$, and $\uval[i] = \thr[i]$ $ $ $\forall i < d$.
+	For $i < d$, as $\uval[i] = \thr[i]$, the match decryption $\otpct_i^{\mat} \leftarrow \pkem.\dec(\cdot)$ succeeds (as $\matpk_i^{v[i] + 1}$ must be injective), which in turn implies that  $\tilde{\otpk}_i$ is computed correctly.
+	Therefore, the ciphertext $\ct_d^{\rev}$ is properly formed.
+	Finally, as $\uval[d] > \thr[d]$, the auditor will attempt to decrypt $\ct_d^{\rev}$ with $\revsk_d^{\uval[d]}$, which will correctly return $\otpk^*$ and then $\msg$.
+
+	Next we turn to the case that $\uval < \thr$. In this case there is some index $d$ for which $\uval[d] < \thr[d]$, and $\uval[i] = \thr[i]$ $ $ $\forall i < d$.
+	As $\uval[i] = \thr[i]$ for all $i < d$, $\pker.\dec(\cdot)$ will output $\bot$ for each tried $\revsk_i^j$ by the weak robustness property.
+	Finally, at index $d$ the match decryption will \emph{fail}, resulting in all future reveal ciphertexts being blinded, and therefore $\pker.\dec(\cdot)$ outputting $\bot$ by the lossy correlation resistance of $(\pker, \pkem)$ (see the proof of \cref{lemma:main-soundness} for the concrete reduction).
+	As all reveal decrypt attempts fail, $\dec$ will therefore output $\bot$ as required.
+
+	Finally, we examine the case that $\uval = \thr$.
+	In this case all reveal ciphertexts are encrypted under lossy keys, and therefore $\dec$ will always output $\bot$ by the weak robustness property of $\pker$.
 \end{proof}
