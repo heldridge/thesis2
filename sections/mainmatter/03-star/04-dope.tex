@@ -1,0 +1,14 @@
+Our construction will make use of a protocol between a client and a server that allows the client to learn a point on a pseudorandomly derived polynomial such that the polynomial is hidden from \emph{both} parties.
+We say that such a protocol realizes \emph{double-oblivious polynomial evaluation} (DOPE), and give an ideal functionality for it in
+\cref{fig:ideal_dope}.
+
+\input{sections/mainmatter/03-star/figures/dope-func.tex}
+
+We describe a protocol realizing the functionality in \cref{fig:protocol_dope}.
+Our protocol uses a linearly homomorphic public-key encryption scheme with a dense ciphertext space.
+
+Several encryption schemes---such as Paillier~\autocite{EC:Paillier99}, Damg\aa{}rd-Jurik~\autocite{PKC:DamJur01}, Goldwasser-Micali~\autocite{STOC:GolMic82}, and Benaloh~\autocite{SAC:Ben94}---are linearly homomorphic and have dense ciphertext space.
+In this work, we use the Benaloh encryption scheme, described in \cref{sec:benaloh_scheme}.
+We use this scheme as it supports having a polynomial order finite field as the message space, which is what is will be required by the MDSS scheme used in our $t$-heavy-hitters construction.
+
+\input{sections/mainmatter/03-star/figures/dope-protocol.tex}

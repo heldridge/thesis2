@@ -1,0 +1,27 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Functionality} $\fdope$}
+
+			This functionality is parameterized by a field $\field$ and an integer $\ell$. For a field $\field$, integer $\ell$, and field element $\val \in \field$, let $\Polys_{\field, \ell, \val}$ be the set of all polynomials over $\field$ of degree $\ell$ with leading coefficient $1$ where the constant term is $\val$.
+
+			\boxsep
+
+			Ignore all messages associated with $\sid$ before receiving $(\init, \sid)$ from $\randserver$.
+
+
+			\begin{algenumerate}
+				\item Upon receiving $(\init, \sid)$ from $\randserver$, initialize an empty table $T$ and store $T$.
+				\item Upon receiving $(\eval, \sid, \val, x)$ from a user $\user$, send $(\eval, \sid, \user)$ to $\simulator$.
+				Then, if $\val \notin T$, sample $p \sample \Polys_{\field, \ell, \val}$ and set $T[\val] := p$.
+				Finally, retrieve $p \coloneqq T[v]$, and return $p(x)$ to $\user$.
+
+				\item Upon receiving $(\observe, \sid, \val)$ from $\simulator$, ignore the message if $\randserver$ is not corrupt.
+				Else, retrieve $T$ and if $\val \notin T$, sample $p \sample \Polys_{\field, \ell, \val}$ and set $T[\val] \coloneqq p$.
+				Finally, retrieve $p \coloneqq T[v]$, and return $p$ to $\simulator$.
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Ideal functionality for DOPE.}
+	\label{fig:ideal_dope}
+\end{figure}

@@ -1,0 +1,30 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Protocol} $\pdope[\ell]$}
+			Let $\field$ be a finite field.
+			Let $\encscheme$ be a linearly homomorphic (\cref{def:enc-linear-homomorphism}) public-key encryption scheme with dense ciphertext space (\cref{def:dense-ctx-space}), and with message space $\field$.
+
+			\boxsep
+			When a user $\user$ is activated with input $(\eval, \sid, \val, x)$, it proceeds as follows:
+			\begin{algenumerate}
+				\item $\user$ invokes $\fsetup$ to receive $\pk$.
+				Then, for $i \in \nrange{\ell}$, it sends $(\query, \sid, \val \concat i)$ to $\frandoracle$ and receives $\ct_i$.
+
+				\item $\user$ samples $\dopemask \gets \field$ uniformly at random and computes $\ct_0 \gets \encscheme.\Enc(\pk, v + \dopemask)$.
+
+				\item $\user$ computes
+				\begin{equation*}
+					\dopectmasked \coloneqq \encscheme.\Eval\parens{\pk, (\ct_0, \dots, \ct_{\ell}), (1, x, \dots, x^{\ell})}
+				\end{equation*}
+				and sends $\dopectmasked$ to $\randserver$.
+
+				\item Upon receiving $\dopectmasked$ from $\user$, $\randserver$ invokes $\fsetup$ to receive $(\pk, \sk)$, computes $\dopemaskedshare \coloneqq \encscheme.\Dec(\sk, \dopectmasked)$, and sends $\dopemaskedshare$ to $\user$.
+
+				\item Upon receiving $\dopemaskedshare$ from $\randserver$, $\user$ computes $\dopeoutput \coloneqq \dopemaskedshare - \dopemask$ and outputs $\dopeoutput$.
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Protocol for Doubly-Oblivious Polynomial Evaluation.}
+	\label{fig:protocol_dope}
+\end{figure}
