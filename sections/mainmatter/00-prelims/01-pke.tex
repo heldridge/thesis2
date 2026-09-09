@@ -142,3 +142,36 @@ We define the corresponding variant with adversarial randomness below.
 	$$
 	We say that a PKE scheme satsifies weak collision-freeness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\collfree}{\adv, \pke} \leq \negl$.
 \end{definition}
+
+\subsection{Linear Homomorphism}
+
+We will make use of a \emph{linearly homomorphic} encryption scheme, i.e.\ one in which one may perform operations on a collection of ciphertexts that result in a linear operation being applied to the underlying plaintexts.
+
+\begin{definition}[Linear Homomorphism]\label{def:enc-linear-homomorphism}
+	Let $\encscheme$ be a public-key encryption scheme such that the message space $\msgspace$ is a ring.
+	$\encscheme$ is said to be \emph{linearly homomorphic} if there exists a polynomial time algorithm $\encscheme.\Eval$ such that for all integer-valued polynomials $\ell \coloneqq \ell(\secpar)$, all $\secpar \in \N$, and all $\vec{m}, \vec{v} \in \msgspace^\ell$ we have
+	\begin{equation*}
+		\prob{\encscheme.\Dec(\sk, \encscheme.\Eval(\pk, \ctvec, \vec{v})) = \sum_{i=1}^\ell \veci{v}{i} \cdot \veci{m}{i}} = 1
+	\end{equation*}
+	where $(\pk, \sk) \gets \encscheme.\Gen(\secparam)$, each $\ctveci{i} \gets \encscheme.\Enc(\pk, \veci{m}{i})$, and the probability is over the randomness used in $\Gen$ and $\Enc$.
+\end{definition}
+
+\subsection{Dense Ciphertext Space}
+\begin{definition}[Dense Ciphertext Space]\label{def:dense-ctx-space}
+	A public-key encryption scheme $\encscheme$ is said to have \emph{dense ciphertext space} if there exists a $\ppt$ algorithm to sample uniformly random elements from $\ctxspace$ and if for all non-uniform polynomial time adversaries $\adv$, there exists a negligible function $\negl[\cdot]$, such that for all $\secpar \in \N$, we have
+	\begin{equation*}
+		\begin{array}{r}
+			\prob{\adv^{\oracle_b}(\pk, \sk) = b : \begin{array}{r}
+					(\pk, \sk) \gets \encscheme.\Gen(\secparam) \\
+					b \gets \bin
+				\end{array}} \\
+			\le \frac{1}{2} + \negl,
+		\end{array}
+	\end{equation*}
+	where $\oracle_0$ samples $\ct \gets \ctxspace$ uniformly at random and returns $\ct$, while $\oracle_1$ samples $m \gets \msgspace$ uniformly at random, computes $\ct \gets \encscheme.\Enc(\pk, m)$, and returns $\ct$.
+\end{definition}
+
+% Several encryption schemes---such as Paillier~\autocite{EC:Paillier99}, Damg\aa{}rd-Jurik~\autocite{PKC:DamJur01}, Goldwasser-Micali~\autocite{STOC:GolMic82}, and Benaloh~\autocite{SAC:Ben94}---are linearly homomorphic and have dense ciphertext space.
+% In this work, we use the Benaloh encryption scheme, which we describe in \hme{ADD BACK}.
+% \cref{sec:benaloh_scheme}.
+% We use this scheme as it supports having a polynomial order finite field as the message space, which is what is required by the MDSS scheme described in \cref{fig:chmdss_construction}.
