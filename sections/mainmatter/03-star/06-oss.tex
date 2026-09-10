@@ -1,0 +1,12 @@
+The OSS functionality, described in \cref{fig:ideal_oss}, allows a client to sample a single MDSS share of its input in cordination with a Randomness Server such that neither party learns the full sharing.
+We describe an OSS protcol for $\chmdss$ in \cref{fig:protocol_oss}, which is based on DOPE.
+
+\input{sections/mainmatter/03-star/figures/oss-func.tex}
+\input{sections/mainmatter/03-star/figures/oss-protocol.tex}
+
+\begin{theorem}
+	\label{thm:oss-security}
+	For all positive integers $c$, the protocol $\poss$ (\cref{fig:protocol_oss}) UC-realizes the functionality $\mathcal{F}_{\sf oss}^{\chmdss_c}$ in the $\left(\fdope[\pd + 1]\right)$-hybrid model.
+\end{theorem}
+
+The proof of \cref{thm:oss-security} follows directly from UC-security under parallel composition.

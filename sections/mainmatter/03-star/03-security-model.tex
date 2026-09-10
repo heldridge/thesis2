@@ -6,3 +6,17 @@ All functionalities are standard PID-wise corruption unless stated otherwise.
 Our protocol is proved secure against a static, honest-but-curious adversary that corrupts either $\randserver$ or $\aggserver$, along with an arbitrary subset of users.
 We refer the reader to \autocite{FOCS:Canetti01,TCC:CDPW07} for further details on UC and GUC.
 
+\subsection{Initial Functionalities}
+The protocols we construct will make use of several common functionalities.
+
+Our DOPE protocol will use a setup functionality $\fsetup^\encscheme$ (\cref{fig:func:setup}) and a random oracle $\frandoracle^\ctxspace$ (\cref{fig:func:rand-oracle}).
+Informally, the setup functionality provides the public key of the Randomness Server to all clients, while the random oracle helps non-interactively sample random ciphertexts.
+
+\input{sections/mainmatter/03-star/figures/setup-func.tex}
+\input{sections/mainmatter/03-star/figures/ro-func.tex}
+
+
+Our report protocol, as in \cite{\citestar} and \cite{\citepopstar} , will rely on a \emph{mixing} functionality that breaks the connection between users and their reports.
+This functionality can be seen in \cref{fig:ideal_mix}.
+
+\input{sections/mainmatter/03-star/figures/mix-func.tex}

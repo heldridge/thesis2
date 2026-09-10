@@ -1,0 +1,27 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Protocol} $\poss$}
+
+			This protocol is implemented for the $\chmdss_\np$ construction shown in \cref{fig:chmdss} over a field $\field$, and runs in the $\fdope[\pd + 1]$-hybrid model.
+			\vspace{1mm}
+			\hrule
+			\vspace{2mm}
+
+			When a user $\user$ is activated with input $(\eval, \sid, \val, \shidx)$ it proceeds as follows:
+
+			\begin{algenumerate}
+				\item For $j \in [\np]$, send $(\eval, \sid||j, \val, \shidx)$ to $\fdope[\pd + 1]$, receiving $(\shidx, y_j)$.
+				\item Output $(\shidx, y_1, \dots, y_c)$
+			\end{algenumerate}
+
+			\vspace{2mm}
+			When the Randomness Server is activated with input $(\init, \sid)$ it proceeds as follows:
+			\begin{algenumerate}
+				\item For $j \in [\np]$, send $(\init, \sid||j)$ to $\fdope[\pd + 1]$
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Protocol for Oblivious Share Sampling for Construction $MDSS_c$.}
+	\label{fig:protocol_oss}
+\end{figure}

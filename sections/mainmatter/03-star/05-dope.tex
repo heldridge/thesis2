@@ -4,16 +4,6 @@ We say that such a protocol realizes \emph{double-oblivious polynomial evaluatio
 
 \input{sections/mainmatter/03-star/figures/dope-func.tex}
 
-\subsection{Initial Functionalities}
-Our protocol will use a setup functionality $\fsetup^\encscheme$ (\cref{fig:func:setup}) and a random oracle $\frandoracle^\ctxspace$ (\cref{fig:func:rand-oracle}).
-Informally, the setup functionality provides the public key of the Randomness Server to all clients, while the random oracle helps non-interactively sample random ciphertexts.
-
-\input{sections/mainmatter/03-star/figures/setup-func.tex}
-\input{sections/mainmatter/03-star/figures/ro-func.tex}
-
-
-
-\subsection{Protocol}
 
 We describe a protocol realizing the functionality in \cref{fig:protocol_dope}.
 Our protocol uses a linearly homomorphic public-key encryption scheme with a dense ciphertext space.

@@ -1,0 +1,20 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Functionality} $\foss$}
+
+			This functionality is parameterized by an MDSS scheme ${\sf MDSS}$.
+			\vspace{1mm}
+			\hrule
+			\vspace{2mm}
+			Ignore all messages associated with $\sid$ before receiving $(\init, \sid, \max)$ from $\randserver$.
+			\begin{algenumerate}
+				\item Upon receiving $(\init, \sid, \max)$ from $\randserver$, initialize an empty table $T$ and store $(\max, T)$.
+				\item Upon receiving $(\eval, \sid, v, \shidx)$ from a user $\user$, send $(\eval, \sid, \user)$ to $\simulator$. Then, retrieve $(\max, T)$ and if $v \notin T$, compute $\{\sh_1, \dots, \sh_{\max}\} \leftarrow {\sf MDSS}.{\Share}(v, \max)$ and set $T[v] := \{\sh_1, \dots, \sh_{\max}\}$. Finally, retrieve $\{\sh_1, \dots, \sh_{\max}\} \leftarrow T[v]$ and return $\sh_{\shidx}$ to $\user$.
+				\item Upon receiving $(\observe, \sid, \val, \shidx)$ from $\simulator$, ignore the message if $\randserver$ is not corrupt. Else, retrieve $(\max, T)$ and if $v \notin T$, compute $\{\sh_1, \dots, \sh_{\max}\} \leftarrow {\sf MDSS}.{\Share}(v, \max)$ and set $T[v] := \{\sh_1, \dots, \sh_{\max}\}$. Finally, retrieve $\{\sh_1, \dots, \sh_{\max}\} \leftarrow T[v]$ and return $\sh_{\shidx}$ to $\simulator$.
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Ideal functionality for Oblivious Share Sampling (OSS)}
+	\label{fig:ideal_oss}
+\end{figure}
