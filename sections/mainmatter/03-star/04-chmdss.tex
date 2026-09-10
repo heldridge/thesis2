@@ -23,4 +23,16 @@ We describe these properties formally below.
 	Stated intuitively, correctness is only required to hold when all indices are unique.
 \end{definition}
 
-As the proofs that $\chmdss$ satisfies these properties are substantially similar to the proofs provided in \cite{\citeairtag}, we delegate them to \hme{cite appendix when written}.
+We can now state the relevant theorems regarding \chmdss{}.
+We note that, as described in \cite{\citeairtag}, the \chmdss{} algorithm is only \emph{heuristically} correct, with no formal proof of correctness.
+We provide the heuristic assumption that we rely on, which is substantially similar to the heuristic assumption originally described in \cite{\citeairtag}, in \cref{sec:chmdss-proofs}.
+
+\begin{theorem}
+	For all $\np > 1$ and finite fields $\FF$, the construction shown in \cref{fig:chmdss} satisfies weak $\mdssULVar$-unlinkability for $\mdssULVar(\secpar) = 0$.
+\end{theorem}
+
+\begin{theorem}
+	For all sets of parameters satisfying $\mdssRecThr \geq \frac{1}{\np + 1}(\mdssMaxShares + (\np \cdot (\mdssPrivThr + 1)))$ and finite fields $\FF$, the construction shown in \cref{fig:chmdss} heuristically satisfies weak $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
+\end{theorem}
+
+As the proofs that $\chmdss$ satisfies these properties are substantially similar to the proofs provided in \cite{\citeairtag}, we delegate them to \cref{sec:chmdss-proofs}.
