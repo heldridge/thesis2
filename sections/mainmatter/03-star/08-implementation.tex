@@ -28,3 +28,69 @@ Each step recovers a single heavy-hitter.
 A full description of a step is shown in \cref{fig:chmdss-step}.
 
 \input{sections/mainmatter/03-star/figures/chmdss-recon.tex}
+
+The vast majority of the $\chmdss.\mdssReconstructAlg$ runtime is spent putting the matrix in Popov form.
+Indeed, for the $17$ hour aggregation mentioned at the start of this section, over $97\%$ of the total runtime was spent in this stage of the computation.
+We therefore focus our optimizations on speeding up the Popov form step.
+The first optimization accelerates the computation of the EROs, while the second allows us to compute over smaller matrices.
+
+
+\subsubsection{Parallelizing EROs}
+
+While the Popov form algorithm in \cite{mulders2003lattice} is fundamentally iterative, each individual ERO computed by the algorithm has the potential to be significantly sped up via parallelization.
+If we represent each polynomial as a vector of coefficients $p = (\polycoeff_1, \dots, \polycoeff_{\max})$, then the matrix can be represented as a 3D array $M \in \field^{(\np + 1) \times (\np + 1) \times \max}$, where $M[i, j, k]$ contains the $k$'th coefficient of the polynomial at row $i$ and column $j$.\footnote{The algorithm of \cite{mulders2003lattice} never computes a matrix entry with degree greater than the largest polynomial degree in the initial matrix, which allows us to cap the representable degree at $\max$.}
+
+Now, an ERO that sets row $\trow$ equal to itself plus row $\srow$ times a monomial $\polycoeff x^d$ can be performed by setting $M[\trow, j, k] := M[\trow, j, k] + \polycoeff \cdot M[\srow, j, k - d]$ for all $j \in [\np + 1]$ and $k \in [d, \max]$.
+Note that this operation is fully parallelizable: each cell in $\trow$ can be computed independently.
+This parallelizability becomes significant due to the size of our matrices.
+Given that $\max \geq 50,000$, each ERO will contain millions of parallelizable operations even for modest values of $c$.
+
+Therefore, our first optimization is to leverage the parallel processing ability of modern GPUs to speed up the Popov form computation.
+This change grants a significant speedup.
+As shown in \cref{fig:optimization-runtimes}, it drops the runtime on a instance with $50{,}000$ reports from $17$ hours to $44$ minutes.
+
+\subsubsection{Optimizing for Common Input Distributions}
+\label{subsubsec-distribution-optimizations}
+
+We can further optimize our aggregation algorithm specifically for distributions that are common in the private telemetry setting.
+In this setting, real-world values of interest often follow the Zipfian distribution, with popular values being heavily overrepresented in the input pool.
+Indeed, it has become the standard for private telemetry algorithms to evaluate their performance and security on inputs drawn from such a distribution \cite{\citestar, \citepopstar, prio, SCN:AGJOP22}.
+
+We begin with the observation that the algorithm described in \cref{sec:algorithm-overview} allows for different values of $c$ to be used at each step.
+Practically, this means that if each report is of the form $(x, y_1, \dots, y_{\np})$, a step during aggregation could use only the first $\np' < \np$ of the $y$-coordinates instead, thereby constructing a smaller matrix and speeding up the algorithm.
+
+Next, if we assume that the top heavy-hitters are over-represented, we can use much smaller values for $c$ in the early stages of aggregation.
+As an example, for a pool of $50{,}000$ reports with $\pd = 350$, we would require a value of $c = 76$ to recover all values that are reported at least $1000$ times.
+However, if we assume that our first heavy-hitter appears at least $5000$ times (an assumption that is overwhelimingly likely to be true given common Zipf parameters), we could reconstruct using $c' = 10$ during the first step, dramatically decreasing the runtime.
+
+We can push this technique further by only reconstructing from a \emph{subset} of the total pool of reports.
+Using the example from the previous paragraph, if we sample $10{,}000$ reports from the pool of $50{,}000$, then the probability that there are at least $815$ reports for the first heavy-hitter is overwhelming.
+As long as the minimum number of reports is greater than $\pd$, we can set $c'$ such that recovery is guaranteed.
+In this case $c' = 20$.
+We refer to the size of each subset as the \emph{batch size} for the step, and denote it $\batchsize$.\footnote{We note that tuning parameters in this way does not require exact knowledge of the Zipf $\zipfexp$ parameter, but only a \emph{lower bound} on it.	Larger-than-expected values of $\zipfexp$ cause heavy-hitters to become more concentrated, and therefore increase the chance of reconstruction success.}
+
+
+
+Our main task then is to select the size of the subsample and the value of $c'$ to use at each step of the algorithm.
+We compute these by performing an exhaustive search of the possible subset sizes for each step, and selecting the configuration that ensures $\geq99\%$ chance of success while minimizing $\np \cdot \max$, an estimation of the computational cost of a given configuration.\footnote{As $\chmdss$ has only heuristic correctness it is difficult to reason formally about the runtime of the algorithm. We use $\np \cdot \max$, the size of a row of the matrix, as a reasonable proxy.}
+We set the final configuration to reconstruct any value with at least $\threshold$ reports, and loop using that configuration until no value is found.
+
+This change grants an additional speedup, bringing the runtime on an instance with $50{,}000$ reports down to $7$ minutes.
+A summary of the results in this section can be seen in \cref{fig:optimization-runtimes}.
+
+\begin{figure}[h]
+	\centering
+	\begin{tabular}{ |c|c| }
+		\hline
+		Configuration                                           & \makecell{Aggregation\\ Runtime} \\
+		\hline
+		\cite{\citeairtag} Baseline                             & 17 hours, 9 minutes              \\
+		\hline
+		Parallel EROs                                           & $44$  minutes                    \\
+		\hline
+		\makecell{Parallel EROs \\ + Distribution Optimization} & $7$ minutes                      \\
+		\hline
+	\end{tabular}
+	\caption{Aggregation runtimes for optimized algorithms. All runtimes are over instances with $\max = 50{,}000$, $\threshold=1000$, and $\pd= 350$, run on a DGX Spark.}
+	\label{fig:optimization-runtimes}
+\end{figure}
