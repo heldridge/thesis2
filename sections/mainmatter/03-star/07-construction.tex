@@ -1,2 +1,160 @@
+\input{sections/mainmatter/03-star/figures/report-func.tex}
+\input{sections/mainmatter/03-star/figures/report-protocol.tex}
+
+The ideal functionality for our main scheme can be seen in \cref{fig:ideal_report}.
+The honest interface supports clients reporting their values $\val$, with the interface totaling the count of each.
+Honest collection by the aggregation server returns all values which have been reported at least $\threshold$ times, along with the number of times each has been reported.
+The corrupt interface returns values with counts that meet the lower $\pd$ threshold instead.
+
+\begin{theorem}
+	\label{thm:report-security}
+	For all $(\nd, \threshold, \pd, \max)$-MDSS schemes ${\sf MDSS}$ that satisfy $\epsilon$-unlinkability for a negligible $\epsilon(\lambda)$, the protocol $\preport$ (\cref{fig:protocol_report}) UC-realizes the functionality $\freport$ in the $\left(\foss, \fmix\right)$-hybrid model, in the presence of semi-honest adversaries who statically corrupt at most one of the servers $\aggserver$, $\randserver$ and any number of clients.
+\end{theorem}
+
+\begin{proof}
+	Let $\adv$ be an adversary corrupting the Aggregation Server and some number of clients and interacts with the remaining parties running $\preport$.
+	We describe a simulator $\simulator$ below such that the view of any environment $\env$ in an interaction with $\adv$ and $\preport$ is indistinguishable from its view of an interaction with $\simulator$ in $\freport$.
+
+	% We show that the protocol $\preport$ is secure against a corrupt Aggregation Server and a number of corrupt clients by describing a simulator, and then showing that it can produce a transcript for the corrupt parties in the ideal world that is indistinguishable from its transcript in the real world. 
+	% We use $\adv$ to denote the corrupt parties.\\
+
+	For an MDSS scheme ${\sf MDSS}$, define the subroutine \\${\sf SimOSS}(T, \mdssNumShares, \val, \shidx):$
+		\begin{algenumerate}
+		\item If $v \notin T$, compute $\{\sh_1, \dots, \sh_{\mdssNumShares}\} \leftarrow {\sf MDSS}.{\Share}(v, \mdssNumShares)$ and set $T[v] := \{\sh_1, \dots, \sh_{\mdssNumShares}\}$.
+		\item Retrieve $\{\sh_1, \dots, \sh_{\mdssNumShares}\} \leftarrow T[v]$ and return $\sh_{\shidx}$.
+		\end{algenumerate}
+
+		\begin{techbox}
+		\begin{center}
+		\textbf{Simulator} $\simulator$
+		\end{center}
+		\vspace{1em}
+	$\simulator$ internally invokes $\adv$ and forwards all messages between $\env$ and $\adv$.
+
+		\begin{enumerate}
+		\item Upon first activation, it does the following:
+		\begin{enumerate}
+		\item Initialize an empty table $T$ where by default $T[x] = 0$ for all values $x$, an empty table $T_{\sf oss}$, and an empty set $S$.
+		\item If $\randserver$ is not corrupt, do the following:
+		\begin{enumerate}
+		\item Sample a set of unique indices $\indexset := \shidx_1, \dots, \shidx_{\mdssMaxShares}$.
+		\item For each corrupted $\user_i$, send $\shidx_i$ to $\adv$. Let $\indexset_{\adv}$ be the set of all indices $\shidx_i$ sent to $\adv$, and compute $\shidx'_1, \dots, \shidx'_m := \indexset \setminus \indexset_{\adv}$.
+		\end{enumerate}
+		\end{enumerate}
+
+		% \item When $\simulator$ receives $(\msg, \sid, \user_i)$ from $\freport$, it sends $(\msg, \sid, \user_i)$ to $\adv$ as if from $\fmix$.
+		\item When $\adv$ issues a query $(\eval, \sid, \val, \shidx)$ to $\foss$, it does the following:
+		\begin{enumerate}
+		\item Query $\freport$ on arguments $(\msg, \sid, \val)$
+		\item Set $T[\val] := T[\val] + 1$.
+		\item Compute $sh \leftarrow {\sf SimOSS}(T_{\sf oss}, \mdssMaxShares, \val, \shidx)$, then add $sh$ to $S$ and return $sh$ to $\adv$.
+		\end{enumerate}
+		\item When $\adv$ issues a query $(\collect, \sidmix)$ to $\fmix$, it does the following:
+		\begin{enumerate}
+		\item Query $\freport$ on arguments $(\collect, \sid)$, receiving $\{(v_1, c_1),\dots,(v_n, c_n)\}$.
+		\item Initialize the set $V := \{v_1,\dots,v_\mdssNumShareSets\}$.
+		\item Initialize $k := 0$.
+		\item For each $(v_i, c_i)$ do the following:
+		\begin{enumerate}
+		\item $\forall j \in [c_i - T[\val_i]]:$
+		\begin{enumerate}
+		\item Compute $sh \leftarrow \simoss(T_{\sf oss}, \mdssMaxShares, \val_i, \shidx'_k)$, then add $\sh$ to $S$.
+		\item Set $k = k + 1$.
+		\end{enumerate}
+		\end{enumerate}
+		\item $\forall j \in [\mdssWindowSize - \sum_{i=1}^n c_i]:$
+		\begin{enumerate}
+		\item Sample $\val_j \leftarrow {\sf MDSS}.\secspace \setminus V$.
+		\item Add $\val_j$ to $V$.
+		\item Compute $sh \leftarrow \simoss(T_{\sf oss}, \mdssMaxShares, \val_j, \shidx'_k)$, then add $sh$ to $S$.
+		\item Set $k = k + 1$.
+		\end{enumerate}
+		\item Send a random permutation of $S$ to $\adv$.
+		\end{enumerate}
+		\end{enumerate}
+		\end{techbox}
+
+		Next, we use a hybrid argument to show that the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\preport$ with the adversary $\adv$ is indistinguishable from the joint distribution of the output of honest parties and $\env$ in an execution of $\freport$ with the simulator $\simulator$ described above.
+
+		\begin{itemize}[leftmargin=*]
+		\item \newhyb: This hybrid corresponds to the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\preport$ with $\adv$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\foss$ is simulated by $\simulator$.
+
+		Observe that $\simulator$ responds to queries as in $\foss$.
+		It thus follows that $\prevhyb \pindist \currhyb$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\simulator$ simulates the actions of $\randserver$ when it is not corrupt.
+
+		Observe that $\simulator$ sends to corrupt users indices distributed identically to those in $\prevhyb$.
+		It thus follows that $\prevhyb \pindist \currhyb$.
+
+		\item \nexthyb: This hybrid is identical to the previous hybrid, except that $\fmix$ is simulated by $\simulator$.
+
+		The only difference between \prevhyb{} and \currhyb{} is the reports computed at step $7.e$ of $\simulator$.
+		In each hybrid, these reports consist of MDSS shares of values for which no value has $> \pd$ shares.
+		Therefore, by the unlinkability property of the MDSS scheme, $\prevhyb \cindist \currhyb$.
+
+		\item \nexthyb{}: This hybrid corresponds to the joint distribution of the output of honest parties and the environment $\env$ in an execution of $\freport$ with $\simulator$.
+
+		The output of an honest Aggregation Server in \prevhyb{} is ${\sf MDSS}.\reconstruct(\allowbreak\report_1,\allowbreak\dots,\allowbreak\report_{\max})$.
+		Therefore, by the MD-Correctness of ${\sf MDSS}$, $\prevhyb \sindist \currhyb$.
+
+
+		\end{itemize}
+
+
+		It follows from our argument above that $\hybrid_0 \cindist \currhyb$, which in turn implies that $\preport$ securely realizes $\freport$ in the $\left(\foss, \fmix\right)$-hybrid model.
+	% As $\currhyb$ is identical to an execution of $\freport$ with the simulator $\simulator$, the two executions are indistinguishable. 
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

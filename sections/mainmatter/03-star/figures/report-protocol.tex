@@ -1,0 +1,37 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Protocol} $\preport$}
+
+			This protocol runs with up to $\mdssMaxShares$ users $\useri{1},\dots,\useri{\mdssWindowSize}$, a randomness server $\randserver$, and an aggregation server $\aggserver$, in the $\left(\foss, \fmix\right)$-hybrid model.
+			\vspace{1mm}
+			\hrule
+			\vspace{2mm}
+
+			When a user $\user$ is activated with input $(\msg, \sid, \val)$, it proceeds as follows:
+
+			\begin{algenumerate}
+				\item $\useri{i}$ receives $\shidx_i$ from $\randserver$ and invokes $\foss$ on arguments $(\eval, \sid, \val, \shidx_i)$.
+				\item $\useri{i}$ receives $\report_i$ from $\foss$, and sends $(\msg, \sid, \report_i)$ to $\fmix$.
+			\end{algenumerate}
+
+			\vspace{2mm}
+			When the Randomness Server $\randserver$ is activated with input $(\init, \sid)$, it proceeds as follows:
+
+			\begin{algenumerate}
+				\item $\randserver$ sends $(\init, \sid)$ to $\foss$.
+				\item $\randserver$ samples unique indices $\shidx_1, \dots, \shidx_{\mdssWindowSize}$, then $\forall i \in [\mdssWindowSize]$ sends $\shidx_i$ to user $\user_i$.
+			\end{algenumerate}
+
+			\vspace{2mm}
+			When the Aggregation Server $\aggserver$ is activated with input $(\init, \sid)$, it proceeds as follows:
+
+			\begin{algenumerate}
+				\item $\aggserver$ invokes $\fmix$ on arguments $(\init, \sid)$.
+				\item $\aggserver$ invokes $\fmix$ on arguments $(\collect, \sid)$ and receives $\{\report_1,\dots,\report_{\mdssWindowSize}\}$, then runs ${\sf MDSS}.\reconstruct(\report_1,\dots,\report_{\mdssWindowSize})$ and outputs the result.
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Protocol for \dopestar}
+	\label{fig:protocol_report}
+\end{figure}

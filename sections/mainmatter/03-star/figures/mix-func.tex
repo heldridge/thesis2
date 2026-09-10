@@ -3,7 +3,7 @@
 		\begin{techbox}
 			\centerline{\textbf{Functionality} $\fmix$}
 
-			This functionality runs between users $\user_1,\dots,\user_{\max}$ and an aggregation server $\aggserver$.
+			This functionality runs with up to $\mdssMaxShares$ users $\user_1,\dots,\user_{\mdssWindowSize}$ and an aggregation server $\aggserver$.
 			\vspace{1mm}
 			\hrule
 			\vspace{2mm}
@@ -11,7 +11,7 @@
 
 			\begin{algenumerate}
 				\item Upon receiving $(\msg, \sid, \report_i)$ from a user $\user_i$, store the tuple $(\report_i)$ and send $(\msg, \sid, \user_i)$ to $\simulator$.
-				\item Upon receiving $(\collect, \sid)$ from the server $\aggserver$, retrieve all tuples of the form $(\report_i)$ and return a random permutation of the reports $\{\report_1, \dots, \report_{\max}\}$.
+				\item Upon receiving $(\collect, \sid)$ from the server $\aggserver$, retrieve all tuples of the form $(\report_i)$ and return a random permutation of the reports $\{\report_1, \dots, \report_{\mdssWindowSize}\}$.
 			\end{algenumerate}
 		\end{techbox}
 	\end{center}

@@ -1,0 +1,21 @@
+\begin{figure}[h]
+	\begin{center}
+		\begin{techbox}
+			\centerline{\textbf{Functionality} $\freport$}
+
+			This functionality runs with up to $\mdssMaxShares$ clients $\useri{1},\dots,\useri{\mdssWindowSize}$, a randomness server $\randserver$, and an aggregation server $\aggserver$, and is parameterized by integers $\threshold$, $\pd$ and $\mdssMaxShares$.
+			\vspace{1mm}
+			\hrule
+			\vspace{2mm}
+			Ignore all messages associated with $\sid$ before receiving $(\init, \sid)$ from $\randserver$ and after receiving $(\collect, \sid)$ from $\aggserver$.
+
+			\begin{algenumerate}
+				\item Upon receiving $({\sf init}, \sid)$ from $\randserver$, initialize an empty table $T$, where by default $T[x] = 0$ for any $x$, and store $T$.
+				\item Upon receiving $(\msg, \sid, \val)$ from a user $\useri{i}$, retrieve $T$, set $T[\val] := T[\val] + 1$, and send $(\msg, \sid, \user_i)$ to $\simulator$.
+				\item Upon receiving $({\sf collect}, \sid)$ from $\aggserver$, retrieve $T$. Then, if $\aggserver$ is not corrupt, return $\{\val \:|\: T[\val] > \threshold\}$. Otherwise, return $\{(\val, T[\val]) \: | \: T[\val] > \pd\}$.
+			\end{algenumerate}
+		\end{techbox}
+	\end{center}
+	\caption{Ideal functionality for \dopestar}
+	\label{fig:ideal_report}
+\end{figure}
