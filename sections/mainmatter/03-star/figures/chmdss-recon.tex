@@ -1,0 +1,32 @@
+\newcommand{\fex}{x}
+\newcommand{\fey}{y}
+\newcommand{\pvar}{z}
+\newcommand{\popov}{\mathsf{popov}}
+\newcommand{\mlen}{\Lambda}
+
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\step\left(\mdssRecThr, \mdssPrivThr, \mdssWindowSize, \set{(\fex_i, \fey_{i,1},\dots,\fey_{i,\np})}_{i \in [\mdssWindowSize]}\right)$}{
+			\mlen := \mdssPrivThr + \mdssWindowSize - \mdssRecThr \\
+			\pcfor j \in [\np] \pcdo  \\
+			\t f_j(\pvar) := \mathsf{LagrInterpol}\left(\set{(\fex_i, \fey_{i, j})}_{i \in [\mdssWindowSize]}\right) \\
+			P(\pvar) := \prod_{i = 1}^{\mdssWindowSize}(\pvar - \fex_i) \\
+			\text{construct the matrix } M \in \FF[\pvar]^{(\np + 1) \times (\np + 1)} \pcskipln \\
+			M := {\begin{pcmbox}\begin{bmatrix}
+							z^{d} & f_1(z) & f_2(z) & \ldots & f_n(z) \\
+							      & P(z)   &        &        &        \\
+							      &        & P(z)   &        &        \\
+							      &        &        & \ddots &        \\
+							      &        &        &        & P(z)
+						\end{bmatrix}\end{pcmbox}}\\
+			M_{\popov} := \mathsf{WeakPopovForm}(M)\\
+			\pcif M_{\popov} \text{ has exactly one shortest vector } \vec{v} = (v_0, \dots, v_\np) \text{ s.t.\ } |\vec{v}| \leq \mlen \textbf{ and}\pcskipln \\
+			v_0 \text{ divides each of } \set{v_1 \cdot \pvar^{\mdssPrivThr}, \dots, v_{\np} \cdot \pvar^{\mdssPrivThr}} \pcthen \\
+			\t \pcreturn \left(v_1 \cdot \pvar^{\mdssPrivThr} / v_0, \dots, v_{\np} \cdot \pvar^{\mdssPrivThr}/v_0\right) \\
+			\pcelse \pcreturn \bot
+		}
+	\end{pcvstack}
+
+	\caption{The $\chmdss.\step$ algorithm, adapted from \cite{\citeairtag}}
+	\label{fig:chmdss-step}
+\end{figure}

@@ -3,3 +3,28 @@ We instantiate the linearly homomorphic encryption scheme with dense ciphertext 
 We implement all algorithms in CUDA C$++$ using the NTL \cite{ntl} library.
 We additionally make a number of optimizations to the $\chmdss_\np.\reconstruct$ algorithm, which we describe below.
 All code can be seen at \repourl{}.
+
+\subsection{Optimizing Aggregation}
+\label{sec:star-optimizations}
+
+While the MDSS implementation of $\chmdss$ from \cite{\citeairtag} aggregates efficiently for up to $3150$ shares, it does not scale well for the parameters required by this setting, in which it may be run on sets of $100{,}000$ or more.
+Indeed, using the implementation from \cite{\citeairtag}, aggregating from $50{,}000$ shares takes over two hours \emph{per recovered secret}, resulting in a $17$ hour runtime.
+Here we first describe the inner-workings of the $\chmdss$ algorithm, and then the optimizations we make to improve the aggregation runtime.
+
+\subsubsection{Algorithm Overview}
+\label{sec:algorithm-overview}
+Recall from \cref{sec:chmdss} that $\chmdss.\mdssReconstructAlg$ takes a set of $\mdssWindowSize$ shares as input and outputs the secrets corresponding to  values with over $\threshold$ shares.
+In our MDSS construction each share is a tuple of field elements $(x, y_1, y_2, \dots, y_\np)$.
+
+The $\chmdss.\mdssReconstructAlg$ algorithm first uses the set of shares to construct a $(c + 1) \times (c + 1)$ matrix, where each entry is a polynomial of max degree $\mdssWindowSize$.
+It then puts the matrix into weak Popov form \cite{popov1972invariant}, using the algorithm described in \cite{mulders2003lattice}.
+The \cite{mulders2003lattice} algorithm proceeds by iteratively performing elementary row operations (EROs) on the matrix, i.e.\ multiplying a row by a monomial $\polycoeff x^d$ and adding the result to another row.
+
+Once the matrix is in Popov form, $\chmdss.\mdssReconstructAlg$ extracts the shortest vector from the matrix and performs a few simple checks on it.
+If the checks pass then the algorithm uses the vector to compute the dealer polynomials $(p_1,\dots,p_{\np})$, from which a secret can be recovered, and if the checks fail the algorithm terminates.
+If a secret is recovered $\chmdss.\mdssReconstructAlg$ removes all shares that agree with the recovered polynomials $(p_1,\dots,p_{\np})$ and then repeats, attempting to reconstruct a secret from the remaining $\mdssWindowSize' < \mdssWindowSize$ points.
+We refer to a single iteration: building the matrix, computing the Popov form, and attempting to reconstruct the secret, as a \emph{step} of the algorithm.
+Each step recovers a single heavy-hitter.
+A full description of a step is shown in \cref{fig:chmdss-step}.
+
+\input{sections/mainmatter/03-star/figures/chmdss-recon.tex}
