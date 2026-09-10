@@ -1,0 +1,15 @@
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\mdssShareAlg(\secparam, \mdssSecret, \mdssNumShares)$}{
+			\text{Sample } \np \text{ polynomials } p_1,\dots,p_{\np}, \text{ each of degree } \pd + 1 \text{ and with leading}\pcskipln \\
+			\text{coefficient } 1 \text{, where } s = p_1(0)||\dots||p_\np(0) \\
+			\pcreturn \set{(i, p_1(i), \dots, p_\np(i))}_{i \in [\mdssNumShares]}
+		}
+
+		\procedure[linenumbering]{$\mdssReconstructAlg(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})$}{
+			\pcreturn \chmdss(\mdssBlindShare_1, \dots, \mdssBlindShare_{\mdssWindowSize})
+		}
+	\end{pcvstack}
+	\caption{An MDSS construction $\chmdss$}
+	\label{fig:chmdss}
+\end{figure}
