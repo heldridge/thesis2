@@ -1,0 +1,5 @@
+We now describe the implementation of the protocol given in \cref{fig:protocol_report}.
+We instantiate the linearly homomorphic encryption scheme with dense ciphertext space required by $\pdope$ with the Benaloh encryption scheme described in \cref{sec:benaloh_scheme}.
+We implement all algorithms in CUDA C$++$ using the NTL \cite{ntl} library.
+We additionally make a number of optimizations to the $\chmdss_\np.\reconstruct$ algorithm, which we describe below.
+All code can be seen at \repourl{}.
