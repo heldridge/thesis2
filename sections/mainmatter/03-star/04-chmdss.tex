@@ -4,13 +4,13 @@ This variant was originally described in \cite{\citeairtag}, and we reproduce a 
 \input{sections/mainmatter/03-star/figures/chmdss.tex}
 
 We will require less stringent security and correctness requirements than those described in \cref{chap:mdss}.
-Specifically, for unlinkability and md-correctness, we will require that the respective properties only hold when all indices are \emph{unique}.
+For unlinkability we will require that the list of indices selected by the adversary be \emph{identical} for $b \in \bin$, and we will only require that md-correctness hold when all indices are \emph{unique}.
 We describe these properties formally below.
 
 \begin{definition}[Weak Unlinkability]
 	Weak unlinkability for an MDSS scheme $\mdss$ is defined identically to \cref{def:unlinkability}, with the addition of the following admissibility condition on the adversary $\adv$:
 	\begin{itemize}
-		\item For $b \in \bin$, all elements of $\indexSet_{1, b}, \dots, \indexSet_{\mdssNumShareSets, b}$ are unique
+		\item $\indexSet_{1,0} || \dots ||\indexSet_{\mdssNumShareSets, 0} = \indexSet_{1, 1} || \dots || \indexSet_{\mdssNumShareSets, 1}$
 	\end{itemize}
 \end{definition}
 
@@ -19,7 +19,6 @@ We describe these properties formally below.
 	\begin{itemize}
 		\item $\bigcup_{i, j \in [\mdssNumShareSets] \text{s.t.\ } i \neq j} \indexSet_i \cap \indexSet_j = \emptyset$
 	\end{itemize}
-
 	Stated intuitively, correctness is only required to hold when all indices are unique.
 \end{definition}
 
@@ -28,10 +27,12 @@ We note that, as described in \cite{\citeairtag}, the \chmdss{} algorithm is onl
 We provide the heuristic assumption that we rely on, which is substantially similar to the heuristic assumption originally described in \cite{\citeairtag}, in \cref{sec:chmdss-proofs}.
 
 \begin{theorem}
+	\label{thm:chmdss-ulink}
 	For all $\np > 1$ and finite fields $\FF$, the construction shown in \cref{fig:chmdss} satisfies weak $\mdssULVar$-unlinkability for $\mdssULVar(\secpar) = 0$.
 \end{theorem}
 
 \begin{theorem}
+	\label{thm:chmdss-md-corr}
 	For all sets of parameters satisfying $\mdssRecThr \geq \frac{1}{\np + 1}(\mdssMaxShares + (\np \cdot (\mdssPrivThr + 1)))$ and finite fields $\FF$, the construction shown in \cref{fig:chmdss} heuristically satisfies weak $\mdssCVar$-correctness for a negligibly small $\mdssCVar(\secpar)$.
 \end{theorem}
 

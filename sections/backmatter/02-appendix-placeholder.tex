@@ -10,5 +10,63 @@
 \section{CH-MDSS Proofs}
 \label{sec:chmdss-proofs}
 
+\subsection{Unlinkability}
+We provide here a proof of \cref{thm:chmdss-ulink}
 
+\begin{proof}
+	By the admissibility restrictions of the adversary $\adv$, what $\adv$ receives when either $b=0$ or $b=1$ is the list of \emph{unique} indices it chose, along with $\leq \pd$ points on a collection of $\pd + 1$-degree polynomials with their leading coefficient fixed.
+	In both cases the $x$-coordinates of the points are identical, while the $y$-coordinates are distributed according to the uniform distribution on $\field$, and therefore the distribution passed to $\adv$ in both games is identical.
+	It follows that the behavior of $\adv$ in both games must be identical as well.
+\end{proof}
 
+\subsection{MD-Correctness}
+\newcommand{\tidx}{\hat{i}}
+We give here a formal state of our heuristic assumption and a proof o \cref{thm:chmdss-md-corr}.
+
+As in \cite{\citeairtag}, we first formalize the creation of MDSS shares.
+For a field $\FF$ define the following algorithm $\Eval_\FF$.
+\procedureblock{$\Eval_\FF(\set{\mdssNumShares_1,\dots,\mdssNumShares_\mdssNumShareSets}, \set{\set{p_{1,1},\dots,p_{1,\np}}, \dots, \set{p_{\mdssNumShareSets, 1}, \dots, p_{\mdssNumShareSets, \np}}}, \set{x_1, \dots, x_{\mdssWindowSize}})$} {
+	\mdssShareSet := \emptyset \\
+	\tidx := 1 \\
+	\pcfor i \in [\mdssNumShareSets] \pcdo \\
+	\t \pcfor \_ \in [\mdssNumShares_i] \pcdo \\
+	\t\t \mdssShareSet := \mdssShareSet \cup \set{(x_{\tidx}, p_{i, 1}(x_{\tidx}), \dots, p_{i, \np}(x_{\tidx}))} \\
+	\t\t \tidx++ \\
+	\pcreturn \mdssShareSet
+}
+
+\begin{heuristic}
+	\label{heuristic:chmdss_correctness}
+	Let $\field$ be a field.
+	Let $\lambda$ be a security parameter, and let $\pdalt, \mdssWindowSize, \mdssNumShareSets$ be integers polynomial in $\lambda$.
+	Let $\mdssNumShares,\dots,\mdssNumShares_\mdssNumShareSets$ be integers where $\mdssWindowSize = \sum_{i = 1}^\mdssNumShareSets m_i$, let $s_1,\dots,s_\mdssNumShareSets \in \field^\np$ be vectors of field elements, and let $x_1, \dots, x_{\mdssWindowSize} \in \field$ be unique field elements.
+	Let $\mathcal{P}_{\field, \pdalt, \np, s}$ denote the set of all polynomial sets $P = \{p_1,\dots,p_c\}$ over $\field$ where $\forall i \in [c]$, ${\sf deg}(p_i) = \pdalt$ and the leading coefficient of $p_i$ is $1$, and $s = (p_1(0),\dots,p_\np(0))$. Finally, let $\threshold = \frac{\mdssWindowSize + (\np \cdot (\pdalt + 1)) }{\np + 1}$.
+	Then:
+	$$
+		\probsublong{
+			\begin{gathered}
+				\forall i \in [\mdssNumShareSets], P_i \gets \mathcal{P}_{\FF, \pdalt, \np, s} \\
+				\begin{aligned}
+					\mdssShareSet := \Eval_{\FF}(\set{\mdssNumShares_1, \dots, \mdssNumShares_\mdssNumShareSets}, \set{P_1, \dots, P_{\mdssNumShareSets}}, \set{x, \dots, x_{\mdssNumShareSets}})
+				\end{aligned}
+			\end{gathered}}
+		{
+			\begin{gathered}
+				\chmdss(\mdssShareSet) \neq \\
+				\set{s_i \text{ s.t.\ } \mdssNumShares_i \geq \mdssRecThr}
+			\end{gathered}
+		} \leq \negl
+	$$
+\end{heuristic}
+
+Our heuristic assumption differs from the heuristic in \autocite{\citeairtag} in a few ways.
+First, it uses a different bound on the number of agreeing points, $\threshold$.
+Second, the degree of the polynomials is exactly $\pdalt$ rather than $\leq \pdalt$, and the polynomials have their leading coefficient fixed at $1$.
+Third, the probability of failure is negligible in the security parameter rather than the size of the field.
+Fourth, our instantiation of $\chmdss$ computes the \emph{weak} Popov form in the lattice reduction rather than the full Popov form.
+
+The first change comes from an error in \cite{\citeairtag}: the $\threshold$ parameter was reported incorrectly as $\threshold = \frac{\max + (\np \cdot \pdalt) }{\np + 1}$ due to an off by one error, and our corrected version represents a strict weakening of the assumption.
+The second through fourth changes we believe are minor and justify experimentally.
+In addition to the experiments described in \cref{sec:experiments}, we tested $\chmdss$ on $2500$ instances and recorded a $100\%$ success rate.
+
+Given this, the proof of \cref{thm:chmdss-md-corr} follows directly from the construction in \cref{fig:chmdss} and Heuristic Assumption \ref{heuristic:chmdss_correctness}.
