@@ -5,6 +5,22 @@ This variant was originally described in \cite{\citeairtag}, and we reproduce a 
 
 We will require less stringent security and correctness requirements than those described in \cref{chap:mdss}.
 Specifically, for unlinkability and md-correctness, we will require that the respective properties only hold when all indices are \emph{unique}.
+We describe these properties formally below.
 
-We describe these properties formally below. \hme{write}
+\begin{definition}[Weak Unlinkability]
+	Weak unlinkability for an MDSS scheme $\mdss$ is defined identically to \cref{def:unlinkability}, with the addition of the following admissibility condition on the adversary $\adv$:
+	\begin{itemize}
+		\item For $b \in \bin$, all elements of $\indexSet_{1, b}, \dots, \indexSet_{\mdssNumShareSets, b}$ are unique
+	\end{itemize}
+\end{definition}
+
+\begin{definition}[Weak MD-Correctness]
+	Weak md-correctness for an MDSS scheme $\mdss$ is defined identically to \cref{def:md-correctness}, with the addition of the following requirement for when it must hold:
+	\begin{itemize}
+		\item $\bigcup_{i, j \in [\mdssNumShareSets] \text{s.t.\ } i \neq j} \indexSet_i \cap \indexSet_j = \emptyset$
+	\end{itemize}
+
+	Stated intuitively, correctness is only required to hold when all indices are unique.
+\end{definition}
+
 As the proofs that $\chmdss$ satisfies these properties are substantially similar to the proofs provided in \cite{\citeairtag}, we delegate them to \hme{cite appendix when written}.

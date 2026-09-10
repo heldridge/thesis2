@@ -35,6 +35,7 @@ For example, $\mdssFlatten\left(\set{\mdssBlindShare^1_1, \mdssBlindShare^1_2}, 
 Finally, define $\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{i \in [\mdssNumShareSets]})$ as the algorithm that runs $\mdssProj$ on each configuration in its input, then returns the flattened set of shares.
 
 \begin{definition}[Unlinkability]
+	\label{def:unlinkability}
 	Let $(\mdss = (\mdssShareAlg, \mdssReconstructAlg)$ be an MDSS scheme and let the random vaiable $\ulink_b(\mdss, \adv, \secpar)$ where $\adv = \set{\adv_1, \adv_2}$, $b \in \bin$, and $\secpar \in \NN$ denote the result of the following experiment:
 	\procedureblock{$\ulink_b(\pke, \adv, \secpar)$}{
 		\set{(\mdssSecret_i, (\mdssNumShares_{i, 0}, \indexSet_{i, 0}), (\mdssNumShares_{i, 1}, \indexSet_{i, 1}))}_{i \in [\mdssNumShareSets]}, \st \gets \adv_1(\secparam) \\
@@ -79,6 +80,7 @@ We therefore define a simpler definition for which it will be easier to prove th
 \end{definition}
 
 \begin{definition}[MD-Correctness]
+	\label{def:md-correctness}
 	We say that a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssCVar$\emph{-correct} if for all $\secpar \in \NN$ and for all $\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_i)}_{[\mdssNumShareSets]}$ where the following hold:
 	\begin{itemize}
 		\item $\forall i \in [\mdssNumShareSets],\: \indexSet_i \subseteq [\mdssNumShares_i]$
