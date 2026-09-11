@@ -19,7 +19,7 @@ After interacting with the Randomness Server, clients transmit their report to a
 \begin{figure}[ht]
 	\centering
 	\resizebox{0.6\linewidth}{!}{\input{sections/mainmatter/03-star/figures/star-model.tex}}
-	\caption[The STAR model]{The STAR model. Note that there is an implicit asymmetry in the computational resources of the Randomness Server and the Aggregation Server.}
+	\caption[The STAR model]{The STAR model. Note that there is an implicit assymetry in the computational resources of the Randomness Server and the Aggregation Server.}
 	\label{fig:star-model}
 \end{figure}
 
@@ -50,7 +50,7 @@ Given this, our contributions, which we describe fully in \cref{chap:star}, are 
 	\item We extend our protocol to construct the first STAR-model $t$-heavy-hitters protocol with \emph{spying resistance}, requiring the optimal $k - 1$ queries per-value to launch a spying attack.
 \end{enumerate}
 We prove our protocol secure in the honest-but-curious setting, and show that it is efficient enough to be deployed today.
-Report generation is under three seconds, and aggregation runs in approximately 1 hour for $100,000$ reports.
+Report generation is under three seconds, and aggegation runs in approximately 1 hour for $100,000$ reports.
 A comparison between this and prior work in the STAR model can be seen in \cref{fig:comparison}.
 
 The constructions of STAR and POPSTAR are fundamentally based on secret sharing, and the main novelties of this work are in the construction, application, and optimization of secret sharing systems.

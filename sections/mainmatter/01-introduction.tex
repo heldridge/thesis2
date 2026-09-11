@@ -13,17 +13,17 @@ Cryptography is uniquely suited to solve these problems due to the \emph{guarant
 If a protocol is designed correctly, we do not need to trust that a company is not learning more about us than they should, as it will impossible for them to do otherwise.
 
 Due to this natural match, a number of private systems have been proposed both for economic regulation and private data collection.
-However, as of the writing of this dissertation, these system have seen limited use in real life.
+However, as of the writing of this dissertation, these systems have seen limited use in the real world.
 One major limiting factor in their widespread deployment is \emph{efficiency}.
 For cryptocurrencies, any aspect of the protocol must be run repeatedly by a large distributed network, and any extra data must be retained on the blockchain indefinitely, ruling out even mildly inefficient systems.
-For data aggregation, adding privacy comes at a \emph{cost}, meaning that the aggregators will not have the incentives to deploy it, while privacy-minded organizations will lack the resources, leading to systems with minimal to no privacy guarantees.
+For data aggregation, adding privacy comes at a \emph{cost}, meaning that the aggregators will not have the incentives to deploy it, while privacy-minded organizations may lack the resources, leading to systems with minimal to no privacy guarantees.
 
 
 Given this, we seek here to design privacy-preserving protocols that are particularly efficient.
 To do so, we focus on a fundamental component of private protocols: the threshold.
 Thresholding, i.e. revealing some information once a value exceeds a given quantity, appears constantly in intuitions regarding how private protocols should work.
 For example, the U.S. Bank Secrecy Act mandates the reporting of cash transactions over \$10,000 \cite{meltzer1991keeping}.
-While we don't want every one of our monetary transactions reported to to the government, we have decided that there should be a threshold at which privacy no longer holds.
+While we don't want every one of our monetary transactions reported to the government, we have decided that there is a threshold at which it is in our best interest for privacy to longer hold.
 
 Within this thesis we design two new protocols that balance privacy and utility via thresholding.
 The first is a method to allow regulators to view transactions in private cryptocurrencies that exceed a certain amount, and the second allows data aggregators to learn only those data points that show up frequently, while keeping the rare (and therefore potentially more sensitive) points private.

@@ -29,13 +29,14 @@ We now show that unlinkability is strictly stronger than privacy.
 		\set{(\mdssSecret_0, (\mdssNumShares, [\mdssNumShares]), (0, \emptyset)), (\mdssSecret_1, (0, \emptyset), (\mdssNumShares, [\mdssNumShares]))}
 	$$
 	Such an adversary must distinguish between $\mdssNumShares$ shares of $\mdssSecret_0$ and $\mdssNumShares$ of $\mdssSecret_1$, which corresponds exactly to the privacy game.
-	\hme{Change to full contrapositive proof}
+	% \hme{Change to full contrapositive proof}
 \end{proof}
 
-\begin{lemma}
+\begin{theorem}
+	\label{thm:mdss-ul-vs-priv-2}
 	Define the function $\mdssULVar^*(\secpar) = \frac{1}{2} - 2^{-\secpar}$.
 	For any $\mdssULVar$-private secret sharing scheme there exists a scheme that is $\mdssULVar$-private and \emph{not} $\mdssULVar^*$-unlinkable.
-\end{lemma}
+\end{theorem}
 
 \begin{proof}
 	Consider a secret-sharing scheme with sharing algorithm $\mdssShareAlg$ and share space $\mdssShareSpace$.

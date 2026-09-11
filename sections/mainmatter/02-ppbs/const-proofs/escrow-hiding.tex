@@ -48,7 +48,7 @@
 
 		      Suppose that $\nu_2(\secpar)$ is non-negligible.
 		      In this case $\adv$ produced a proof of a false statement and we can construct a reduction $\bdv$ to the simulation-extractability of $\Pi_{KG}$.
-		      $\bdv$ runs $\adv$, receives $(\thr, r_{KG}, pk = (pk', C_{KG}, \pi_{KG}), x)$, and outputs $((pk', C_{KG}), \pi_{KG})$.
+		      $\bdv$ runs $\adv$, receives $(\thr, r_{KG}, pk = (pk', C_{KG}, \pi_{KG}), x)$, and outputs $(\allowbreak(\allowbreak pk',\allowbreak C_{KG}),\allowbreak \pi_{KG})$.
 		      As the statement is false the extractor must fail, meaning $\prob{\bdv \text{ wins}}$ is non-negligible, thus contradicting our assumption that $\Pi_{KG}$ satisfies strong simulation-extractability.
 		      Therefore, $\nu_2(\secpar)$ is negligible.
 
@@ -66,7 +66,7 @@
 
 		      Suppose $\nu_3(\secpar)$ is non-negligible.
 		      In this case we can construct a reduction $\bdv$ to the computational lossiness of $\pkem$.
-		      $\bdv$ runs $\adv$, receives $(\thr, r_{KG}, pk = (pk', C_{KG}, \pi_{KG}), x)$, and uses $\Ext$ to extract $(\thr, sk', r_k, r_c)$.
+		      $\bdv$ runs $\adv$, receives $(\thr, r_{KG}, pk = \allowbreak(pk', \allowbreak C_{KG}, \allowbreak\pi_{KG}),\allowbreak x)$, and uses $\Ext$ to extract $(\thr, sk', r_k, r_c)$.
 		      $\bdv$ then uses $r_k$ to infer $r$ such that $(\cdot, \matpk_d^{\uval[d]}) = \pkem.\kgenlossy(\matpp; r)$ (the key must be lossy as $\uval[d] < \thr[d]$),
 		      samples $\otpct'$ uniformly at random from $\msgspace_\mat$, and sends $(r, \otpct_d^{\mat}, \otpct')$ to its challenger.
 		      $\bdv$ receives $\ct$, sends to $\adv$ an escrow value identical to the one produced in $\currhyb$ with the exception that $\mct_{d}$ is replaced by $\ct$, and outputs what $\adv$ outputs.

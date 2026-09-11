@@ -31,7 +31,8 @@ Next, PPBs require that escrows be \emph{publicly verifiable}.
 While the auditor checks and decrypts values, the validators maintaining the ledger should be capable of verifying that any given escrow is valid as a condition for accepting transactions on chain.
 Finally, the auditor must be able to decrypt an escrow field non-interactively, {\em i.e.,} it should not require further interaction with the transaction author to obtain the escrow data.
 
-\paragraph{Limitations of previous work.}
+% \paragraph{Limitations of previous work.}
+\subsection{Limitations of Previous Work}
 Previous works addressing threshold-comparison PPBs or related problems fall short on one or more of these metrics.
 Kohlweiss \emph{et al.} propose a solution based on fully-homomorphic encryption (FHE)~ \cite{EC:KohLysNgu23}, which can realize general functionalities and is space-efficient.
 However, the scheme requires the transactor to formulate a zero-knowledge proof over the FHE evaluation process, which remains computationally infeasible \cite{viand2023verifiable}.
@@ -47,7 +48,9 @@ In this construction, escrows consist of the sender message in a NISC protocol (
 While computing a ``proof of garbling'' requires proving over cryptographic primitives, and escrows must contain the full garbled truth tables, this solution remains plausible as a deployable PPB, though to the best of the authors' knowledge no implementations currently exist.
 One contribution of this work is to explore and optimize this approach.
 
-\paragraph{Our contributions.} In this work we investigate the problem of constructing concretely efficient privacy-preserving blueprints for threshold comparison. We investigate two different approaches to this question:
+% \paragraph{Our contributions.} 
+\subsection{Our Contributions}
+In this work we investigate the problem of constructing concretely efficient privacy-preserving blueprints for threshold comparison. We investigate two different approaches to this question:
 \begin{enumerate}
 	\item {\bf Realizing and optimizing NISC for PPBs.} As a baseline, we revisit the NISC approach mentioned by Kohlweiss \emph{et al.}~\cite{EC:KohLysNgu23}. While the authors describe this construction as ``theoretical'' for general functionalities, we show that careful engineering allows us to realize the specific comparison functionality practically. The challenge here is careful circuit optimization, as well as the need to realize a ZK-friendly implementation of a garbled circuit, something that requires non-trivial optimization and design choices. We use this construction as a baseline to compare against later contributions.
 

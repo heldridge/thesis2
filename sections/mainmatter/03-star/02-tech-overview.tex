@@ -36,8 +36,7 @@ The Aggregation Server then runs the MDSS reconstruction algorithm over the enti
 
 While MDSS can theoretically work as a drop-in solution, making this approach work efficiently in practice is non-trivial.
 One important concern is that existing MDSS constructions add a gap (or \emph{ramp}) between the number of shares required for secret recovery and the number of shares that are guaranteed to protect privacy (throughout this work we refer to these thresholds as $\threshold$ and $\pd$ respectively). This ramp can be minimized by increasing the size of the MDSS shares and the reconstruction runtime, although it cannot be practically eliminated.
-This requires some careful balancing of parameters, as well as a number of optimizations to ensure a practical level of efficiency. We describe these in \hme{ADD BACK}.
-% \cref{sec:star-implementation}.
+This requires some careful balancing of parameters, as well as a number of optimizations to ensure a practical level of efficiency. We describe these in \cref{sec:star-impl}.
 
 
 
@@ -68,12 +67,10 @@ At the end of the protocol, the client is left with only a single point on an un
 Knowledge of the value $r_v$ is no longer useful to a corrupted client, as it requires interaction with the Randomness Server to learn any information about additional shares.
 Critically, to learn the polynomial associated with $v$ (and thereby be able to identify other reports for $v$), a colluding Aggregation Server would need to issue $\pd + 1$ queries to the Randomness Server.
 
-There are several encryption schemes that are both $(1)$ additively homomorphic and $(2)$ allow for oblivious ciphertext sampling: these include the Paillier \cite{EC:Paillier99} and Goldwasser-Micali \cite{STOC:GolMic82} schemes. We ultimately elect to use the Benaloh encryption scheme \cite{THESIS:Ben87,SAC:Ben94}, as its plaintext space aligns well with the share space required by MDSS. For more information see Section \hme{Add back}.
-% \ref{sec:dope}.
+There are several encryption schemes that are both $(1)$ additively homomorphic and $(2)$ allow for oblivious ciphertext sampling: these include the Paillier \cite{EC:Paillier99} and Goldwasser-Micali \cite{STOC:GolMic82} schemes. We ultimately elect to use the Benaloh encryption scheme \cite{THESIS:Ben87,SAC:Ben94}, as its plaintext space aligns well with the share space required by our MDSS construction. For more information see Section \cref{sec:star-dope}.
 
 For our scheme, the interaction between the Randomness Server and client in the DOPE protocol remains lightweight. Notably, for each polynomial, the client's DOPE message is a single Benaloh ciphertext, and the Server only performs a single decryption. Concretely, for the number of polynomials used in our work, both the client and Randomness Server computation can be performed in approximately $1$ second. Total communication is in the range of $50$ kilobytes.
-More detailed benchmarks can be found in \hme{ADD BACK}.
-% \cref{sec:star-experiments}.
+More detailed benchmarks can be found in \cref{sec:star-exp}.
 
 
 \subsection{Comparison to POPSTAR}
@@ -97,8 +94,5 @@ This leakage stems from the MDSS ramp.
 When reports are points on polynomials of degree $\pd$, MDSS guarantees that a value can be recovered when there are at least $\threshold \gtrsim \pd + \frac{\max}{\np}$ reports for it among a pool of $N$ reports, where $\np$ is a parameter configured at setup time.
 Therefore, we leak all values reported between $\pd$ and $\pd + \frac{\max}{\np}$ times: they are potentially recoverable as the number of reports is greater than the degree of the polynomials, but we cannot guarantee their recovery and so they are not considered heavy-hitters.
 
-For our first experiment in \hme{ADD BACK}
-% \cref{sec:mdss-experiments} 
+For our first experiment in  \cref{sec:star-exp}.
 we set $\np$ so that the number of values leaked in our scheme is the same in expectation as the number of exact counts leaked by POPSTAR.
-For comparisons to other private aggregation systems, see \hme{ADD BACK}.
-% \cref{sec:related-works}.

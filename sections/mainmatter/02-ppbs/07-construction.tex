@@ -104,7 +104,7 @@ We now begin proving our main theorem.
 	In its second stage, the adversary $\adv$ outputs $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$.
 	We can divide our analysis into the following three cases depending on the properties of these outputs.
 	\begin{enumerate}
-		\item There exist some $\er'$ and $(\uval', \msg') \neq (\uval, \msg)$ such that $\commit((\uval, \msg), \er) = \commit((\uval', \msg'), \er')$ and $\esc = \escrow(\ppbpp, pk, (\uval', \msg'), \er')$.
+		\item There exist some $\er'$ and $(\uval', \msg') \neq (\uval, \msg)$ such that $\commit((\uval, \msg), \er) = \allowbreak\commit(\allowbreak(\allowbreak\uval',\allowbreak \msg'),\allowbreak \er')$ and $\esc = \escrow(\ppbpp, pk, (\uval', \msg'), \er')$.
 		\item $Z' \neq \escrow'(\pkerpp, \pkempp, \numdigits, pk, \uval, \msg)$ and (1) does not hold.
 		\item Neither (1) nor (2) hold (i.e. $\adv$'s output is well-formed).
 	\end{enumerate}
