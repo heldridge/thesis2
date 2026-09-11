@@ -26,23 +26,17 @@ For example, the U.S. Bank Secrecy Act mandates the reporting of cash transactio
 While we don't want every one of our monetary transactions reported to to the government, we have decided that there should be a threshold at which privacy no longer holds.
 
 Within this thesis we design two new protocols that balance privacy and utility via thresholding.
-The first is a method to allow regulators to view transactions in private cryptocurrencies that exceed a certain amount, and the second allows data aggregators to learn only those data points that show up frequently, while keeping the rare (and therefore potentially more identifying) points private.
+The first is a method to allow regulators to view transactions in private cryptocurrencies that exceed a certain amount, and the second allows data aggregators to learn only those data points that show up frequently, while keeping the rare (and therefore potentially more sensitive) points private.
 For both we perform significant optimization efforts to ensure that they are deployable in the present day.
 
 Along the way, we develop a new technique for secret sharing that allows for simultaneously reconstructing secrets shared by mulitple dealers without know which shares correspond to the same secret.
 This technique serves as a generic way to implement private thresholding, which gives it the potential to be used in other privacy-preserving protocols.
 
+\section{Regulation for Private Cryptocurrencies}
+\input{sections/mainmatter/04-intro/ppbs.tex}
 
-% Within this thesis we take steps towards solving this issue, introducing two new protocols that balance privacy and utility for privacy cryptocurrencies and data aggregation.
-% For both we perform significant optimization efforts to ensure that they are deployable in the present day.
-% In the course of doing so we also develop several new cryptographic tools with applications to private systems.
+\section{Multi-Dealer Secret Sharing}
+\input{sections/mainmatter/04-intro/mdss.tex}
 
-
-% Thresholding is all around us.
-% Perfect privacy is nice, but does not survive the constraints of the real world.
-% You almost always want some additional utility on top of your privacy (otherwise what's the point?).
-% The most fundamental form of privacy is the threshold.
-% Here are some scheme that do this, but where is the deployment?
-% Answer: efficieny. It is a compromise to be private, so need to make as efficient as possible.
-% Our results: two new private protocols, as well as building blocks for future ones (MDSS).
-% Describe results.
+\section{Stronger Privacy for Lightweight Threshold Reporting}
+\input{sections/mainmatter/04-intro/star.tex}

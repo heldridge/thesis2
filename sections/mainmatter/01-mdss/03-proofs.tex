@@ -19,9 +19,10 @@ We begin by recalling the standard notion of privacy for secret sharing, which s
 
 We now show that unlinkability is strictly stronger than privacy.
 
-\begin{lemma}
+\begin{theorem}
+	\label{thm:mdss-ul-vs-priv}
 	If a $(\mdssRecThr, \mdssPrivThr, \mdssMaxDealers, \mdssMaxShares)$-MDSS scheme is $\mdssULVar$-unlinkable then it is $\mdssULVar$-private.
-\end{lemma}
+\end{theorem}
 \begin{proof}
 	Consider an unlinkability adversary that outputs the following in the first step of the game:
 	$$

@@ -1,0 +1,46 @@
+
+In a secret sharing scheme \cite{Shamir79}, a dealer divides a secret into shares such that the secret remains hidden from anyone who holds an ``unauthorized'' set of shares, but can be recovered from any ``authorized'' set of shares.
+These properties are referred to as privacy and correctness, respectively.
+
+In our second result, described in \cref{chap:mdss}, we consider a setting where {\em multiple} dealers may simultaneously distribute shares of their respective secrets.
+We put forth a notion of {\em multi-dealer secret sharing} (MDSS) that achieves {\em stronger} security and correctness properties in this setting.
+
+We name our security and correctness properties \emph{unlinkability} and \emph{multi-dealer} (MD) \emph{correctness} respectively, and give intuitive descriptions of them here.
+
+\subsection{Unlinkability}
+We propose a new security property for secret sharing that is stronger than the standard notion of privacy.
+Intuitively, this property requires that given a set of shares from multiple dealers, an adversary cannot associate (i.e., link) any unauthorized subset of shares to a common dealer.
+
+We present two definitions: unlinkability and one-more unlinkability. The first intuitively matches the  guarantee we would like to achieve, while the second is simpler and easier to use.
+We will show that the two definitions are equivalent, and therefore that one can use the second without loss of generality.
+
+
+\subsection{MD-Correctness}
+Our correctness definition differs from standard secret sharing in that we must reconstruct secrets given a set of shares from \emph{multiple} dealers. This set may include shares from both sufficient dealers (i.e. those that output enough shares that their secret should be recovered) and \emph{insufficient} dealers (i.e. those that do not).
+We require that the reconstruction algorithm outputs exactly the set of secrets shared by the sufficient dealers, except with some failure probability $\mdssCVar$.
+Similar to standard secret sharing, we only consider correctness for honestly generated (i.e. via the sharing algorithm) sets of shares.
+
+\subsection{Results}
+
+For our first main result we show that unlinkability is strictly stronger than the standard secret-sharing notion of privacy.
+
+\begin{theorem*}[\cref{thm:mdss-ul-vs-priv}, informal]
+	Unlinkability is strictly stronger than privacy
+\end{theorem*}
+
+Next, we give a construction of MDSS based on the Guruswami-Sudan list-decoder for Reed-Solomon codes \cite{FOCS:GurSud98}.
+% Under this construction, unlinkability is broken once a dealer exceeds $\mdssPrivThr$ shares, while correctness is guaranteed at $\mdssRecThr$ shares, where $\mdssRecThr > \mdssPrivThr$.
+
+\begin{theorem*}[\cref{thm:gs-mdss-correctness} and \cref{thm:gs-mdss-ul}, informal]
+	There exists an MDSS scheme that recovers all secrets with at least $\mdssRecThr$ shares from a pool of size $\mdssMaxShares$, while keeping all secrets with under $\mdssPrivThr$ shares unlinkable, for all parameters satisfying $\mdssRecThr > \sqrt{\mdssMaxShares \cdot \mdssPrivThr}$ and $\mdssPrivThr + 1 \leq (1 - \epsilon)\mdssRecThr$ for some constant $0 < \epsilon  \leq 1$.
+\end{theorem*}
+
+We additionally give a small-fields optimized construction in \cref{sec:mdss-sf} for settings where keeping the size of the shares small is valuable.
+
+\subsection{Related Work}
+
+Both \cite{guillermo2003providing} and \cite{paskin2020cryptographic} study secret sharing schemes that are \emph{anonymous}, i.e.\ those for which shares do not leak the identities of their holders.
+However, they do not address the \emph{multi-dealer} setting considered here, where recovery must be performed over a pool of shares that may be of different secrets.
+
+In subsequent work, \cite{C:BGIJL25} generalizes the notion of MDSS to \emph{fully anonymous secret sharing}, and gives constructions for general access structures (i.e.\ those beyond just thresholding).
+Additionally, \cite{con2025anonymous} studies the applications of insertion/deletion-resistant Reed-Solomon codes to anonymous secret sharing schemes.

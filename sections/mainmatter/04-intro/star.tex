@@ -1,0 +1,94 @@
+The need to respect privacy concerns has spurred substantial work in the area of privacy-preserving statistics calculations \cite{CCS:BBGLR20, SP:LBVKH23, CCS:BIKMMP17, AC:LLPT23, SP:MWAPR23, ASIACCS:BSHV23, USENIX:BGLLMR23, EPRINT:DPRS23, prio, SCN:AGJOP22, EPRINT:BanCheVen24, PoPETS:MouSarTso24, PoPETS:MPDST25, SP:BBCGI21, EPRINT:BBCGKR24, zhu2020federated, SP:RSWP23, bittau2017prochlo, bassily2017practical, STOC:BasSmi15, bun2019heavy, CCS:QYYKXR16} including some real-word deployments \autocite{apple2021exposure} and recent standardization efforts by the IETF \autocite{ietf-ppm-dap-13}.
+One particular area that has received significant attention in the private telemetry space is the \emph{private $\numheavyhit$-heavy-hitters problem}~\cite{CCS:QYYKXR16, CCS:BohKer21, SP:BBCGI21, EPRINT:DPRS23, EPRINT:JKKPGS22, CCS:DSQGLH22, USENIX:LiNavTes24, SP:BBCGKR25}, where a data aggregator only learns responses that are reported by at least $\numheavyhit$ clients.
+For example, this would allow a search service provider to obtain a list of  popular URLs while keeping rarer and thus potentially more sensitive searches private.
+
+In previous work this problem has seen two approaches.
+One direction focuses on concretely efficient constructions from highly optimized two-party computation (2PC)   protocols \autocite{\citepoplar,EPRINT:JKKPGS22,SP:BBCGKR25}.
+While efficient, these works require multiple  servers, and the strong assumptions that $(1)$ the enlisted servers will not collude, despite being in constant interactive communication, and $(2)$ that it will be possible for a data aggregator to identify an honest third-party that is willing to expend computational resources equal to the data aggregator for little to no benefit.
+Some earlier works \autocite{SP:BBCGI21, SP:BBCGKR25} are also impacted by inherent leakage from the MPC functionality, which they reduce using differential privacy \autocite{TCC:DMNS06}.
+
+
+To address these limitations, In CCS '22 Davidson et al. proposed STAR \cite{\citestar}.
+STAR introduced a new paradigm with two non-colluding servers between which no interaction needs to occur. Critically, one server can even be relatively lightweight.
+In this model, clients report their inputs in two phases: first, they run a protocol with a \emph{Randomness Server} to compute a \emph{report}.
+The Randomness Server has minimal resource requirements: its interaction with each client consumes only small amounts of bandwidth, is usually computationally inexpensive, and results in no increased storage for the server.
+After interacting with the Randomness Server, clients transmit their report to an independent \emph{Aggregation Server}, which uses the collected reports to \emph{locally} compute the $\numheavyhit$-heavy-hitters.
+\cref{fig:star-model} provides an overview of the STAR model.
+
+
+\begin{figure}[ht]
+	\centering
+	\resizebox{0.6\linewidth}{!}{\input{sections/mainmatter/03-star/figures/star-model.tex}}
+	\caption{The STAR model. Note that there is an implicit assymetry in the computational resources of the Randomness Server and the Aggregation Server.}
+	\label{fig:star-model}
+\end{figure}
+
+Unfortunately, the STAR protocol suffers from substantial privacy leakage: the Aggregation Server learns a pseudonomized version of the \emph{complete frequency histogram} of client inputs.
+Recognizing this issue, a follow-up work called POPSTAR (Li et al., USENIX 2024) reduces the leakage to a partial histogram, where only a subset of values have their frequency leaked.
+Notably, the values that have their frequencies leaked are selected \emph{at random}, with rare values having the same probability of being leaked as those with more reports.
+More critically, both STAR and POPSTAR are extremely vulnerable to an Aggregation Server that colludes with (or poses as) a client.
+An Aggregation Server that makes a \emph{single query} to the Randomness Server
+can identify \emph{all} reports of a target input value $\val$, even if $\val$ is not a heavy-hitter.
+While this ``spying'' attack was acknowledged in prior work, it was explicitly defined to be outside the threat model~\autocite{\citestar, \citepopstar}, despite being a realistic threat to any deployment.
+Continuing the URL example, an Aggregation Server could use this attack to identify all users visiting a site related to pancreatic cancer.
+Such a value is unlikely to be a heavy-hitter, and reveals considerable information about those reporting it.
+Finally, we emphasize that this attack is possible even in the \emph{honest-but-curious} setting, as it only requires the Aggregation Server to learn a client's view during the report generation phase.
+
+\subsection{Our Contributions: Guaranteed Protection for Rare Values} The weaknesses described above motivate the need for a $t$-heavy-hitters protocol with new security guarantees.
+Ideally, a protocol would both \emph{guarantee} protection for rare values, granting total privacy to those reported infrequently, and have hardened security against spying attacks.
+
+We note here that any system in which the Aggregation Server can freely query the Randomness Server and aggregate shares must allow some sort of spying.
+For a value of interest $v$ the Aggregation Server can create $t - 1$ shares for $v$ via the Randomness Server, and then can combine those shares with every submitted report to tell if it contains $v$.
+While such an attack is inevitable, we can still hope to force the Aggregation Server to make a large number of queries to the Randomness Server in order to launch the attack, rather than just a single query per-value as in STAR and POPSTAR.
+Such a limitation would allow deployed systems to more effectively detect a misbehaving Aggregation Server.
+
+Given this, our contributions, which we describe fully in \cref{chap:star}, are as follows:
+\begin{enumerate}
+	\item We construct the first $t$-heavy-hitters protocol in the STAR model that guarantees perfect security for rare values, i.e.\ those reported under $k$ times for a well defined privacy threshold $k < t$.
+
+	\item We extend our protocol to construct the first STAR-model $t$-heavy-hitters protocol with \emph{spying resistance}, requiring the optimal $k - 1$ queries per-value to launch a spying attack.
+\end{enumerate}
+We prove our protocol secure in the honest-but-curious setting, and show that it is efficient enough to be deployed today.
+Report generation is under three seconds, and aggegation runs in approximately 1 hour for $100,000$ reports.
+A comparison between this and prior work in the STAR model can be seen in \cref{fig:comparison}.
+
+The constructions of STAR and POPSTAR are fundamentally based on secret sharing, and the main novelties of this work are in the construction, application, and optimization of secret sharing systems.
+We achieve perfect security for rare values by using an optimized implementation of \emph{multi-dealer secret sharing} \cite{\citeairtag}, and spying resistance via the construction of a novel \emph{oblivious share sampling} protocol, a 2-party protocol that allows one party to sample a secret share of a value without learning the full sharing.
+
+\begin{figure}
+	\centering
+	\begin{tabular}{ |c|c|c|c| }
+		\hline
+		\makecell{Scheme}              &
+		\makecell{Leakage}             &
+		\makecell{Spying\\ Resistance} &
+		\makecell{Agg\\ Runtime}                                                             \\
+		\hline
+		STAR                           & \makecell{full\\ histogram}    & \ding{55} & 2 sec  \\
+		\hline
+		POPSTAR                        & \makecell{partial\\ histogram} & \ding{55} & 10 sec \\
+		\hline
+		\textbf{This Work}             & \makecell{privacy\\ threshold} & \ding{51} & 1 hour \\
+		\hline
+	\end{tabular}
+	\caption{A comparison between this and prior work. Aggregation runtimes are over $100,000$ reports.}
+	\label{fig:comparison}
+\end{figure}
+
+\subsection{Related Work}
+
+Private $\numheavyhit$-heavy-hitters, and privacy preserving secure aggregation in general, has a long line of work we broadly generalized into a few categories.
+
+Works such as \cite{CCS:BBGLR20, SP:LBVKH23, CCS:BIKMMP17, AC:LLPT23, SP:MWAPR23, ASIACCS:BSHV23, USENIX:BGLLMR23,C:KarPol25} propose protocols in the \emph{single server} model, where clients communicate with a single aggregation server.
+These protocols, often proposed in the context of \emph{federated learning}, typically require multiple rounds of communication, and/or communication between the clients themselves.
+While client-client communication is possible in some settings, it becomes a barrier to large-scale deployments, and so we focus in this work on protocols without such a requirement.
+
+
+In a parallel line of work, \cite{EPRINT:DPRS23, prio, SCN:AGJOP22, EPRINT:BanCheVen24, PoPETS:MouSarTso24, PoPETS:MPDST25, SP:BBCGI21, EPRINT:BBCGKR24, zhu2020federated, SP:RSWP23} operate in the \emph{multi-server} model, where clients split their reports between a collection of servers that perform aggregation via joint computation, and requires some subset of the servers to remain honest in order to preserve privacy.
+While efficient (\cite{PoPETS:MPDST25} aggregates $100$k client reports in under $20$ minutes), we consider the assumption of multiple, equal strength, non-colluding servers to be particularly strong.
+Additionally, some protocols such as \cite{SCN:AGJOP22} do not include a $t$-heavy-hitters functionality, opting instead to focus on other sorts of aggregate statistic calculations.
+
+
+A third line of work \cite{bittau2017prochlo, bassily2017practical, STOC:BasSmi15, bun2019heavy, CCS:QYYKXR16} protects clients using differential privacy \autocite{TCC:DMNS06}.
+While differential privacy offers attractive guarantees for clients, these works rely on the service provider to accurately configure and spend their privacy budget, which has a history of failure in practice \autocite{tang2017privacy}.
+
