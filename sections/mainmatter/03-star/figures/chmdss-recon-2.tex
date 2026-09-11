@@ -1,0 +1,24 @@
+\newcommand{\valset}{V}
+\newcommand{\pointset}{P}
+
+\begin{figure}
+	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\mathsf{StepDecode}\left(\mdssShareSet, \valset, \mdssRecThr, \mdssPrivThr, \batchsize_i, \cval_i\right)$}{
+			\mdssBlindShare'_1, \dots, \mdssBlindShare_{\batchsize_i} \gets \mathsf{SampleWithoutReplacement}(\mdssShareSet) \\
+			\thr'_i := \left\lceil \frac{1}{\cval_i}(\batchsize_i + (\cval_i \cdot (\mdssPrivThr + 1))) \right \rceil \\
+			out \gets \chmdss.\step\left(\thr'_i, \mdssPrivThr, \batchsize_i, \set{\mdssBlindShare'_1, \dots, \mdssBlindShare'_{\batchsize_i}}\right) \\
+			\pcif out = \set{p_1, \dots, p_{\cval_i}} \pcthen \\
+			\t \text{Let } \pointset \text{ be the set of all points in } \mdssShareSet \text{ that agree with } \set{p_1, \dots, p_{\cval_i}} \\
+			\t \pcif |\pointset| < \mdssRecThr \pcthen \\
+			\t\t \pcreturn \mdssShareSet, \valset, \true \\
+			\t \pcelse \\
+			\t\t p'_1, \dots, p'_c := \mathsf{LagrInterpol}(\pointset) \\
+			\t\t v_i := p'_1(0)||\dots||p'_\np(0) \\
+			\t\t \valset' := \valset \cup \set{v_i} \\
+			\t\t \mdssShareSet' := \mdssShareSet \setminus \pointset \\
+			\t\t \pcreturn \mdssShareSet', \valset',\false \\
+			\pcelse \\
+			\t \pcreturn \bot, \bot, \true
+		}
+	\end{pcvstack}
+\end{figure}
