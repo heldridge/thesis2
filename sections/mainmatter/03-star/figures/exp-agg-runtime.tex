@@ -1,0 +1,22 @@
+\begin{figure}[h]
+	\centering
+	\begin{tabular}{ |c|c|c| }
+		\hline
+		$\max$          & \makecell{Aggregation\\ Runtime} & \makecell{Leaked Values\\(Expected)} \\
+		\hline
+		$100{,}000$     & $1$ hour, $10$ minutes           & $19$                                 \\
+		\hline
+		$250{,}000$     & $1$ hour, $12$ minutes           & $63$                                 \\
+		\hline
+		$500{,}000$     & $54$ minutes                     & $133$                                \\
+		\hline
+		$750{,}000$     & $1$ hour, $17$ minutes           & $202$                                \\
+		\hline
+		$1{,}000{,}000$ & $57$ minutes                     & $239$                                \\
+		\hline
+	\end{tabular}
+	\caption{Aggregation runtimes and leaked values across client counts with $\threshold = \frac{\max}{100}$.}
+	\label{fig:gpu-main-aggregation-runtimes}
+\end{figure}
+
+

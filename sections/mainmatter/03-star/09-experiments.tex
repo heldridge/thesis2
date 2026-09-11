@@ -1,0 +1,67 @@
+As in STAR and POPSTAR, we simulate client inputs by drawing from a Zipfian distribution with support $\zipfsup = 10{,}000$ and exponent $\zipfexp = 1.03$.
+For our main experiments we set $\pd = 350$.
+Then, given a report count $\max$ and threshold $\threshold$, we use the parameter selection algorithm described in \cref{subsubsec-distribution-optimizations} to find the values of $\np_i$ and $\batchsize_i$ for each step.
+We use a field size equal to the smallest prime greater than $\max$ for each experiment.
+
+We select $\pd = 350$ in order to make the closest comparison between our protocol and POPSTAR for a client count of $\max = 100,000$ and threshold $\threshold = 1000$.
+Recall from \cref{subsec:popstar-leakage} that the most serious leakage in POPSTAR comes from the \emph{exact counts} that it leaks.
+Under the parameters benchmarked in \cite{\citepopstar}, POPSTAR is expected to leak the exact count for $19$ values.
+We therefore set $\pd = 350$, as it is the lowest value of $\pd$ for which there are expected to be $19$ values reported between $\pd$ and $\threshold = 1000$ times.
+
+
+
+\subsection{Report Generation}
+
+All report generation benchmarks were run on an AWS {\sf c7i.8xlarge} EC2 instance.
+
+
+\input{sections/mainmatter/03-star/figures/exp-report-gen.tex}
+The benchmarks for our report generation protocol can be seen in \cref{fig:protocol-runtime}.
+The benchmarks presented are for simultaneously evaluating $c = 138$ polynomials with degree $350$, which represents the largest parameters among our experiments in \cref{subsec:agg-experiments}.
+
+Our protocol is efficient, with client and server computation on the order of seconds, and bandwidth in the range of $50$ kilobytes.
+The benchmarks shown in \cref{fig:protocol-runtime} are all single threaded.
+When up to $4$ threads are used, client computation drops to $0.39$ and $0.74$ seconds for the $2048$ and $3072$-bit moduli, respectively.
+The bulk of the work done by the client is the homomorphic evaluation of the polynomials.
+For the $2048$-bit modulus a single evaluation takes $6.4$ms, and so the full $138$ evaluations represent $59\%$ of the client's total runtime.
+
+Our protocol is noticeably lighter over-the-wire than POPSTAR, which requires $363$kb of communication between the client and the Randomness Server.
+However, our protocol has a higher computational cost, in POPSTAR clients are estimated run in $2$ milliseconds, though we view this tradeoff as acceptable given our stronger security guarantees.
+
+
+\subsection{Aggregation}
+\label{subsec:agg-experiments}
+
+All benchmarks in this section were performed on a server with an AMD EPYC 7R13 64-Core Processor, 252 Gigabytes of RAM, and an RTX 3090 GPU.
+
+We benchmark the aggregation algorithm on input sizes $10^5 \leq \max \leq 10^6$, set the threshold $\threshold$ to be $1\%$ of $\max$, and keep $\pd$ fixed at $350$.
+The results of these experiments can be see in \cref{fig:gpu-main-aggregation-runtimes}.
+
+\input{sections/mainmatter/03-star/figures/exp-agg-runtime.tex}
+
+Due to the optimizations from \cref{sec:star-optimizations}, the runtime of our aggregation algorithm remains relatively constant at approximately $1$ hour.
+The downside of this is that, as we keep $\pd$ fixed, the expected number of leaked values climbs as the number of total clients increases.
+
+As compared to STAR and POPSTAR, our aggregation algorithm takes significantly longer: for $100{,}000$ clients STAR and POPSTAR aggregate in $2$ and $10$ seconds, respectively.
+We note that this disparity reduces for larger client pools.
+At 1 million clients STAR aggregates in $5$ minutes while POPSTAR takes $20$.
+
+As it pertains to leakage, for all values of $\max$ greater than $100{,}000$ the number of values leaked by our scheme is greater than the number of exact counts leaked by POPSTAR (which stays fixed at $19$).
+We believe that this could be an acceptable tradeoff for applications where guaranteeing protection for rare values, especially against a spying Aggregation Server, is paramount.
+
+
+\subsection{Challenges in Increasing $\pd$}
+
+All benchmarks in this section were performed on a DGX Spark \cite{nvidia_dgx_spark}, a consumer-focused device with a combined CPU+GPU system-on-a-chip and $128$GB of unified memory.
+
+Optimally, $\pd$ would be nearly equal to $\threshold$, granting privacy for as many non-heavy-hitters as possible.
+We investigate the feasibility of such configurations in this section by showing how the resources required by the aggregation algorithm, including the necessary VRAM, scale as $\pd$ approaches $\threshold$ for an instance with $\max = {50},000$ and $\threshold=1000$.
+This can be seen in \cref{fig:increasing-tpriv}.
+
+\input{sections/mainmatter/03-star/figures/exp-resource-use.tex}
+
+We see in \cref{fig:increasing-tpriv} how increasing $\pd$ leads to sharp increases in resource use, approximately doubling the aggregation runtime every $100$ it increases.
+The VRAM usage is even more dramatic.
+Indeed, attempting to go one step further and aggregate over an instance with $\pd = 950$ would require $77$GB, well beyond the capacity of most consumer GPUs,  to construct the initial matrix.
+It is this rapid scaling that prevents feasibly closing the gap between $\pd$ and $\threshold$.
+

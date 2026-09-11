@@ -1,0 +1,17 @@
+\begin{figure}[h]
+	\centering
+	\begin{tabular}{ |c|c|c|c|c| }
+		\hline
+		\makecell{Modulus}         &
+		\makecell{Client\\Runtime} &
+		\makecell{Server\\Runtime} &
+		\makecell{Client\\Message} &
+		\makecell{Server\\Message}                                              \\
+		\hline
+		$2048$                     & $1.50$s & $0.23$s & $35.47$ kb & $0.42$ kb \\
+		$3072$                     & $2.83$s & $0.74$s & $53.13$ kb & $0.42$ kb \\
+		\hline
+	\end{tabular}
+	\caption{Report generation runtimes for $\np = 139$ and $\pd = 349$. \emph{Modulus} indicates the length in bits of the modulus used for the Benaloh encryption scheme. \emph{Client Message} is the size of the message sent from each client to the Randomness Server. \emph{Server Message} is the size of the Randomness Server's response. All runtimes are single-threaded.}
+	\label{fig:protocol-runtime}
+\end{figure}
