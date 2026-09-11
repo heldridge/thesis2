@@ -1,0 +1,39 @@
+
+\subsection{Parameters and Leakage}
+
+Our $\numheavyhit$-heavy-hitter construction introduces a tradeoff between correctness, privacy, and efficiency.
+As one attempts to increase privacy, one must in turn either accept a longer aggregation step, or the recovery of fewer heavy-hitters.
+Concretely, this tradeoff appears in the ``gap'' between $\threshold$ and $\pd$.
+This leakage paradigm diverts from previous works in which there is a single threshold $\idealthreshold$, values with counts above $\idealthreshold$ are considered heavy-hitters, values below $\idealthreshold$ are private, and there is some leakage of the value histogram.
+In order to facilitate comparison, we offer here two possible interpretations of our leakage model.
+
+\subsubsection{Perfect Correctness, Some Leakage} In the perspective that we have taken so far throughout this paper, we can view the MDSS gap as leakage.
+In this case, we consider $\threshold = t$, i.e. our recovery threshold as the equivalent to the overall threshold in prior work.
+Then, as we lose the MDSS privacy guarantees after a value has been reported over $\pd$ times, we say that we possibly leak values after $\pd$ reports.
+
+We believe that this leakage profile is preferable to the profiles of prior work, as it guarantees privacy for values with low numbers of reports.
+Indeed, values incurring privacy loss only if a sufficient number of users report them has an intuitive appeal as a guarantee for a $\numheavyhit$-heavy-hitters protocol.
+
+
+\subsubsection{Perfect Security, Partial Correctness}
+Alternatively, one could consider $\pd = t$.
+In this case we achieve \emph{perfect} security, with all values with counts under $\pd$ remaining private due to the unlinkability of the underlying MDSS scheme.
+However, we are not fully correct, as we fail to recover all values reported between $\pd$ and $\threshold$ times.
+Using the parameters from the first row of \cref{fig:gpu-main-aggregation-runtimes}, this would mean we fail to recover $19$ of the heavy-hitters.
+
+\subsection{Security Model}
+
+While we prove our scheme secure only in the honest-but-curious model of security, we believe that it still represents a meaningful step forward as compared to STAR and POPSTAR.
+This is due to the fact that the issues addressed in this work: the lack of guaranteed protection for rare values and the severe vulnerability to a spying Aggregation Server, are present in STAR and POPSTAR even when all parties behave semi-honestly.
+
+The main challenge when it comes to upgrading our protocol to achieve malicious security is in limiting the negative affects of misbehaving clients.
+The correctness of our protocol depends on our heuristic assumption regarding the $\chmdss$ algorithm, which only guarantees correctness when the points and polynomials used to construct shares are sampled uniformly at random.
+Notably, this means that we cannot guarantee correctness if clients can send any shares to the Aggregation Server that do not follow such a distribution.
+
+The natural approach to achieving malicious security is to have the clients include a proof that their portion of the oblivious-share-sampling procedure was performed honestly.
+However, doing so without adding significant overhead to the client computations represents a challenge.
+Additionally, such a change does not immediately apply to our protocol, as it would require clients to prove over their invocation of a Random Oracle.
+
+Another possible path forward is to further investigate $\chmdss$ in order to formulate a stronger heuristic assumption.
+If the algorithm is indeed robust in the face of some amount of maliciously crafted points, then we could hope to achieve malicious security against groups of clients attempting to interfere with share aggregation.
+We leave the investigation of both approaches to future work.
