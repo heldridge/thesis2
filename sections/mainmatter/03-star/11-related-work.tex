@@ -1,0 +1,6 @@
+Private $\numheavyhit$-heavy-hitters, and privacy preserving secure aggregation in general, has a long line of work that can be broadly generalized into a few categories.
+Works such as \cite{CCS:BBGLR20, SP:LBVKH23, CCS:BIKMMP17, AC:LLPT23, SP:MWAPR23, ASIACCS:BSHV23, USENIX:BGLLMR23} propose protocols in the \emph{single server} model, where clients communicate with a single aggregation server.
+These protocols often require multiple rounds of communication, and/or communication between the clients themselves.
+In a parallel line of work, \cite{EPRINT:DPRS23, prio, SCN:AGJOP22, EPRINT:BanCheVen24, PoPETS:MouSarTso24, PoPETS:MPDST25, SP:BBCGI21, EPRINT:BBCGKR24, zhu2020federated, SP:RSWP23} operate in the \emph{multi-server} model, where clients split their reports between a collection of servers that perform aggregation via joint computation, and requires some subset of the servers to remain honest in order to preserve privacy.
+A third line of work \cite{bittau2017prochlo, bassily2017practical, STOC:BasSmi15, bun2019heavy, CCS:QYYKXR16} protects clients using differential privacy \autocite{TCC:DMNS06}.
+While differential privacy offers attractive guarantees for clients, these works rely on the service provider to accurately configure and spend their privacy budget, which has a history of failure in practice \autocite{tang2017privacy}.
