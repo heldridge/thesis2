@@ -3,6 +3,17 @@
 
 \begin{figure}
 	\begin{pcvstack}[boxed, center, space=1em]
+		\procedure[linenumbering]{$\mathsf{Aggregate}\left(\set{(\batchsize_i, \cval_i)}_{i \in [\decodeiterations]}, \mdssShareSet, \mdssRecThr, \mdssPrivThr)\right)$}{
+			\valset := \emptyset \\
+			\failed := \false \\
+			\pcfor i \in [\decodeiterations - 1] \pcdo \\
+			\t \mdssShareSet, \valset, \failed \gets \mathsf{StepDecode}(\mdssShareSet, \valset, \mdssRecThr, \mdssPrivThr, \batchsize_i, \cval_i) \\
+			\t \pcif \failed \pcthen \textbf{break} \\
+			\pcwhile !\failed \pcdo \\
+			\t \mdssShareSet, \valset, \failed \gets \mathsf{StepDecode}(\mdssShareSet, \valset, \mdssRecThr, \mdssPrivThr, \batchsize_{\decodeiterations}, \cval_{\decodeiterations}) \\
+			\pcreturn \valset
+		}
+
 		\procedure[linenumbering]{$\mathsf{StepDecode}\left(\mdssShareSet, \valset, \mdssRecThr, \mdssPrivThr, \batchsize_i, \cval_i\right)$}{
 			\mdssBlindShare'_1, \dots, \mdssBlindShare_{\batchsize_i} \gets \mathsf{SampleWithoutReplacement}(\mdssShareSet) \\
 			\thr'_i := \left\lceil \frac{1}{\cval_i}(\batchsize_i + (\cval_i \cdot (\mdssPrivThr + 1))) \right \rceil \\
@@ -21,4 +32,6 @@
 			\t \pcreturn \bot, \bot, \true
 		}
 	\end{pcvstack}
+	\caption{An optimized $\chmdss_c$ reconstruction algorithm}
+	\label{fig:chmdss-opt}
 \end{figure}
