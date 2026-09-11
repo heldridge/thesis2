@@ -1,0 +1,28 @@
+We use $\zrange{x}{y}$ to denote the set $\set{x, x+1, \ldots, y}$ where $x, y \in \Z$ and $x \le y$.
+We use $\nrange{x}$ as a shorthand to denote $\zrange{1}{x}$.
+We use $\vec{x} \in \mathcal{X}^{\ell}$ to denote a vector of $\ell$ elements in $\mathcal{X}$.
+For a vector $\vec{x} = (x_1, \ldots, x_\ell)$, we use $\veci{x}{i} = x_i$ to denote the $i$-th element in $\vec{x}$ where $i \in \nrange{\ell}$.
+We use $x||y$ to denote the concatenation of two strings $x$ and $y$.
+When $X$ and $Y$ are ordered sets we let $X||Y$ denote the concatenation of their elements, e.g. $\set{x_1, x_2}||\set{y_1, y_2} = x_1||x_2||y_1||y_2$.
+For an integer $x$ we use $\xthdigit{x}{i}_b$ to denote the $1$-indexed $i$'th digit of $x$ in base $b$, e.g. for the base-$10$ value $x = 357$, $\xthdigit{x}{1}_{10} = 3$.
+We may drop the subscript when the base is clear from context.
+
+For any algorithm $\adv$, we use $y \coloneqq \adv(x; r)$ to denote that the algorithm runs on input $x$ and random tape $r$ and produces output $y$.
+In most cases we do not denote the random tape explicitly and simply write $y \gets \adv(x)$.
+We may write $y \xleftarrow{r} \adv(x)$ to indicate sampling $r$ as appropriate and recording it for later use.
+We use $\secpar$ as the computational security parameter, $\negl[\secpar]$ to denote negligible functions, and $\poly[\secpar]$ to denote polynomials in $\secpar$.
+For two probability ensembles $\set{A_i}_i$ and $\set{B_i}_i$, we use $\set{A_i}_i \pindist \set{B_i}_i$ to denote that the ensembles are identical, $\set{A_i}_i \sindist \set{B_i}_i$ to denote that the ensembles are statistically close and $\set{A_i}_i \cindist \set{B_i}_i$ to denote that the ensembles are computationally indistinguishable.
+We use $\probsublong{A}{E}$ to denote the probability of an event $E$ in an experiment defined by executing $A$.
+We refer to probability $P$ as \emph{overwhelming} if $P \geq 1 - 2^{-40}$.
+For a finite set $X$ we use $\mathcal{U}_X$ to denote the uniform distribution over $X$.
+For a distribution $\dist$ we will use $x \gets \dist$ to indicate sampling a value according to the distribution.
+
+For a rank $k\in [\zipfsup]$ and exponent $\zipfexp>0$,
+the Zipf power-law (or ``Zipfian'') distribution \cite{powers1998applications} with parameters $\zipfsup$, $\zipfexp$ is defined by
+$$
+	\Pr[X=k]=\frac{1/k^{\,\zipfexp}}{H_{\zipfsup,s}},
+	\qquad\text{where}\qquad
+	H_{\zipfsup,\zipfexp}=\sum_{k=1}^{\zipfsup}\frac{1}{k^{\,\zipfexp}}.
+$$
+$[\zipfsup]$ is the support of the distribution, while the exponent $\zipfexp$ controls the concentration of values: the larger $\zipfexp$ is, the more concentrated the distribution is in the top ranks.
+We will sometimes abuse notation and refer to a Zipfian distribution with support $\zipfsup$.
