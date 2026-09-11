@@ -1,11 +1,48 @@
 \chapter{Introduction}
 \label{chap:introduction}
 
-Thresholding is all around us.
-Perfect privacy is nice, but does not survive the constraints of the real world.
-You almost always want some additional utility on top of your privacy (otherwise what's the point?).
-The most fundamental form of privacy is the threshold.
-Here are some scheme that do this, but where is the deployment?
-Answer: efficieny. It is a compromise to be private, so need to make as efficient as possible.
-Our results: two new private protocols, as well as building blocks for future ones (MDSS).
-Describe results.
+Digital protocols often need to strike a balance between \emph{privacy} and \emph{utility}.
+Protocols designed from the ground up to be private, such as secure messaging or private cryptocurrencies, often need to add some sort of mechanism to comply with the requirements of regulators.
+Such mechanisms will typically, by definition, require a relaxtion of the privacy that the system provides.
+
+From the other end, protocols designed to be useful, such as those based on wide-ranging data collection and analysis, also often must change to accomodate privacy conerns.
+This again may be imposed by regulation, or simply to accord with the concerns of a public increasingly uncomfortable with their digital lives being under constant watch.
+
+This balance between privacy and utility leads to immediate challenges in designing such systems: how do you enforce that a regulator learns no more about economic activity than they need to prevent money laundering? How can I ensure that a data aggregator isn't able to single me out?
+Cryptography is uniquely suited to solve these problems due to the \emph{guarantees} it provides.
+If a protocol is designed correctly, we do not need to trust that a company is not learning more about us than they should, as it will impossible for them to do otherwise.
+
+Due to this natural match, a number of private systems have been proposed both for economic regulation and private data collection.
+However, as of the writing of this dissertation, these system have seen limited use in real life.
+One major limiting factor in their widespread deployment is \emph{efficiency}.
+For cryptocurrencies, any aspect of the protocol must be run repeatedly by a large distributed network, and any extra data must be retained on the blockchain indefinitely, ruling out even mildly inefficient systems.
+For data aggregation, adding privacy comes at a \emph{cost}, meaning that the aggregators will not have the incentives to deploy it, while privacy-minded organizations will lack the resources, leading to systems with minimal to no privacy guarantees.
+
+
+Given this, we seek here to design privacy-preserving protocols that are particularly efficient.
+To do so, we focus on a fundamental component of private protocols: the threshold.
+Thresholding, i.e. revealing some information once a value exceeds a given quantity, appears constantly in intuitions regarding how private protocols should work.
+For example, the U.S. Bank Secrecy Act mandates the reporting of cash transactions over \$10,000 \cite{meltzer1991keeping}.
+While we don't want every one of our monetary transactions reported to to the government, we have decided that there should be a threshold at which privacy no longer holds.
+
+Within this thesis we design two new protocols that balance privacy and utility via thresholding.
+The first is a method to allow regulators to view transactions in private cryptocurrencies that exceed a certain amount, and the second allows data aggregators to learn only those data points that show up frequently, while keeping the rare (and therefore potentially more identifying) points private.
+For both we perform significant optimization efforts to ensure that they are deployable in the present day.
+
+Along the way, we develop a new technique for secret sharing that allows for simultaneously reconstructing secrets shared by mulitple dealers without know which shares correspond to the same secret.
+This technique serves as a generic way to implement private thresholding, which gives it the potential to be used in other privacy-preserving protocols.
+
+
+% Within this thesis we take steps towards solving this issue, introducing two new protocols that balance privacy and utility for privacy cryptocurrencies and data aggregation.
+% For both we perform significant optimization efforts to ensure that they are deployable in the present day.
+% In the course of doing so we also develop several new cryptographic tools with applications to private systems.
+
+
+% Thresholding is all around us.
+% Perfect privacy is nice, but does not survive the constraints of the real world.
+% You almost always want some additional utility on top of your privacy (otherwise what's the point?).
+% The most fundamental form of privacy is the threshold.
+% Here are some scheme that do this, but where is the deployment?
+% Answer: efficieny. It is a compromise to be private, so need to make as efficient as possible.
+% Our results: two new private protocols, as well as building blocks for future ones (MDSS).
+% Describe results.
