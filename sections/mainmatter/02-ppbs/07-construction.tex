@@ -67,24 +67,24 @@ Define $\rdec(x, y_1,\dots,y_n)$ as follows:
 
 	We then have that:
 	\begin{align*}
-		\rdec(g^{r_0}, g^{r_1},\dots,g^{r_n})                                                & = \\
-		(g^{r_0})^{(\prod_n-1)}\cdot (g^{r_1})^{(\prod_{n - 1}-1)} \cdot \dots \cdot g^{r_n} & = \\
-		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)}
+		\rdec(g^{r_0}, g^{r_1},\dots,g^{r_n})                                                                      & = \\
+		(g^{r_0})^{\left(\prod_n-1\right)}\cdot (g^{r_1})^{\left(\prod_{n - 1}-1\right)} \cdot \dots \cdot g^{r_n} & = \\
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{\left(\prod_{n - 1}-1\right)}
 	\end{align*}
 
 	Then, if $n$ is even we have that:
 	\begin{align*}
-		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{r_1}         \\
-		                                                                & = (g^{-f(r_0, r_2, \dots, r^n)})^{-1} \cdot g^{r_1}
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{\left(\prod_{n - 1}-1\right)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{r_1}         \\
+		                                                                           & = (g^{-f(r_0, r_2, \dots, r^n)})^{-1} \cdot g^{r_1}
 	\end{align*}
 	and so $r' = -f(r_0, r_2, \dots, r^n)$.
 
 	In the case that $n$ is odd we have that:
 	\begin{align*}
-		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{(\prod_{n - 1}-1)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1}                  \\
-		                                                                & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1} g^{r_1} g^{-r_1} \\
-		                                                                & = g^{f(r_0, r_2, \dots, r^n) - 2r_1} g^{r_1}                  \\
-		                                                                & = (g^{-f(r_0, r_2, \dots, r^n) + 2r_1})^{-1} g^{r_1}          \\
+		g^{f(r_0, r_2, \dots, r^n)} \cdot (g^{r_1})^{\left(\prod_{n - 1}-1\right)} & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1}                  \\
+		                                                                           & = g^{f(r_0, r_2, \dots, r^n)} \cdot g^{-r_1} g^{r_1} g^{-r_1} \\
+		                                                                           & = g^{f(r_0, r_2, \dots, r^n) - 2r_1} g^{r_1}                  \\
+		                                                                           & = (g^{-f(r_0, r_2, \dots, r^n) + 2r_1})^{-1} g^{r_1}          \\
 	\end{align*}
 	and so $r' = -f(r_0, r_2, \dots, r^n) + 2r_1$.
 \end{proof}
