@@ -51,7 +51,7 @@ Finally, define $\mdssGenerate(\set{(\mdssSecret_i, \mdssNumShares_i, \indexSet_
 
 	The $\ulink(\mdss, \adv, \secpar)$ advantage of $\adv$ is defined as
 	$$
-		\advantage{\ulink}{\adv, \mdss} = \abs{\prob{\ulink_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\ulink_1(\pke, \adv, \secpar) \Rightarrow 1}}
+		\advantage{\ulink}{\adv, \mdss} = \left|\prob{\ulink_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\ulink_1(\pke, \adv, \secpar) \Rightarrow 1}\right|
 	$$
 	We say that an MDSS scheme is $\mdssULVar$-unlinkable if for all admissible NUPPT adversaries $\adv$ and all $\secpar \in \NN$ we have that $\advantage{\ulink}{\adv, \mdss} \leq \mdssULVar(\secpar)$.
 \end{definition}
@@ -72,8 +72,8 @@ We therefore define a simpler definition for which it will be easier to prove th
 
 	The $\omulink(\mdss, \adv, \secpar)$ advantage of $\adv$ is defined as
 	\begin{align*}
-		 & \advantage{\omulink}{\adv, \mdss} =                                                                               \\
-		 & \abs{\prob{\omulink_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\omulink_1(\pke, \adv, \secpar) \Rightarrow 1}}
+		 & \advantage{\omulink}{\adv, \mdss} =                                                                                      \\
+		 & \left|\prob{\omulink_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\omulink_1(\pke, \adv, \secpar) \Rightarrow 1}\right|
 	\end{align*}
 	We say that an MDSS scheme is $\mdssULVar$-one-more-unlinkable if for all admissible NUPPT adversaries $\adv$ and all $\secpar \in \NN$ we have that $\advantage{\omulink}{\adv, \mdss} \leq \mdssULVar(\secpar)$.
 

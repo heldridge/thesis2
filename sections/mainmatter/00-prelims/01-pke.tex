@@ -42,7 +42,7 @@
 	}
 	The $\indcpa(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
 	$$
-		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\indcpa_1(\pke, \adv, \secpar) \Rightarrow 1}}
+		\advantage{\indcpa}{\adv, \pke} = \left|\prob{\indcpa_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\indcpa_1(\pke, \adv, \secpar) \Rightarrow 1}\right|
 	$$
 	We say that a PKE scheme is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
 \end{definition}
@@ -71,7 +71,7 @@ We define a computational notion of lossiness as opposed to the statistical noti
 	}
 	The $\comploss(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
 	$$
-		\advantage{\comploss}{\adv, \pke} = \abs{\prob{\comploss_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\comploss_1(\pke, \adv, \secpar) \Rightarrow 1}}
+		\advantage{\comploss}{\adv, \pke} = \left|\prob{\comploss_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\comploss_1(\pke, \adv, \secpar) \Rightarrow 1}\right|
 	$$
 	We say that a PKE scheme satisfies computationall lossiness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\comploss}{\adv, \pke} \leq \negl$.
 \end{definition}
@@ -88,7 +88,7 @@ We define a computational notion of lossiness as opposed to the statistical noti
 
 	The $\kindist(\pke, \adv, \secpar)$ advantage of $\adv$ is described as
 	$$
-		\advantage{\kindist}{\adv, \pke} = \abs{\prob{\kindist_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\kindist_1(\pke, \adv, \secpar) \Rightarrow 1}}
+		\advantage{\kindist}{\adv, \pke} = \left|\prob{\kindist_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\kindist_1(\pke, \adv, \secpar) \Rightarrow 1}\right|
 	$$
 	We say that a PKE scheme satsifies key indistinguishability if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\kindist}{\adv, \pke} \leq \negl$.
 \end{definition}
