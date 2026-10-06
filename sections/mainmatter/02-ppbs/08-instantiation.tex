@@ -1,6 +1,6 @@
 We describe here a concrete instantiation of our PPB scheme using a lossy variant of the ElGamal encryption scheme \cite{C:ElGamal84}.
 % \input{figures/folklore_lossy_elgamal}
-The lossy variant, considered cryptographic ``folklore,'' uses an algorithm $\egpphgen$ that takes as input a security parameter $\secparam$ and outputs a group description with \emph{two} generators $G = (\group, \egprime, \ggen, \hgen)$, where the discrete log of $\hgen$ with respect to $\ggen$ is unknown.
+The lossy variant, considered cryptographic ``folklore,'' uses $\egpphgen$, the group generation function that returns a group description with two generators $G = (\group, \egprime, \ggen, \hgen)$.
 The scheme generates lossy keys by running the traditional ElGamal key generation algorithm with the alternate generator $h$.
 As the first element of a ciphertext remains $g^r$, computational lossiness follows from DDH.
 
