@@ -27,5 +27,5 @@ This in turn means that they should be unable to craft lossy ciphertexts such th
 		\advantage{\badcorgame}{\pker, \pkem, \adv} = \prob{\badcorgame(\pker, \pkem, \adv, \secpar) \Rightarrow 1}
 	$$
 
-	We say that schemes $(\pker, \pkem)$ together satisfy lossy correlation resistance if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl$ such that $\advantage{\badcorgame}{\pker, \pkem, \adv} \leq \negl$.
+	We say that schemes $(\pker, \pkem)$ together satisfy lossy correlation resistance if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl$ such that for all $\secpar \in \NN$, $\advantage{\badcorgame}{\pker, \pkem, \adv} \leq \negl$.
 \end{definition}
