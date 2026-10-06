@@ -2,16 +2,16 @@ We present here our main construction of an efficient PPB for threshold comparis
 Let $\pker$ and $\pkem$ be lossy public-key encryption schemes and define the following two relations:
 \begin{align*}
 	\kgrel^{} = & \left\{
-	((pk', \com), (\thr, sk', r_k, r_c)) \::\:
+	((\pk', \com), (\thr, \sk', r_k, r_c)) \::\:
 	\begin{gathered}
-		(sk', pk') = \kgen'(\lambda, \revpp, \matpp, \base, \numdigits, \thr; r_k) \\
+		(\sk', \pk') = \kgen'(\lambda, \revpp, \matpp, \base, \numdigits, \thr; r_k) \\
 		\wedge \: \com = \commit(\comparams, \thr; r_c)
 	\end{gathered}
 	\right\}              \\
 	\erel^{} =  & \left\{
-	((Z', \com, pk), (\uval, \msg, r_e, r_c)) \::\:
+	((Z', \com, \pk), (\uval, \msg, r_e, r_c)) \::\:
 	\begin{gathered}
-		Z' = \escrow'(\revpp, \matpp, \numdigits, pk, \uval, \msg; r_e) \\
+		Z' = \escrow'(\revpp, \matpp, \numdigits, \pk, \uval, \msg; r_e) \\
 		\wedge \: \com = \commit(\comparams, (\uval, \msg); r_c)
 	\end{gathered}
 	\right\}
@@ -100,12 +100,12 @@ We now begin proving our main theorem.
 
 \begin{proof}
 	Suppose for the sake of contradiction that there exists an adversary $\adv$ such that $\advantage{\soundgame}{\mathsf{TCPPB}, \adv} = \nu(\secpar)$ is non-negligible.
-	In the adversary's first stage it outputs $(\thr, \kgr)$, and the challenger sets $(sk, pk) \leftarrow \kgen(\ppbpp, \thr, \kgr)$.
+	In the adversary's first stage it outputs $(\thr, \kgr)$, and the challenger sets $(\sk, \pk) \leftarrow \kgen(\ppbpp, \thr, \kgr)$.
 	In its second stage, the adversary $\adv$ outputs $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$.
 	We can divide our analysis into the following three cases depending on the properties of these outputs.
 	\begin{enumerate}
-		\item There exist some $\er'$ and $(\uval', \msg') \neq (\uval, \msg)$ such that $\commit((\uval, \msg), \er) = \allowbreak\commit(\allowbreak(\allowbreak\uval',\allowbreak \msg'),\allowbreak \er')$ and $\esc = \escrow(\ppbpp, pk, (\uval', \msg'), \er')$.
-		\item $Z' \neq \escrow'(\pkerpp, \pkempp, \numdigits, pk, \uval, \msg)$ and (1) does not hold.
+		\item There exist some $\er'$ and $(\uval', \msg') \neq (\uval, \msg)$ such that $\commit((\uval, \msg), \er) = \allowbreak\commit(\allowbreak(\allowbreak\uval',\allowbreak \msg'),\allowbreak \er')$ and $\esc = \escrow(\ppbpp, \pk, (\uval', \msg'), \er')$.
+		\item $Z' \neq \escrow'(\pkerpp, \pkempp, \numdigits, \pk, \uval, \msg)$ and (1) does not hold.
 		\item Neither (1) nor (2) hold (i.e. $\adv$'s output is well-formed).
 	\end{enumerate}
 	Let the probability of $\adv$'s outputs satisfying property $j$ be denoted by $\nu_j(\secpar)$.
@@ -115,11 +115,11 @@ We now begin proving our main theorem.
 
 	Suppose that $\nu_2(\secpar)$ is non-negligible.
 	In this case $\adv$ produced a proof of a false statement and we can construct a reduction $\bdv$ to the knowledge-soundness of $\Pi_{E}$.
-	$\bdv$ runs $\adv$, simulates the generation of $pk$, receives $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$, and outputs $((Z', \ecom, pk), \zkproof_{E})$.
+	$\bdv$ runs $\adv$, simulates the generation of $\pk$, receives $(\ecom, (\uval, \msg), \er, \esc = (\esc', \zkproof_{E}))$, and outputs $((Z', \ecom, \pk), \zkproof_{E})$.
 	As the statement is false any extractor must fail, meaning $\prob{\bdv \text{ wins}}$ is non-negligible, thus contradicting our assumption that $\Pi_{E}$ satisfies knowledge soundness.
 	Therefore, $\nu_2(\secpar)$ is negligible.
 
-	As $\nu_2(\secpar)$ is negligible we can assume there exists an extractor $\Ext_{\adv}$ that given $\trans_{\adv}$ outputs $(\uval', \msg', r_e, \er)$ such that $\ecom = \commit(\compp, (\uval', \msg'); \er)$ and $\esc'\allowbreak =\allowbreak \escrow'(\allowbreak\pkerpp,\allowbreak \pkempp,\allowbreak \numdigits,\allowbreak pk,\allowbreak \uval',\allowbreak \msg'; r_e)$.
+	As $\nu_2(\secpar)$ is negligible we can assume there exists an extractor $\Ext_{\adv}$ that given $\trans_{\adv}$ outputs $(\uval', \msg', r_e, \er)$ such that $\ecom = \commit(\compp, (\uval', \msg'); \er)$ and $\esc'\allowbreak =\allowbreak \escrow'(\allowbreak\pkerpp,\allowbreak \pkempp,\allowbreak \numdigits,\allowbreak \pk,\allowbreak \uval',\allowbreak \msg'; r_e)$.
 
 	${}$
 
@@ -164,7 +164,7 @@ We now begin proving our main theorem.
 	Suppose that $\badprobmat{i} > 0$ for some $i \in [n - 1]$.
 	Then, we can break the correctness property of $\pkem$, as
 	$$
-		\pkem.\dec(\pkempp, sk, \pkem.\enc(\pkempp, pk, \msg'; \mer_i)) \neq \msg'
+		\pkem.\dec(\pkempp, \sk, \pkem.\enc(\pkempp, \pk, \msg'; \mer_i)) \neq \msg'
 	$$
 	Therefore, $\badprobmat{i} = 0$ for all $i \in [d - 1]$.
 
@@ -298,7 +298,7 @@ We now begin proving our main theorem.
 				      \t[2] \pairsk_i^j \leftarrow \bot
 			      }
 		      \end{pchstack}
-		      As $\adv$ does not have access to $sk$, this hybrid behaves identically to $\prevhyb$ from the adversary's point of view, and so $\prevhyb \pindist \currhyb$.
+		      As $\adv$ does not have access to $\sk$, this hybrid behaves identically to $\prevhyb$ from the adversary's point of view, and so $\prevhyb \pindist \currhyb$.
 
 		\item $\nexthyb$: In this hybrid step $3$ of $\kgen'$ is changed from $j \leq t_0[i]$ to $j \leq t_1[i]$.
 		      We show that $\prevhyb \cindist \currhyb$ via a series of sub-hybrids.
@@ -313,7 +313,7 @@ We now begin proving our main theorem.
 		      $\prevhyb \cindist \currhyb$ follows identically as before from the key indistinguishability property of $\pkem$.
 
 		\item $\nexthyb$ In this hybrid $\kgen'$ is returned to its original formulation, with all comparisons performed against $t_1$.
-		      As $\adv$ does not have access to $sk$, this hybrid behaves identically to $\prevhyb$, and so $\prevhyb \pindist \currhyb$.
+		      As $\adv$ does not have access to $\sk$, this hybrid behaves identically to $\prevhyb$, and so $\prevhyb \pindist \currhyb$.
 
 		\item $\nexthyb$: This hybrid is identical to $\thrhidegame_1$.
 		      By the zero-knowledge property of $\Pi_{KG}$ we have that $\prevhyb \pindist \currhyb$.

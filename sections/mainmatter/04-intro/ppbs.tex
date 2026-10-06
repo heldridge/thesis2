@@ -9,14 +9,14 @@ For example, individuals who remain within an envelope of compliance parameters 
 Most critically, this guarantee should hold \emph{even if the authority is fully compromised and behaves maliciously}, which rules out solutions that simply collect all transaction data and then filter what is made available to regulators.
 
 \paragraph{Privacy-preserving blueprints.}
-In service of this goal, Kohlweiss et al.\ \cite{EC:KohLysNgu23} introduced \emph{Privacy-Preserving Blueprints} (PPBs).
+In service of this goal, Kohlweiss \emph{et al.} \cite{EC:KohLysNgu23} introduced \emph{Privacy-Preserving Blueprints} (PPBs).
 In a PPB scheme, an auditor publishes a function $f(\cdot, \cdot)$, along with some secret and committed input $x$ chosen by the auditor.
 Each time a user authors a transaction, it adds an encrypted \emph{escrow} field that contains the value $f(x, \uval)$, where $\uval$ represents some input from the user's transaction.
 Finally, this escrow field can be decrypted by the auditor.
 This primitive has several applications.
 For example,  $f(x, \cdot)$ can realize a \emph{watchlist} functionality~\cite{EC:KohLysNgu23,EPRINT:GKLS24}: here $x = \{A_1, \dots, A_n\}$ contains a secret list of suspicious accounts, and $\uval = \{A_{\sf sender}, A_{\sf recipient}\}$ are the addresses of the parties involved in the transaction.
 The function $f(x, \uval)$ would reveal $\uval$ to the auditor iff $v \cap x \ne \emptyset$ and would reveal an empty value $\bot$ in all other cases.
-A critical feature of PPBs is that the watchlist $x$ remains confidential from the transaction authors.\footnote{In practice, the auditor's input $x$ can be placed within a public commitment: this ensures that the contents of the watchlist are not entirely arbitrary, \emph{e.g.,} outside parties can be allowed to examine the content of the watchlist and ensure that this watchlist is in use on the network.}
+A critical feature of PPBs is that the watchlist $x$ remains confidential from the transaction authors.\footnote{In practice, the auditor's input $x$ can be placed within a public commitment: this ensures that the contents of the watchlist are not entirely arbitrary, \emph{e.g.} outside parties can be allowed to examine the content of the watchlist and ensure that this watchlist is in use on the network.}
 
 \paragraph{PPBs for threshold comparison.}
 One particularly useful functionality for PPBs is  \emph{threshold comparison}, which allows authorities to place threshold limits on transaction values.

@@ -8,7 +8,7 @@ While efficient, these works require multiple  servers, and the strong assumptio
 Some earlier works \autocite{SP:BBCGI21, SP:BBCGKR25} are also impacted by inherent leakage from the MPC functionality, which they reduce using differential privacy \autocite{TCC:DMNS06}.
 
 
-To address these limitations, In CCS '22 Davidson et al. proposed STAR \cite{\citestar}.
+To address these limitations, In CCS '22 Davidson \emph{et al}. proposed STAR \cite{\citestar}.
 STAR introduced a new paradigm with two non-colluding servers between which no interaction needs to occur. Critically, one server can even be relatively lightweight.
 In this model, clients report their inputs in two phases: first, they run a protocol with a \emph{Randomness Server} to compute a \emph{report}.
 The Randomness Server has minimal resource requirements: its interaction with each client consumes only small amounts of bandwidth, is usually computationally inexpensive, and results in no increased storage for the server.
@@ -24,7 +24,7 @@ After interacting with the Randomness Server, clients transmit their report to a
 \end{figure}
 
 Unfortunately, the STAR protocol suffers from substantial privacy leakage: the Aggregation Server learns a pseudonomized version of the \emph{complete frequency histogram} of client inputs.
-Recognizing this issue, a follow-up work called POPSTAR (Li et al., USENIX 2024) reduces the leakage to a partial histogram, where only a subset of values have their frequency leaked.
+Recognizing this issue, a follow-up work called POPSTAR (Li \emph{et al}., USENIX 2024) reduces the leakage to a partial histogram, where only a subset of values have their frequency leaked.
 Notably, the values that have their frequencies leaked are selected \emph{at random}, with rare values having the same probability of being leaked as those with more reports.
 More critically, both STAR and POPSTAR are extremely vulnerable to an Aggregation Server that colludes with (or poses as) a client.
 An Aggregation Server that makes a \emph{single query} to the Randomness Server

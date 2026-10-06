@@ -35,16 +35,16 @@ Before describing the instantiation we first briefly recall the interfaces of ob
 Define the following two relations:
 \begin{align*}
 	\kgrel^{\lambda, \comparams, \numdigits} = & \left\{
-	((pk', \com), (\thr, sk', r_k, r_c)) \::\:
+	((\pk', \com), (\thr, \sk', r_k, r_c)) \::\:
 	\begin{gathered}
-		(sk', pk') = \kgen'(\lambda, \thr; r_k) \\
+		(\sk', \pk') = \kgen'(\lambda, \thr; r_k) \\
 		\wedge \: \com = \commit(\comparams, \thr; r_c)
 	\end{gathered}
 	\right\}                                             \\
 	\erel^{\lambda, \comparams, \numdigits} =  & \left\{
-	((Z', \com, pk'), (\uval, \msg, r_e, r_c)) \::\:
+	((Z', \com, \pk'), (\uval, \msg, r_e, r_c)) \::\:
 	\begin{gathered}
-		Z' = \escrow'(\secpar, pk', (\uval, \msg); r_e) \\
+		Z' = \escrow'(\secpar, \pk', (\uval, \msg); r_e) \\
 		\wedge \: \com = \commit(\comparams, (\uval, \msg); r_c)
 	\end{gathered}
 	\right\}

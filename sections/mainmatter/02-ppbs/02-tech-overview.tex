@@ -24,27 +24,27 @@ We  now describe our main construction.
 Let $\maxt$ be the maximum possible value of $\thr$.
 We can construct a PPB for $\fthr$ as follows:
 \begin{itemize}
-	\item The auditor publishes a public key consisting of $\maxt + 1$ public keys for an underlying encryption scheme: $pk_0,\dots,pk_{\maxt}$, the first $\thr$ of which are \textit{lossy}, i.e. cannot decrypt any messages encrypted to them.
-	\item The escrow is computed as $\ct \gets {\sf Enc}({pk_{\uval}}, \msg)$, along with a zero-knowledge proof that $ct$ was computed correctly.
+	\item The auditor publishes a public key consisting of $\maxt + 1$ public keys for an underlying encryption scheme: $\pk_0,\dots,\pk_{\maxt}$, the first $\thr$ of which are \textit{lossy}, i.e. cannot decrypt any messages encrypted to them.
+	\item The escrow is computed as $\ct \gets {\sf Enc}({\pk_{\uval}}, \msg)$, along with a zero-knowledge proof that $ct$ was computed correctly.
 \end{itemize}
-If $\uval \leq \thr$, then $pk_{\uval}$ is lossy, and so $\ct$ cannot be decrypted.
-Correspondingly, if $\uval > \thr$ then $pk_{\uval}$ is non-lossy, and the message can be recovered. To decrypt the receiver tries all of their non-lossy secret keys until a decryption succeeds.
+If $\uval \leq \thr$, then $\pk_{\uval}$ is lossy, and so $\ct$ cannot be decrypted.
+Correspondingly, if $\uval > \thr$ then $\pk_{\uval}$ is non-lossy, and the message can be recovered. To decrypt the receiver tries all of their non-lossy secret keys until a decryption succeeds.
 
 Unfortunately, this construction requires an impractically large public key that scales linearly with the maximum threshold.
 To solve this issue, we alter our construction to allow for a tradeoff between public key and ciphertext size.
 We achieve this tradeoff by using multiple copies of the above construction, where each copy, or ``row,'' represents one digit of $\thr$ in some base $\base$.
-For example, if we are using base $10$, max threshold $\maxt = 99$, and $\thr = 42$, then the public key would consist of two rows of keys: $pk^0_0,\dots,pk^{10}_{0}$ and $pk^0_1,\dots,pk^{10}_{1}$, where $\{pk^0_0, pk^1_0, pk^2_0, pk^3_0, pk^4_0\}$ and $\{pk^0_1, pk^1_1, pk^2_1\}$ are lossy. Going forward, let $\thr[i]$ denote the digit of $\thr$ at position $i$.
+For example, if we are using base $10$, max threshold $\maxt = 99$, and $\thr = 42$, then the public key would consist of two rows of keys: $\pk^0_0,\dots,\pk^{10}_{0}$ and $\pk^0_1,\dots,\pk^{10}_{1}$, where $\{\pk^0_0, \pk^1_0, \pk^2_0, \pk^3_0, \pk^4_0\}$ and $\{\pk^0_1, \pk^1_1, \pk^2_1\}$ are lossy. Going forward, let $\thr[i]$ denote the digit of $\thr$ at position $i$.
 
 
-Say our value $\uval = 48$. To encrypt, we can start by computing the value $\ct^{\sf R}_0 \gets$ ${\sf Enc}(pk^0_4, \msg)$, as if $\thr[0] < 4$, then $\uval$ is clearly larger than $\thr$.
+Say our value $\uval = 48$. To encrypt, we can start by computing the value $\ct^{\sf R}_0 \gets$ ${\sf Enc}(\pk^0_4, \msg)$, as if $\thr[0] < 4$, then $\uval$ is clearly larger than $\thr$.
 But what if $\thr[0] = 4$? In this case, we would like decryption to be possible if and only if $\thr[0] = 4$ \textit{and} $\thr[1] < 8$. To achieve this, we can sample a one-time-pad (OTP) $\alpha$, and compute the following two ciphertexts:
 \begin{itemize}
-	\item $ct^{\sf M}_0 \gets {\sf Enc}(pk^5_0, \alpha)$
-	\item $ct^{\sf R}_1 \gets \alpha \circ {\sf Enc}(pk^8_1, m)$
+	\item $ct^{\sf M}_0 \gets {\sf Enc}(\pk^5_0, \alpha)$
+	\item $ct^{\sf R}_1 \gets \alpha \circ {\sf Enc}(\pk^8_1, m)$
 \end{itemize}
 where $\alpha \circ x$ denotes blinding $x$ with the one-time-pad. The final ciphertext is $ct = (ct^{\sf R}_0, ct^{\sf M}_0, ct^{\sf R}_1)$.
-To decrypt, the receiver first attempts to decrypt $\ct^{\sf R}_0$ with each non-lossy $sk^i_0$.
-If none of these succeed, they compute $\ct^{{\sf R}'}_1 \gets {\sf Dec}(sk^5_0, \ct^{\sf M}_0) \circ \ct^{\sf R}_1$, attempt to decrypt $\ct^{{\sf R}'}_1$ with each non-lossy $sk^i_1$, and if none of those succeed output $\perp$.
+To decrypt, the receiver first attempts to decrypt $\ct^{\sf R}_0$ with each non-lossy $\sk^i_0$.
+If none of these succeed, they compute $\ct^{{\sf R}'}_1 \gets {\sf Dec}(\sk^5_0, \ct^{\sf M}_0) \circ \ct^{\sf R}_1$, attempt to decrypt $\ct^{{\sf R}'}_1$ with each non-lossy $\sk^i_1$, and if none of those succeed output $\perp$.
 We refer to $\ct^M_i$ as a ``match'' ciphertext, as it needs to be decrypted when a digit of $\uval$ exactly equals a digit of $\thr$, and $\ct^R_i$ as a ``reveal'' ciphertext, as it directly reveals the message.
 
 We note here the conflicting requirements between the match and reveal ciphertexts.

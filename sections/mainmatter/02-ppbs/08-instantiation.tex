@@ -47,7 +47,7 @@ A lossy PKE based on ElGamal can be seen in \cref{fig:folklore_lossyelg}.
 
 	\begin{itemize}
 		\item $\newhyb$: This game is identical to $\stronglossyambgame_0$.
-		\item $\nexthyb$: In this hybrid $\ct = (g^y, pk_0^y\cdot \msg)$ is replaced with $\ct = (g^y, pk_1^y\cdot \msg)$.
+		\item $\nexthyb$: In this hybrid $\ct = (g^y, \pk_0^y\cdot \msg)$ is replaced with $\ct = (g^y, \pk_1^y\cdot \msg)$.
 		      As $m$ is sampled uniformly at random from $\group$, we have that $\prevhyb \pindist \currhyb$.
 	\end{itemize}
 
@@ -69,8 +69,8 @@ The transform can be seen in \cref{fig:weak_robust_transform}.
 	Assume there exists an adversary $\adv$ such that $\advantage{\robust}{\pke', \adv}$ is non-negligible.
 	We can then construct a reduction $\bdv$ to the collision-freeness of $\pke$ as follows.
 
-	$\bdv$ receives $\{pk_i\}_{i\in[n]}$, computes $\{pk_i'\}_{i\in [n]} \leftarrow \kgen(\secparam)$, runs $\adv(\secparam, \{(pk'_i,$ $ pk_i)\}_{i\in[n]})$, receives $(j, k, m, r = (r_0, r_1))$, and outputs $(j, k, \phi, r_1)$.
-	As $\adv$'s advantage is non-negligible, it must be the case that $\dec(sk_k, \enc(pk_j, \phi; r_1')) = \phi$ with non-negligible probability.
+	$\bdv$ receives $\{\pk_i\}_{i\in[n]}$, computes $\{\pk_i'\}_{i\in [n]} \leftarrow \kgen(\secparam)$, runs $\adv(\secparam, \{(\pk'_i,$ $ \pk_i)\}_{i\in[n]})$, receives $(j, k, m, r = (r_0, r_1))$, and outputs $(j, k, \phi, r_1)$.
+	As $\adv$'s advantage is non-negligible, it must be the case that $\dec(\sk_k, \enc(\pk_j, \phi; r_1')) = \phi$ with non-negligible probability.
 	Therefore $\bdv$'s advantage is non-negligible, which is a contradiction, and so the scheme satisfies weak robustness.
 \end{proof}
 
@@ -83,11 +83,11 @@ The transform can be seen in \cref{fig:weak_robust_transform}.
 
 	\begin{itemize}
 		\item $\newhyb$: This hybrid is identical to $\wlambgame_0$.
-		\item $\nexthyb$: In this hybrid $\ct_0 \leftarrow \enc(pk_{0, 0}, m)$ is replaced with $\enc(pk_{1, 0}, m)$.
+		\item $\nexthyb$: In this hybrid $\ct_0 \leftarrow \enc(\pk_{0, 0}, m)$ is replaced with $\enc(\pk_{1, 0}, m)$.
 		      We then have that $\prevhyb \cindist \currhyb$ as otherwise we could build a reduction $\bdv$ to the \wla{} of $\pke$ as follows.
 		      $\bdv$ receives $(r_0 = (r_{0, 0}, r_{0, 1}), r_1 = (r_{1, 0}, r_{1, 1}), m)$ from $\adv$, and sends $(r_{0, 0}, r_{1, 0}, m)$ to the challenger, receiving $\ct^*$.
 		      $\bdv$ then sends $(\ct^*, \enc(\kgenlossy(;r_{0, 1}), \phi))$ to $\adv$, and outputs whatever $\adv$ outputs.
-		\item $\nexthyb$: In this hybrid $\ct_1$ is replaced by $\enc(pk_{1, 1}, \phi)$.
+		\item $\nexthyb$: In this hybrid $\ct_1$ is replaced by $\enc(\pk_{1, 1}, \phi)$.
 		      We again have that $\prevhyb \cindist \currhyb$ by the \wla{} of $\pke$.
 	\end{itemize}
 
@@ -107,7 +107,7 @@ Each $\pker$ ciphertext is $4$ group elements, and so we can have $\pkem$ be fou
 We describe here optimizations that reduce the public-key and escrow size of the concrete PPB scheme described in \cref{sec:instantiation} while preserving security.
 
 \subsubsection{Randomness Reuse.}
-As written, a $\pker$ public-key would consist of two sub-keys $pk_0 = g^{x_0}$, $pk_1 = g^{x_1}$, and a ciphertext would consist of two ElGamal encryptions of the form
+As written, a $\pker$ public-key would consist of two sub-keys $\pk_0 = g^{x_0}$, $\pk_1 = g^{x_1}$, and a ciphertext would consist of two ElGamal encryptions of the form
 $((g^y, g^{x_0y}\cdot m), (g^z, g^{x_1z} \cdot \phi))$.
 We can compress this ciphertext via randomness re-use.
 ElGamal encryption allows an encryptor to re-use the same $g^r$ value across encryptions under different public-keys.
@@ -119,7 +119,7 @@ with $g^{r_{\rev}}$ included separately in the escrow value.
 
 \subsubsection{Shared Public Keys.}
 After the above optimization match ciphertexts $\matct$ must consist of \emph{two} ElGamal encryptions.
-For these, we can use the same $(pk_0, pk_1)$ present in the $\pker$ public key.
+For these, we can use the same $(\pk_0, \pk_1)$ present in the $\pker$ public key.
 We can additionally use the same randomness-reuse trick as before, using the same random value $r_{\mat}$ for all match ciphertexts.
 A match ciphertext $\matct$ encrypting a pad $\otpk = (\otpk_0, \otpk_1)$ then has the form:
 $(g^{x_0r_{\mat}} \cdot \otpk_0, g^{x_1r_{\mat}} \cdot \otpk_1)$,

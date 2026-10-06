@@ -8,15 +8,15 @@
 				\procedure[linenumbering]{$\kgen\left(\Lambda, \thr, r_{KG}\right)$}{
 					\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pcskipln \\
 					\t \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) = \Lambda \\
-					(sk', pk') \xleftarrow{r_k} \pcskipln \\
+					(\sk', \pk') \xleftarrow{r_k} \pcskipln \\
 					\t \kgen'(\lambda, \revpp, \matpp, \numdigits, \thr) \\
 					\com_{KG} \leftarrow \commit(\comparams, \thr; r_{KG}) \\
 					\zkproof_{KG} \leftarrow \pcskipln \\
-					\zkprove_{KG}(\crs_{KG}, (pk', \com_{KG}), \pcskipln \\
-					\t (\thr, sk', r_k, r_{KG})) \\
-					pk \leftarrow (pk', \com_{KG}, \zkproof_{KG}) \\
-					sk \leftarrow (sk', pk) \\
-					\pcreturn (sk, pk)
+					\zkprove_{KG}(\crs_{KG}, (\pk', \com_{KG}), \pcskipln \\
+					\t (\thr, \sk', r_k, r_{KG})) \\
+					\pk \leftarrow (\pk', \com_{KG}, \zkproof_{KG}) \\
+					\sk \leftarrow (\sk', \pk) \\
+					\pcreturn (\sk, \pk)
 				}
 
 				\procedure[linenumbering]{$\kgen'\left(\lambda, \revpp, \matpp, \numdigits, \thr\right)$}{
@@ -30,29 +30,29 @@
 					\t[3] \revsk_i^j, \revpk_i^j \leftarrow \pker.\kgen(\revpp) \\
 					\t[3] \matsk_i^j, \matpk_i^j \leftarrow \pkem.\kgen(\matpp) \\
 					\t[3] \pairsk_i^j \leftarrow (\revsk_i^j, \matsk_i^j)\\
-					sk' = \{\pairsk_i^j\}_{i \in [\numdigits], j \in [0 , b - 1]} \\
-					pk' = \{\pairpk_i^j\}_{i \in [\numdigits], j \in [0 ,b - 1]} \\
-					\pcreturn (sk', pk')
+					\sk' = \{\pairsk_i^j\}_{i \in [\numdigits], j \in [0 , b - 1]} \\
+					\pk' = \{\pairpk_i^j\}_{i \in [\numdigits], j \in [0 ,b - 1]} \\
+					\pcreturn (\sk', \pk')
 				}
 
 			\end{pcvstack}
 
 			\begin{pcvstack}[space=1em]
 
-				\procedure[linenumbering]{$\escrow(\Lambda, pk, (\uval, \msg), r_{E})$}{
+				\procedure[linenumbering]{$\escrow(\Lambda, \pk, (\uval, \msg), r_{E})$}{
 					\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) \pcskipln \\
 					\t = \Lambda \\
-					\pcparse (pk', \com_{KG}, \zkproof_{KG}) = pk \\
-					\pcif \verpk(\ppbpp, pk, \kgcom) = 0 \pcthen \\
+					\pcparse (\pk', \com_{KG}, \zkproof_{KG}) = \pk \\
+					\pcif \verpk(\ppbpp, \pk, \kgcom) = 0 \pcthen \\
 					\t \pcreturn \bot \\
-					Z' \xleftarrow{r_e} \escrow'(\revpp, \matpp, \numdigits, pk', v, m) \\
+					Z' \xleftarrow{r_e} \escrow'(\revpp, \matpp, \numdigits, \pk', v, m) \\
 					\com_{E} \leftarrow \commit(\comparams, (v, m); r_{E}) \\
 					\zkproof_{E} \leftarrow \pcskipln \\
-					\t \zkprove_{E}(\crs_{E}, (Z', \com_{E}, pk'), (v, m, r_e, \er)) \\
+					\t \zkprove_{E}(\crs_{E}, (Z', \com_{E}, \pk'), (v, m, r_e, \er)) \\
 					\pcreturn (Z', \zkproof_{E})
 				}
 
-				\procedure[linenumbering]{$\escrow'(\revpp, \matpp, \numdigits, pk, v, m)$}{
+				\procedure[linenumbering]{$\escrow'(\revpp, \matpp, \numdigits, \pk, v, m)$}{
 					\otpkgr^* \sample [p_\rev - 1] \\
 					\otpk^* := g_\rev^{\otpkgr^*} \\
 					\otpct^* := \otpk^* \cdot \msg \\

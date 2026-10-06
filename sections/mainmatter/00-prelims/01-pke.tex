@@ -7,24 +7,24 @@
 	\begin{itemize}
 		\item $\setup(\secparam) \rightarrow \pkepp$: outputs public parameters $\pkepp$.
 
-		\item $\kgen(\pkepp) \rightarrow (sk, pk)$: generates a keypair $(sk, pk)$.
+		\item $\kgen(\pkepp) \rightarrow (\sk, \pk)$: generates a keypair $(\sk, \pk)$.
 
-		\item $\enc(\pkepp, pk, m) \rightarrow ct$: takes as input a public key $pk$ and a plaintext message $m \in \msgspace$ and outputs a ciphertext $ct$.
+		\item $\enc(\pkepp, \pk, m) \rightarrow ct$: takes as input a public key $\pk$ and a plaintext message $m \in \msgspace$ and outputs a ciphertext $ct$.
 
-		\item $\dec(\pkepp, sk, ct) \rightarrow \msg$: takes as input a secret key $sk$ and a ciphertext $ct$ and either outputs $\bot$ or the message $m$.
+		\item $\dec(\pkepp, \sk, ct) \rightarrow \msg$: takes as input a secret key $\sk$ and a ciphertext $ct$ and either outputs $\bot$ or the message $m$.
 
 	\end{itemize}
 \end{definition}
 
 \begin{definition}[Correctness]
 	We require that a PKE be perfectly correct, i.e.\ decryption of a properly generated ciphertext always succeeds.
-	Stated formally, we require that for all $\msg \in \msgspace$ and security parameter $\secpar$:
+	Stated formally, we require that for all $\msg \in \msgspace$ and $\secpar \in \NN$:
 	$$
 		\probsublong{
 			\begin{gathered}
 				\pkepp \gets \setup(\secparam) \\
 				\pk \gets \kgen(\pkepp) \\
-				\ct \gets \enc(\pkepp, pk, \msg)
+				\ct \gets \enc(\pkepp, \pk, \msg)
 			\end{gathered}
 		}{ \dec(\sk, \ct) = \msg} = 1
 	$$
@@ -42,9 +42,9 @@
 	}
 	The $\indcpa(\pke, \adv, \secpar)$ advantage of $\adv$ is defined as
 	$$
-		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) = 1} - \prob{\indcpa_1(\pke, \adv, \secpar) = 1}}
+		\advantage{\indcpa}{\adv, \pke} = \abs{\prob{\indcpa_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\indcpa_1(\pke, \adv, \secpar) \Rightarrow 1}}
 	$$
-	We say that a PKE scheme is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme is \indcpa{} secure if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\indcpa}{\adv, \pke} \leq \negl$.
 \end{definition}
 
 \subsection{Lossy Public-Key Encryption}
@@ -73,7 +73,7 @@ We define a computational notion of lossiness as opposed to the statistical noti
 	$$
 		\advantage{\comploss}{\adv, \pke} = \abs{\prob{\comploss_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\comploss_1(\pke, \adv, \secpar) \Rightarrow 1}}
 	$$
-	We say that a PKE scheme satisfies computationall lossiness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\comploss}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme satisfies computationall lossiness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\comploss}{\adv, \pke} \leq \negl$.
 \end{definition}
 
 \begin{definition}[Key Indistinguishability]
@@ -90,7 +90,7 @@ We define a computational notion of lossiness as opposed to the statistical noti
 	$$
 		\advantage{\kindist}{\adv, \pke} = \abs{\prob{\kindist_0(\pke, \adv, \secpar) \Rightarrow 1} - \prob{\kindist_1(\pke, \adv, \secpar) \Rightarrow 1}}
 	$$
-	We say that a PKE scheme satsifies key indistinguishability if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\kindist}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme satsifies key indistinguishability if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\kindist}{\adv, \pke} \leq \negl$.
 \end{definition}
 
 \subsection{Robust Encryption}
@@ -114,7 +114,7 @@ We repeat a simplified form of the definition below.
 	$$
 		\advantage{\robust}{\adv, \pke} = \prob{\robust_0(\pke, \adv, \secpar) \Rightarrow 1}
 	$$
-	We say that a PKE scheme satsifies weak robustness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\robust}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme satsifies weak robustness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\robust}{\adv, \pke} \leq \negl$.
 \end{definition}
 
 \subsection{Collision-Free Encryption}
@@ -140,7 +140,7 @@ We define the corresponding variant with adversarial randomness below.
 	$$
 		\advantage{\collfree}{\adv, \pke} = \prob{\collfree(\pke, \adv, \secpar) \Rightarrow 1}
 	$$
-	We say that a PKE scheme satsifies weak collision-freeness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\collfree}{\adv, \pke} \leq \negl$.
+	We say that a PKE scheme satsifies weak collision-freeness if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\collfree}{\adv, \pke} \leq \negl$.
 \end{definition}
 
 \subsection{Linear Homomorphism}
@@ -158,7 +158,7 @@ We will make use of a \emph{linearly homomorphic} encryption scheme, i.e.\ one i
 
 \subsection{Dense Ciphertext Space}
 \begin{definition}[Dense Ciphertext Space]\label{def:dense-ctx-space}
-	A public-key encryption scheme $\encscheme$ is said to have \emph{dense ciphertext space} if there exists a $\ppt$ algorithm to sample uniformly random elements from $\ctxspace$ and if for all non-uniform polynomial time adversaries $\adv$, there exists a negligible function $\negl[\cdot]$, such that for all $\secpar \in \N$, we have
+	A public-key encryption scheme $\encscheme$ is said to have \emph{dense ciphertext space} if there exists a $\ppt$ algorithm to sample uniformly random elements from $\ctxspace$ and if for all non-uniform polynomial time adversaries $\adv$, there exists a negligible function $\negl[]$, such that for all $\secpar \in \N$, we have
 	\begin{equation*}
 		\begin{array}{r}
 			\prob{\adv^{\oracle_b}(\pk, \sk) = b : \begin{array}{r}

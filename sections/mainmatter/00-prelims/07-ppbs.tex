@@ -5,11 +5,11 @@ We reproduce here the privacy preserving blueprint definition put forth in \cite
 
 	\begin{itemize}
 		\item $\setup(\secparam, \comparams) \rightarrow (\ppbpp, \td)$: takes as input the security parameter and the public parameters of the commitment scheme, and outputs parameters for the scheme $\ppbpp$, which will contain $\comparams$, along with a trapdoor $\td$.
-		\item $\kgen(\ppbpp, \thr, r) \rightarrow (sk, pk)$: takes as input values $\thr\in \comM$ and $r \in \comR$ and outputs a key pair $(sk, pk)$. $(\thr, r)$ define a commitment $\kgcom$.
-		\item $\verpk(\ppbpp, pk, \kgcom) \rightarrow b$: takes as input a public key and a commitment, and outputs a bit $b \in \bin$ verifying the validity of $pk$.
-		\item $\escrow(\ppbpp, pk, \msg, r) \rightarrow \esc / \bot$: takes as input a public key, a message, and some randomness, and returns an escrow value $\esc$ for the commitment $\ecom$ defined by $(\msg, r)$, or $\bot$.
-		\item $\verescrow(\ppbpp, pk, \ecom, \esc) \rightarrow b$: takes as input a public key, a commitment, and an escrow, and outputs a bit $b \in \bin$ verifying the validity of the escrow.
-		\item $\dec(\ppbpp, sk,\ecom, \esc) \rightarrow \msg' / \bot$: takes as input a secret key, a commitment, and an escrow, and returns $\msg' = f(\thr, \msg) \in \comM$ or $\bot$.
+		\item $\kgen(\ppbpp, \thr, r) \rightarrow (\sk, \pk)$: takes as input values $\thr\in \comM$ and $r \in \comR$ and outputs a key pair $(\sk, \pk)$. $(\thr, r)$ define a commitment $\kgcom$.
+		\item $\verpk(\ppbpp, \pk, \kgcom) \rightarrow b$: takes as input a public key and a commitment, and outputs a bit $b \in \bin$ verifying the validity of $\pk$.
+		\item $\escrow(\ppbpp, \pk, \msg, r) \rightarrow \esc / \bot$: takes as input a public key, a message, and some randomness, and returns an escrow value $\esc$ for the commitment $\ecom$ defined by $(\msg, r)$, or $\bot$.
+		\item $\verescrow(\ppbpp, \pk, \ecom, \esc) \rightarrow b$: takes as input a public key, a commitment, and an escrow, and outputs a bit $b \in \bin$ verifying the validity of the escrow.
+		\item $\dec(\ppbpp, \sk,\ecom, \esc) \rightarrow \msg' / \bot$: takes as input a secret key, a commitment, and an escrow, and returns $\msg' = f(\thr, \msg) \in \comM$ or $\bot$.
 	\end{itemize}
 \end{definition}
 
@@ -18,10 +18,10 @@ We require that  PPB scheme satisfy the following properties.
 \begin{definition}[Correctness]
 	There exists a negligible function $\negl[]$ such that for all $\comparams \leftarrow \csetup(\secparam)$, $\ppbpp \leftarrow \setup(\secparam, \comparams)$, all $\thr, \msg \in \comM$, and all $r \in \comR$:
 	$$
-		\prob{\dec(\ppbpp, sk, \com, \esc) \neq f(\thr, \msg)  \::\: \
+		\prob{\dec(\ppbpp, \sk, \com, \esc) \neq f(\thr, \msg)  \::\: \
 			\begin{gathered}
-				(sk, pk) \leftarrow \kgen(\ppbpp, \thr) \\
-				\esc \leftarrow \escrow(\ppbpp, pk, \msg, r) \\
+				(\sk, \pk) \leftarrow \kgen(\ppbpp, \thr) \\
+				\esc \leftarrow \escrow(\ppbpp, \pk, \msg, r) \\
 				\com \leftarrow \commit(\comparams, \msg; r)
 			\end{gathered}} \leq \negl
 	$$
@@ -33,10 +33,10 @@ We require that  PPB scheme satisfy the following properties.
 		\comparams \leftarrow \csetup(\secparam) \\
 		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
 		\thr, r_k \leftarrow \adv(\secparam, \ppbpp) \\
-		(pk, sk) \leftarrow \kgen(\ppbpp, \thr, r_k) \\
-		(\ecom, \msg, \er, \esc) \leftarrow \adv(pk) \\
+		(\pk, \sk) \leftarrow \kgen(\ppbpp, \thr, r_k) \\
+		(\ecom, \msg, \er, \esc) \leftarrow \adv(\pk) \\
 		\pcreturn [\ecom = \commit(\comparams, \msg; \er) \wedge \\
-			\t \verescrow(\ppbpp, pk, \ecom, \esc) \wedge \dec(\ppbpp, sk, \ecom, \esc) \neq f(\thr, \msg)]
+			\t \verescrow(\ppbpp, \pk, \ecom, \esc) \wedge \dec(\ppbpp, \sk, \ecom, \esc) \neq f(\thr, \msg)]
 	}
 
 	The $\soundgame(\ppb, \adv, \secpar)$ advantage of $\adv$ is defined as:
@@ -53,8 +53,8 @@ We require that  PPB scheme satisfy the following properties.
 		(\ppbpp, \cdot) \leftarrow \setup(\secparam, \comparams) \\
 		(\thr_0, \thr_1) \leftarrow \adv(\ppbpp) \\
 		r \sample \comR \\
-		(\cdot, pk) \leftarrow \kgen(\ppbpp, t_b, r) \\
-		b' \leftarrow \adv(pk)
+		(\cdot, \pk) \leftarrow \kgen(\ppbpp, t_b, r) \\
+		b' \leftarrow \adv(\pk)
 		\pcreturn b'
 	}
 	The $\thrhidegame(\ppb, \adv, \secpar)$ advantage of $\adv$ is defined as:
@@ -70,10 +70,10 @@ We require that  PPB scheme satisfy the following properties.
 	\procedureblock{$\eschidegame_b(\ppb, \adv, \Sim, \secpar)$}{
 		\comparams \leftarrow \csetup(\secparam) \\
 		(\ppbpp, \td) \leftarrow \setup(\secparam, \comparams) \\
-		(\thr, r_{KG}, pk, x) \leftarrow \adv(\ppbpp) \\
-		\pcif \verpk(\ppbpp, pk, \commit(\comparams, \thr; r_{KG})) = 0: \pcreturn \bot \\
+		(\thr, r_{KG}, \pk, x) \leftarrow \adv(\ppbpp) \\
+		\pcif \verpk(\ppbpp, \pk, \commit(\comparams, \thr; r_{KG})) = 0: \pcreturn \bot \\
 		r \sample \comR \\
-		\esc \leftarrow \pcif b = 0 \pcthen \escrow(\ppbpp, pk, x, r) \:\pcelse \Sim(\td, pk, f(\thr, x)) \\
+		\esc \leftarrow \pcif b = 0 \pcthen \escrow(\ppbpp, \pk, x, r) \:\pcelse \Sim(\td, \pk, f(\thr, x)) \\
 		b' \leftarrow \adv(\esc) \\
 		\pcreturn b'
 	}

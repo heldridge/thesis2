@@ -10,8 +10,8 @@ Let the variable $\dl(\groupgen, \adv, \secpar)$ denote the result of the follow
 
 The $\dl(\groupgen, \adv, \secpar)$ advantage of $\adv$ is defined as
 $$
-	\advantage{\dl}{\groupgen, \adv} = \prob{\dl(\groupgen, \adv, \secpar) = 1}
+	\advantage{\dl}{\groupgen, \adv} = \prob{\dl(\groupgen, \adv, \secpar) \Rightarrow 1}
 $$
 
-If for all adversaries $\adv$, there exists a negligible function $\negl$ such that $\advantage{\dl}{\groupgen, \adv} \allowbreak\leq\allowbreak \negl$, we say that discrete log is hard relative to $\groupgen$.
+If for all adversaries $\adv$, there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\dl}{\groupgen, \adv} \allowbreak\leq\allowbreak \negl$, we say that discrete log is hard relative to $\groupgen$.
 We may ocasionally abuse notation and say that discrete log is hard for $\GG$ instead, where $\GG$ is representative of the family of groups output by $\groupgen$.

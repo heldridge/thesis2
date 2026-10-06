@@ -1,23 +1,23 @@
 \begin{figure}[ht]
 	\begin{pchstack}[boxed, center, space=1em]
 		\begin{pcvstack}[space=1em]
-			\procedure[linenumbering]{$\verpk(\Lambda, pk, \com_{KG})$}{
+			\procedure[linenumbering]{$\verpk(\Lambda, \pk, \com_{KG})$}{
 				\pcparse (\lambda, \comparams, \crs_{KG}, \crs_{E},  \pkepp, \maxt, \base, \numdigits) = \Lambda \\
-				\pcparse (pk', \com_{KG}', \zkproof_{KG}) = pk \\
-				\pcreturn \zkverify_{KG}(\crs_{KG}, \zkproof_{KG}, (pk', \com_{KG})) \pcskipln \\
+				\pcparse (\pk', \com_{KG}', \zkproof_{KG}) = \pk \\
+				\pcreturn \zkverify_{KG}(\crs_{KG}, \zkproof_{KG}, (\pk', \com_{KG})) \pcskipln \\
 				\t \wedge (\com_{KG}'  = \com_{KG})
 			}
-			\procedure[linenumbering]{$\verescrow(\Lambda, pk, \com_{E}, Z = (Z', \zkproof_{E}))$}{
+			\procedure[linenumbering]{$\verescrow(\Lambda, \pk, \com_{E}, Z = (Z', \zkproof_{E}))$}{
 				\pcparse (\lambda, \comparams, \crs_{KG}, \crs_{E},  \pkepp, \maxt, \base, \numdigits) = \Lambda \\
-				\pcparse (pk', \com_{KG}', \zkproof_{KG}) = pk \\
-				\pcreturn \verpk(\Lambda, pk, \com_{KG}) \pcskipln \\
-				\t \wedge \: \zkverify_{E}((Z', \com_{E}, pk'), \zkproof_{E})
+				\pcparse (\pk', \com_{KG}', \zkproof_{KG}) = \pk \\
+				\pcreturn \verpk(\Lambda, \pk, \com_{KG}) \pcskipln \\
+				\t \wedge \: \zkverify_{E}((Z', \com_{E}, \pk'), \zkproof_{E})
 			}
-			\procedure[linenumbering]{$\dec(\Lambda, sk, \com_{E}, Z = (Z', \zkproof_E))$}{
+			\procedure[linenumbering]{$\dec(\Lambda, \sk, \com_{E}, Z = (Z', \zkproof_E))$}{
 				\pcparse (\lambda, \comparams, \pkepp^{\rev}, \pkepp^{\mat}, \crs_{KG}, \crs_{E}, \numdigits) = \Lambda \\
-				\pcparse (\{(\revsk_i^j, \matsk_i^j)\}_{i \in [\numdigits], j \in [0 ,b]}, pk) \pcskipln \\
-				\t = sk \\
-				\pcif \verescrow(\Lambda, pk, \com_{E}, Z) = 0 \:\pcreturn \bot \\
+				\pcparse (\{(\revsk_i^j, \matsk_i^j)\}_{i \in [\numdigits], j \in [0 ,b]}, \pk) \pcskipln \\
+				\t = \sk \\
+				\pcif \verescrow(\Lambda, \pk, \com_{E}, Z) = 0 \:\pcreturn \bot \\
 				\pcparse (\{\pairct_i\}_{i \in [\numdigits]}, \otpct^*) = Z' \\
 				\tilde{\otpk}_0 := \msgspace_{\mat}.e \\
 				\pcfor i \in [n] \\

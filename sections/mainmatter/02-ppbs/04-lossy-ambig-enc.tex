@@ -71,11 +71,11 @@ We now show that \sla{} is a strictly stronger notion than \wla{}.
 
 	\begin{itemize}
 		\item $\newhyb$: This hybrid is identical to  $\wlambgame{}_0(\pke, \adv, \secpar)$.
-		\item $\nexthyb$: Sample $m' \leftarrow \dist$, and replace $\ct^*$ with $\enc(pk_0, m')$.
+		\item $\nexthyb$: Sample $m' \leftarrow \dist$, and replace $\ct^*$ with $\enc(\pk_0, m')$.
 		      By the lossiness of $\pke$, $\prevhyb \cindist \currhyb$.
-		\item $\nexthyb$: In this hybrid, $pk_1$ is computed using the non-lossy $\kgen$ algorithm, and $\adv$ receives $\enc(pk_1, m)$.
+		\item $\nexthyb$: In this hybrid, $\pk_1$ is computed using the non-lossy $\kgen$ algorithm, and $\adv$ receives $\enc(\pk_1, m)$.
 		      By the $\dist$-\sla{} property of $\pke$, $\prevhyb \cindist \currhyb$.
-		\item $\nexthyb$: In this hybrid $pk_1$ is computed with the lossy $\kgen$ algorithm.
+		\item $\nexthyb$: In this hybrid $\pk_1$ is computed with the lossy $\kgen$ algorithm.
 		      We have that $\prevhyb \cindist \currhyb$ again by the \sla{} of $\pke$.
 		\item $\nexthyb$: This hybrid is identical to $\wlambgame{}_1(\pke, \adv, \secpar)$.
 		      $\prevhyb \cindist \currhyb$ again by the lossiness of $\pke$.

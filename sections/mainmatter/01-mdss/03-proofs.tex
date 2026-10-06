@@ -131,9 +131,9 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 	\begin{proof}
 		For $\hyb_j$ we define the following notation.
 		\begin{itemize}
-			\item Let $\mdssRelBatch$ be the smallest integer such that $\sum_{i \in [\mdssRelBatch]} |\indexSet_i| \geq j$. In other words, $\mdssProj(\allowbreak\mdssSecret,\allowbreak \mdssNumShares_{\mdssRelBatch, b},\allowbreak \indexSet_{\mdssRelBatch, b})$ is the ``batch'' in which the share $\mdssBlindShare_j$ appears.
-			\item Let $\mdssLIBRB = \sum_{i \in [\mdssRelBatch - 1]} |\indexSet_i|$, i.e.\ the last index before the relevant batch.
-			\item Let $\mdssIWRB = j - \mdssLIBRB$, i.e.\ the index within the relevant batch at which $\mdssBlindShare_j$ appears.
+			\item Let $\mdssRelBatch$ be the smallest integer such that $\sum_{i \in [\mdssRelBatch]} |\indexSet_i| \geq j$. In other words, $\mdssProj(\allowbreak\mdssSecret,\allowbreak \mdssNumShares_{\mdssRelBatch, b},\allowbreak \indexSet_{\mdssRelBatch, b})$ is the share set in which the share $\mdssBlindShare_j$ appears.
+			\item Let $\mdssLIBRB = \sum_{i \in [\mdssRelBatch - 1]} |\indexSet_i|$, i.e.\ the last index before the relevant share set.
+			\item Let $\mdssIWRB = j - \mdssLIBRB$, i.e.\ the index within the relevant share set at which $\mdssBlindShare_j$ appears.
 			\item Define the function $\mdssSampleShare(\secparam)$ as one that samples $\mdssSecret \sample \mdssSecretSpace$ and returns $\mdssShareAlg(\secparam, \mdssSecret, 1)$.
 			      Similarly, define $\mdssSampleShare^w(\secparam)$ to be the function that computes $\mdssBlindShare_i \gets \mdssSampleShare(\secparam)$ for $i \in [w]$ and outputs $\set{\mdssBlindShare_i}_{i \in [w]}$.
 		\end{itemize}
@@ -156,8 +156,8 @@ We now prove the reverse, i.e.\ that one-more unlinkability implies unlinkabilit
 				\pcreturn b'
 			}
 		\end{pcvstack}
-		$\bdv^j$ invokes $\adv$ and simulates on its own all shares that do not correspond to the relevant batch $\mdssRelBatch$.
-		$\bdv^j$ then receives $\mdssIWRB$ shares of the relevant batch (the last one of which may have been replaced with a random share), and simulates the remaining shares.
+		$\bdv^j$ invokes $\adv$ and simulates on its own all shares that do not correspond to the relevant share set $\mdssRelBatch$.
+		$\bdv^j$ then receives $\mdssIWRB$ shares of the relevant share set (the last one of which may have been replaced with a random share), and simulates the remaining shares.
 		$\bdv^j$ then invokes $\adv$ on the flattened share sets and outputs what $\adv$ outputs.
 
 		We can now analyze $\bdv^j$'s advantage. We have that:

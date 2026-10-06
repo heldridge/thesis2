@@ -8,11 +8,11 @@
 				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
 				x \sample \Z_{\egprime} \\
 				X \leftarrow \ggen^x \\
-				pk \leftarrow(\egprime, \ggen, X) \\
-				sk \leftarrow(\egprime, \ggen, x) \\
-				\pcreturn (sk, pk)
+				\pk \leftarrow(\egprime, \ggen, X) \\
+				\sk \leftarrow(\egprime, \ggen, x) \\
+				\pcreturn (\sk, \pk)
 			}
-			\procedure[linenumbering]{$\enc(\pkepp, pk, M)$}{
+			\procedure[linenumbering]{$\enc(\pkepp, \pk, M)$}{
 				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
 				y \sample \Z_{\egprime} \\
 				Y \leftarrow \ggen^y \\
@@ -22,7 +22,7 @@
 			}
 		\end{pchstack}
 		\begin{pchstack}[center, space=1em]
-			\procedure[linenumbering]{$\dec(\pkepp, sk, ct)$}{
+			\procedure[linenumbering]{$\dec(\pkepp, \sk, ct)$}{
 				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
 				(Y, W) \leftarrow ct  \\
 				T \leftarrow Y^x \\
@@ -33,8 +33,8 @@
 				\pcparse (\group, \egprime, \ggen, \hgen) = \pkepp \\
 				r \sample \bin^{\lambda} \\
 				X \leftarrow h^r \\
-				pk \leftarrow (\egprime, \ggen, X) \\
-				\pcreturn pk
+				\pk \leftarrow (\egprime, \ggen, X) \\
+				\pcreturn \pk
 			}
 		\end{pchstack}
 	\end{pcvstack}
