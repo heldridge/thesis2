@@ -43,7 +43,7 @@ We require that  PPB scheme satisfy the following properties.
 	$$
 		\advantage{\soundgame}{\ppb, \adv}= \prob{\soundgame(\ppb, \adv, \secpar) \Rightarrow 1}
 	$$
-	We say that a PPB scheme satisfies \emph{soundness} if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\soundgame}{\adv, \ppb} \leq \negl$.
+	We say that a PPB scheme satisfies \emph{soundness} if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\soundgame}{\adv, \ppb} \leq \negl$.
 \end{definition}
 
 \begin{definition}[Threshold Hiding]
@@ -62,7 +62,7 @@ We require that  PPB scheme satisfy the following properties.
 		 & \advantage{\thrhidegame}{\ppb, \adv}                                                                                                \\
 		 & = \left|\prob{\thrhidegame_0(\ppb, \adv, \secpar) \Rightarrow 1} - \prob{\thrhidegame_1(\ppb, \adv, \secpar) \Rightarrow 1} \right|
 	\end{align*}
-	A PPB satisfies threshold hiding if for all PPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\thrhidegame}{\ppb, \adv} \leq \negl$.
+	A PPB satisfies threshold hiding if for all PPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\thrhidegame}{\ppb, \adv} \leq \negl$.
 \end{definition}
 
 \begin{definition}[Escrow Hiding]
@@ -85,5 +85,5 @@ We require that  PPB scheme satisfy the following properties.
 		\prob{\eschidegame_0(\ppb, \adv, \secpar) \Rightarrow 1} - \prob{\eschidegame_1(\ppb, \adv, \secpar) \Rightarrow 1}
 		\right|
 	\end{align*}
-	A PPB satisfies escrow hiding if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that $\advantage{\eschidegame}{\ppb, \adv} \leq \negl$.
+	A PPB satisfies escrow hiding if for all NUPPT adversaries $\adv$ there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\eschidegame}{\ppb, \adv} \leq \negl$.
 \end{definition}
