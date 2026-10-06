@@ -29,7 +29,7 @@ We define these properties formally below.
 		\right|
 	\end{align*}
 
-	An encryption scheme $\mathsf{PKE}$ is $\slambgame$ secure, i.e.\ satisfies $\dist$-\sla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that $\advantage{\slambgame}{\pke, \adv} \leq \negl$.
+	An encryption scheme $\mathsf{PKE}$ is $\slambgame$ secure, i.e.\ satisfies $\dist$-\sla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\slambgame}{\pke, \adv} \leq \negl$.
 
 \end{definition}
 
@@ -47,7 +47,6 @@ We define these properties formally below.
 	}
 
 	The $\wlambgame_b(\mathsf{PKE}, \adv, \lambda)$ advantage of an adversary $\adv$ is defined as
-
 	$$
 		\advantage{\wlambgame}{\pke, \adv} =
 		\left|
@@ -56,7 +55,7 @@ We define these properties formally below.
 		\right|
 	$$
 
-	An encryption scheme $\mathsf{PKE}$ is $\wlambgame$ secure, i.e. satisfies \wla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that $\advantage{\wlambgame}{\pke, \adv} \leq \negl$.
+	An encryption scheme $\mathsf{PKE}$ is $\wlambgame$ secure, i.e. satisfies \wla{}, if for all NUPPT adversaries $\adv$, there exists a negligible function $\negl[]$ such that for all $\secpar \in \NN$, $\advantage{\wlambgame}{\pke, \adv} \leq \negl$.
 \end{definition}
 
 We now show that \sla{} is a strictly stronger notion than \wla{}.
