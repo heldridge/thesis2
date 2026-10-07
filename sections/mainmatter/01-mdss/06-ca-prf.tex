@@ -104,7 +104,7 @@ The keyspace of our construction is $\keyspace_P \times \keyspace_{F}$.
 \begin{proof}
 	We now sketch a brief analysis to consider the pseudorandomness of the above construction.
 	Recall that we consider only an adversary who issues well-formed queries.
-	Moreover, $p$ is polynomial in $|K|$ and hence {\em w.l.o.g.} we can restrict our consideration to adversaries that query $F_K$ on all input values $\{0, \dots, p-1\}$ in sequence.
+	Moreover, $p$ is polynomial in $|K|$ and hence {\em w.l.o.g.}\ we can restrict our consideration to adversaries that query $F_K$ on all input values $\{0, \dots, p-1\}$ in sequence.
 	Our analysis begins with the real protocol described above, and then proceeds via a series of hybrids.
 
 	$\hyb_1$: In a first hybrid, we re-implement the construction above while replacing the functions $\realprf_{k_{\realprf}}$ and $\smallprp_{k_{\smallprp}}$ with a random function (RF) and a random permutation (RP) respectively, each with the appropriate input/output behavior.
