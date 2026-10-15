@@ -58,7 +58,6 @@
 \usepackage{glossaries}                     % to add glossaries
 \usepackage{fancyhdr}                       % for header/ footer settings
 \usepackage[dvipsnames]{xcolor}             % color-related package
-\usepackage[a-1b]{pdfx}                     % to generate PDF/A file (add before hyperref)
 \usepackage[pdfa]{hyperref}                 % for hyperlink management 
 \hypersetup{hypertexnames=false}
 \usepackage[all]{hypcap}                    % for captions on the side of figures
@@ -110,6 +109,10 @@
 \usepackage{pifont}
 \usepackage{amssymb}
 \usepackage{mdframed}
+
+
+% Load pdfx last
+\usepackage[a-1b]{pdfx}                     % to generate PDF/A file (add before hyperref)
 %% add more packages and/or change options of the packages as needed
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% END LaTeX PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
